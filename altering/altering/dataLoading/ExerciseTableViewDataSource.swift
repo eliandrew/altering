@@ -13,7 +13,7 @@ class ExerciseTableViewDataSource {
     func lastPerformed(exercise: Exercise) -> String? {
         let dateFormatter = DateFormatter()
         // Set the date format
-        dateFormatter.dateFormat = "EEEE MM/dd/yyyy" // Month/day/year
+        dateFormatter.dateFormat = "EE MM/dd/yy" // Month/day/year
         // Format the Date object as a string
         let lastWorkout = exercise.workouts?.sortedArray(using: [NSSortDescriptor(key: "date", ascending: false)]).first as? Workout
         if let date = lastWorkout?.date {

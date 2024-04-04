@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A628F39F2BBEF05400DF5E09 /* WorkoutFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A628F39E2BBEF05400DF5E09 /* WorkoutFooterView.swift */; };
+		A628F3A12BBEF64300DF5E09 /* WorkoutFooterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A628F3A02BBEF64300DF5E09 /* WorkoutFooterView.xib */; };
 		A682BA382BBDC68D00F3DD91 /* StringHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A682BA372BBDC68D00F3DD91 /* StringHelper.swift */; };
 		A68FF29B2BBCB9EF007611D4 /* SelectExerciseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68FF29A2BBCB9EF007611D4 /* SelectExerciseTableViewController.swift */; };
 		A68FF29D2BBCBA23007611D4 /* ExerciseTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68FF29C2BBCBA23007611D4 /* ExerciseTableViewDataSource.swift */; };
@@ -50,6 +52,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A628F39E2BBEF05400DF5E09 /* WorkoutFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutFooterView.swift; sourceTree = "<group>"; };
+		A628F3A02BBEF64300DF5E09 /* WorkoutFooterView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkoutFooterView.xib; sourceTree = "<group>"; };
 		A682BA372BBDC68D00F3DD91 /* StringHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringHelper.swift; sourceTree = "<group>"; };
 		A68FF29A2BBCB9EF007611D4 /* SelectExerciseTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectExerciseTableViewController.swift; sourceTree = "<group>"; };
 		A68FF29C2BBCBA23007611D4 /* ExerciseTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseTableViewDataSource.swift; sourceTree = "<group>"; };
@@ -57,7 +61,7 @@
 		A68FF2A02BBCD805007611D4 /* ExerciseGroup+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExerciseGroup+CoreDataClass.swift"; sourceTree = "<group>"; };
 		A68FF2A42BBCD983007611D4 /* SelectGroupTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectGroupTableViewController.swift; sourceTree = "<group>"; };
 		A68FF2A62BBCE579007611D4 /* GroupTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupTableViewDataSource.swift; sourceTree = "<group>"; };
-		A6BD32022BBC6CD00017FBCF /* altering.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = altering.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A6BD32022BBC6CD00017FBCF /* Altered.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Altered.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6BD32052BBC6CD00017FBCF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A6BD32072BBC6CD00017FBCF /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		A6BD32092BBC6CD00017FBCF /* ExerciseTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseTableViewController.swift; sourceTree = "<group>"; };
@@ -125,7 +129,7 @@
 		A6BD32032BBC6CD00017FBCF /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A6BD32022BBC6CD00017FBCF /* altering.app */,
+				A6BD32022BBC6CD00017FBCF /* Altered.app */,
 				A6BD321B2BBC6CD30017FBCF /* alteringTests.xctest */,
 				A6BD32252BBC6CD30017FBCF /* alteringUITests.xctest */,
 			);
@@ -200,6 +204,8 @@
 		A6BD323B2BBC6EE80017FBCF /* views */ = {
 			isa = PBXGroup;
 			children = (
+				A628F39E2BBEF05400DF5E09 /* WorkoutFooterView.swift */,
+				A628F3A02BBEF64300DF5E09 /* WorkoutFooterView.xib */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -228,9 +234,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A6BD32012BBC6CD00017FBCF /* altering */ = {
+		A6BD32012BBC6CD00017FBCF /* Altered */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A6BD322F2BBC6CD30017FBCF /* Build configuration list for PBXNativeTarget "altering" */;
+			buildConfigurationList = A6BD322F2BBC6CD30017FBCF /* Build configuration list for PBXNativeTarget "Altered" */;
 			buildPhases = (
 				A6BD31FE2BBC6CD00017FBCF /* Sources */,
 				A6BD31FF2BBC6CD00017FBCF /* Frameworks */,
@@ -240,9 +246,9 @@
 			);
 			dependencies = (
 			);
-			name = altering;
+			name = Altered;
 			productName = altering;
-			productReference = A6BD32022BBC6CD00017FBCF /* altering.app */;
+			productReference = A6BD32022BBC6CD00017FBCF /* Altered.app */;
 			productType = "com.apple.product-type.application";
 		};
 		A6BD321A2BBC6CD30017FBCF /* alteringTests */ = {
@@ -317,7 +323,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A6BD32012BBC6CD00017FBCF /* altering */,
+				A6BD32012BBC6CD00017FBCF /* Altered */,
 				A6BD321A2BBC6CD30017FBCF /* alteringTests */,
 				A6BD32242BBC6CD30017FBCF /* alteringUITests */,
 			);
@@ -332,6 +338,7 @@
 				A6BD32122BBC6CD30017FBCF /* Assets.xcassets in Resources */,
 				A6BD32152BBC6CD30017FBCF /* Base in Resources */,
 				A6BD320D2BBC6CD00017FBCF /* Base in Resources */,
+				A628F3A12BBEF64300DF5E09 /* WorkoutFooterView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -357,6 +364,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A6BD32432BBC70860017FBCF /* Exercise+CoreDataClass.swift in Sources */,
+				A628F39F2BBEF05400DF5E09 /* WorkoutFooterView.swift in Sources */,
 				A68FF29B2BBCB9EF007611D4 /* SelectExerciseTableViewController.swift in Sources */,
 				A6BD320A2BBC6CD00017FBCF /* ExerciseTableViewController.swift in Sources */,
 				A68FF29F2BBCC594007611D4 /* WorkoutTableViewDataSource.swift in Sources */,
@@ -398,12 +406,12 @@
 /* Begin PBXTargetDependency section */
 		A6BD321D2BBC6CD30017FBCF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A6BD32012BBC6CD00017FBCF /* altering */;
+			target = A6BD32012BBC6CD00017FBCF /* Altered */;
 			targetProxy = A6BD321C2BBC6CD30017FBCF /* PBXContainerItemProxy */;
 		};
 		A6BD32272BBC6CD30017FBCF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A6BD32012BBC6CD00017FBCF /* altering */;
+			target = A6BD32012BBC6CD00017FBCF /* Altered */;
 			targetProxy = A6BD32262BBC6CD30017FBCF /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -557,6 +565,7 @@
 				DEVELOPMENT_TEAM = ZJVE8XU9RD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = altering/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Altered;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -586,6 +595,7 @@
 				DEVELOPMENT_TEAM = ZJVE8XU9RD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = altering/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Altered;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -693,7 +703,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A6BD322F2BBC6CD30017FBCF /* Build configuration list for PBXNativeTarget "altering" */ = {
+		A6BD322F2BBC6CD30017FBCF /* Build configuration list for PBXNativeTarget "Altered" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A6BD32302BBC6CD30017FBCF /* Debug */,

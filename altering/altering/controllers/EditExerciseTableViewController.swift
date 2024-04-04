@@ -92,6 +92,8 @@ class EditExerciseTableViewController: UITableViewController {
         self.exerciseGroup = self.exercise?.group
         
         self.nameTextField.delegate = self
+        
+        self.tableView.delaysContentTouches = false
     }
     
     override func viewDidLoad() {

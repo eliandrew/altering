@@ -10,7 +10,7 @@
         <!--Exercise Table View Controller-->
         <scene sceneID="sQR-YS-r0b">
             <objects>
-                <tableViewController id="2Ir-s2-HyG" customClass="ExerciseTableViewController" customModule="altering" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="2Ir-s2-HyG" customClass="ExerciseTableViewController" customModule="Altered" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="9HI-co-SPO">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -59,7 +59,7 @@
         <!--Edit Exercise Table View Controller-->
         <scene sceneID="kgs-2F-nuG">
             <objects>
-                <tableViewController id="fwP-0J-1tJ" customClass="EditExerciseTableViewController" customModule="altering" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="fwP-0J-1tJ" customClass="EditExerciseTableViewController" customModule="Altered" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="P9T-Mi-9Tw">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -138,7 +138,7 @@
         <!--Select Group Table View Controller-->
         <scene sceneID="aKy-kG-T83">
             <objects>
-                <tableViewController id="LCU-ZZ-WjM" customClass="SelectGroupTableViewController" customModule="altering" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="LCU-ZZ-WjM" customClass="SelectGroupTableViewController" customModule="Altered" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="JTM-3P-gah">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -185,7 +185,7 @@
         <!--Workout Table View Controller-->
         <scene sceneID="ZG8-3J-N6f">
             <objects>
-                <tableViewController id="e4o-5E-vSY" customClass="WorkoutTableViewController" customModule="altering" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="e4o-5E-vSY" customClass="WorkoutTableViewController" customModule="Altered" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="s2f-Kh-DCg">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -233,7 +233,7 @@
         <!--Edit Workout Table View Controller-->
         <scene sceneID="btC-2u-A0V">
             <objects>
-                <tableViewController id="NMT-on-qby" customClass="EditWorkoutTableViewController" customModule="altering" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="NMT-on-qby" customClass="EditWorkoutTableViewController" customModule="Altered" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="1P5-g6-ysA">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -310,7 +310,7 @@
                                                     </constraints>
                                                     <color key="textColor" systemColor="labelColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="no" spellCheckingType="no"/>
                                                 </textView>
                                             </subviews>
                                             <constraints>
@@ -331,7 +331,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="393" height="250"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Previous Exercise Notes" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="yOp-Zk-o0e">
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="Previous Exercise Notes" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yOp-Zk-o0e">
                                                     <rect key="frame" x="20" y="11" width="353" height="250"/>
                                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                     <constraints>
@@ -372,7 +372,7 @@
         <!--Select Exercise Table View Controller-->
         <scene sceneID="bOg-25-EgI">
             <objects>
-                <tableViewController id="Kwi-e8-2tZ" customClass="SelectExerciseTableViewController" customModule="altering" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="Kwi-e8-2tZ" customClass="SelectExerciseTableViewController" customModule="Altered" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="6Tn-SO-lQp">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

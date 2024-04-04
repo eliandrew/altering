@@ -5,6 +5,7 @@ class WorkoutTableViewController: UITableViewController {
     // MARK: Constants
     
     let WORKOUT_CELL_IDENTIFIER = "workoutCell"
+    let WORKOUT_FOOTER_VIEW_IDENTIFIER = "workoutFooterView"
     
     let WORKOUT_SEGUE_IDENTIFIER = "workoutSegue"
     
@@ -12,22 +13,6 @@ class WorkoutTableViewController: UITableViewController {
     
     var workoutDataSource = WorkoutTableViewDataSource()
     let dataLoader = DataLoader.shared
-    
-    // MARK: Helpers
-    
-    func daysBetween(start: Date, end: Date) -> Int? {
-        let calendar = Calendar.current
-        // Remove the time component by extracting only the year, month, and day components
-        let startDate = calendar.startOfDay(for: start)
-        let endDate = calendar.startOfDay(for: end)
-        
-        let components = calendar.dateComponents([.day], from: startDate, to: endDate)
-        if let days = components.day {
-            return days - 1
-        } else {
-            return nil
-        }
-    }
     
     // MARK: Actions
     
@@ -39,6 +24,8 @@ class WorkoutTableViewController: UITableViewController {
     
     func setupView() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addWorkout))
+        
+        tableView.register(UINib(nibName: "WorkoutFooterView", bundle: nil), forHeaderFooterViewReuseIdentifier: WORKOUT_FOOTER_VIEW_IDENTIFIER)
         
         dataLoader.loadAllWorkouts { fetchedWorkouts in
             if let fetchedWorkouts = fetchedWorkouts {
@@ -83,24 +70,22 @@ class WorkoutTableViewController: UITableViewController {
         return self.workoutDataSource.titleForSection(section)
     }
     
-    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        if self.workoutDataSource.numberOfSections(tableView) > section + 1 {
-            if let nextWorkoutDate = self.workoutDataSource.workoutsForSection(section + 1)?.first?.date,
-               let currentWorkoutDate = self.workoutDataSource.workoutsForSection(section)?.first?.date {
-                if let restDays = daysBetween(start: nextWorkoutDate, end: currentWorkoutDate) {
-                    if restDays == 0 {
-                        return nil
-                    } else {
-                        return "\(restDays) rest day\(restDays == 1 ? "" : "s")"
-                    }
-                } else {
-                    return nil
-                }
-            } else {
-                return nil
-            }
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        if let restDays = self.workoutDataSource.restDaysForSection(tableView, section: section) {
+            let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: WORKOUT_FOOTER_VIEW_IDENTIFIER) as? WorkoutFooterView
+            footerView?.restDaysLabel?.text = restDays
+            footerView?.restDaysLabel?.font = UIFont.systemFont(ofSize: 25.0)
+            return footerView
         } else {
             return nil
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if let _ = self.workoutDataSource.restDaysForSection(tableView, section: section) {
+            return 75.0
+        } else {
+            return 0.0
         }
     }
     

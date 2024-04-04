@@ -84,12 +84,48 @@ class WorkoutTableViewDataSource {
         }
     }
     
-    func dateTitleFrom(_ date: Date?) -> String? {
+    func dateTitleFrom(_ date: Date?, includeYear: Bool = true) -> String? {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EEEE MM/dd/yyyy"
+        dateFormatter.dateFormat = includeYear ? "EE MM/dd/yy" : "EE MM/dd"
         
         if let date = date {
             return dateFormatter.string(from: date)
+        } else {
+            return nil
+        }
+    }
+    
+    func daysBetween(start: Date, end: Date) -> Int? {
+        let calendar = Calendar.current
+        // Remove the time component by extracting only the year, month, and day components
+        let startDate = calendar.startOfDay(for: start)
+        let endDate = calendar.startOfDay(for: end)
+        
+        let components = calendar.dateComponents([.day], from: startDate, to: endDate)
+        if let days = components.day {
+            return days
+        } else {
+            return nil
+        }
+    }
+    
+    func restDaysForSection(_ tableView: UITableView, section: Int) -> String? {
+        if self.numberOfSections(tableView) > section + 1 {
+            if let nextWorkoutDate = self.workoutsForSection(section + 1)?.first?.date,
+               let currentWorkoutDate = self.workoutsForSection(section)?.first?.date {
+                if let daysBetween = daysBetween(start: nextWorkoutDate, end: currentWorkoutDate) {
+                    let restDays = daysBetween - 1
+                    if restDays == 0 {
+                        return nil
+                    } else {
+                        return "\(restDays) rest day\(restDays == 1 ? "" : "s")"
+                    }
+                } else {
+                    return nil
+                }
+            } else {
+                return nil
+            }
         } else {
             return nil
         }
