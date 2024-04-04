@@ -2,12 +2,19 @@ import UIKit
 
 class EditExerciseTableViewController: UITableViewController {
     
+    // MARK: Constants
+    
+    let SELECT_GROUP_SEGUE_IDENTIFIER = "selectGroupSegue"
+    
     // MARK: Outlets
     @IBOutlet weak var nameTextField: UITextField!
+    @IBOutlet weak var groupLabel: UILabel!
     
     // MARK: Properties
     var exercise: Exercise?
     var existingExerciseNames: [String?]?
+    
+    var exerciseGroup: ExerciseGroup?
     
     let dataLoader = DataLoader.shared
     
@@ -39,11 +46,8 @@ class EditExerciseTableViewController: UITableViewController {
     }
     
     func saveDataContext() {
-        if !dataLoader.saveContext() {
-            present(basicAlertController(title: "Error Saving Exercise", message: "Please try again"), animated: true)
-        } else {
-            navigationController?.popViewController(animated: true)
-        }
+        dataLoader.saveContext()
+        navigationController?.popViewController(animated: true)
     }
     
     @objc func saveExercise() {
@@ -57,6 +61,7 @@ class EditExerciseTableViewController: UITableViewController {
                 return
             }
             exercise.name = name
+            exercise.group = self.exerciseGroup
             saveDataContext()
         } else {
             guard let name = nameTextField.text else {
@@ -65,6 +70,7 @@ class EditExerciseTableViewController: UITableViewController {
             }
             let newExercise = dataLoader.createNewExercise()
             newExercise.name = name
+            newExercise.group = self.exerciseGroup
             saveDataContext()
         }
     }
@@ -80,18 +86,36 @@ class EditExerciseTableViewController: UITableViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveExercise))
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(exit))
         
-        if let exercise = exercise {
-            self.nameTextField.text = exercise.name
-        }
+        
+        self.nameTextField.text = self.exercise?.name
+        self.groupLabel.text = self.exercise?.group?.name ?? "None"
+        self.exerciseGroup = self.exercise?.group
+        
+        self.nameTextField.delegate = self
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        setupView()
+    }
+    
+    // MARK: Segues
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == SELECT_GROUP_SEGUE_IDENTIFIER {
+            let vc = segue.destination as? SelectGroupTableViewController
+            vc?.delegate = self
+        }
+    }
+    
+    // MARK: Table View
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 
@@ -99,5 +123,12 @@ extension EditExerciseTableViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+}
+
+extension EditExerciseTableViewController: SelectGroupDelegate {
+    func didSelectGroup(_ exerciseGroup: ExerciseGroup) {
+        self.exerciseGroup = exerciseGroup
+        self.groupLabel.text = self.exerciseGroup?.name ?? "None"
     }
 }

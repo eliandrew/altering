@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A682BA382BBDC68D00F3DD91 /* StringHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A682BA372BBDC68D00F3DD91 /* StringHelper.swift */; };
+		A68FF29B2BBCB9EF007611D4 /* SelectExerciseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68FF29A2BBCB9EF007611D4 /* SelectExerciseTableViewController.swift */; };
+		A68FF29D2BBCBA23007611D4 /* ExerciseTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68FF29C2BBCBA23007611D4 /* ExerciseTableViewDataSource.swift */; };
+		A68FF29F2BBCC594007611D4 /* WorkoutTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68FF29E2BBCC594007611D4 /* WorkoutTableViewDataSource.swift */; };
+		A68FF2A22BBCD805007611D4 /* ExerciseGroup+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68FF2A02BBCD805007611D4 /* ExerciseGroup+CoreDataClass.swift */; };
+		A68FF2A52BBCD983007611D4 /* SelectGroupTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68FF2A42BBCD983007611D4 /* SelectGroupTableViewController.swift */; };
+		A68FF2A72BBCE579007611D4 /* GroupTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68FF2A62BBCE579007611D4 /* GroupTableViewDataSource.swift */; };
 		A6BD32062BBC6CD00017FBCF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BD32052BBC6CD00017FBCF /* AppDelegate.swift */; };
 		A6BD32082BBC6CD00017FBCF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BD32072BBC6CD00017FBCF /* SceneDelegate.swift */; };
 		A6BD320A2BBC6CD00017FBCF /* ExerciseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BD32092BBC6CD00017FBCF /* ExerciseTableViewController.swift */; };
@@ -20,6 +27,9 @@
 		A6BD32432BBC70860017FBCF /* Exercise+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BD32412BBC70860017FBCF /* Exercise+CoreDataClass.swift */; };
 		A6BD32472BBC72850017FBCF /* EditExerciseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BD32462BBC72850017FBCF /* EditExerciseTableViewController.swift */; };
 		A6BD32492BBC7CD70017FBCF /* DataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BD32482BBC7CD70017FBCF /* DataLoader.swift */; };
+		A6BD324E2BBC8FC90017FBCF /* Workout+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BD324A2BBC8FC90017FBCF /* Workout+CoreDataClass.swift */; };
+		A6BD32532BBC90530017FBCF /* WorkoutTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BD32522BBC90530017FBCF /* WorkoutTableViewController.swift */; };
+		A6BD32552BBC90780017FBCF /* EditWorkoutTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BD32542BBC90780017FBCF /* EditWorkoutTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +50,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A682BA372BBDC68D00F3DD91 /* StringHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringHelper.swift; sourceTree = "<group>"; };
+		A68FF29A2BBCB9EF007611D4 /* SelectExerciseTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectExerciseTableViewController.swift; sourceTree = "<group>"; };
+		A68FF29C2BBCBA23007611D4 /* ExerciseTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseTableViewDataSource.swift; sourceTree = "<group>"; };
+		A68FF29E2BBCC594007611D4 /* WorkoutTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutTableViewDataSource.swift; sourceTree = "<group>"; };
+		A68FF2A02BBCD805007611D4 /* ExerciseGroup+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExerciseGroup+CoreDataClass.swift"; sourceTree = "<group>"; };
+		A68FF2A42BBCD983007611D4 /* SelectGroupTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectGroupTableViewController.swift; sourceTree = "<group>"; };
+		A68FF2A62BBCE579007611D4 /* GroupTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupTableViewDataSource.swift; sourceTree = "<group>"; };
 		A6BD32022BBC6CD00017FBCF /* altering.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = altering.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6BD32052BBC6CD00017FBCF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A6BD32072BBC6CD00017FBCF /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -57,6 +74,9 @@
 		A6BD32412BBC70860017FBCF /* Exercise+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Exercise+CoreDataClass.swift"; sourceTree = "<group>"; };
 		A6BD32462BBC72850017FBCF /* EditExerciseTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditExerciseTableViewController.swift; sourceTree = "<group>"; };
 		A6BD32482BBC7CD70017FBCF /* DataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataLoader.swift; sourceTree = "<group>"; };
+		A6BD324A2BBC8FC90017FBCF /* Workout+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Workout+CoreDataClass.swift"; sourceTree = "<group>"; };
+		A6BD32522BBC90530017FBCF /* WorkoutTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutTableViewController.swift; sourceTree = "<group>"; };
+		A6BD32542BBC90780017FBCF /* EditWorkoutTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditWorkoutTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +104,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A682BA362BBDC68100F3DD91 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+				A682BA372BBDC68D00F3DD91 /* StringHelper.swift */,
+			);
+			path = "New Group";
+			sourceTree = "<group>";
+		};
 		A6BD31F92BBC6CD00017FBCF = {
 			isa = PBXGroup;
 			children = (
@@ -107,6 +135,7 @@
 		A6BD32042BBC6CD00017FBCF /* altering */ = {
 			isa = PBXGroup;
 			children = (
+				A682BA362BBDC68100F3DD91 /* New Group */,
 				A6BD32452BBC711A0017FBCF /* dataLoading */,
 				A6BD32162BBC6CD30017FBCF /* Info.plist */,
 				A6BD32402BBC70490017FBCF /* model */,
@@ -140,6 +169,10 @@
 			children = (
 				A6BD32092BBC6CD00017FBCF /* ExerciseTableViewController.swift */,
 				A6BD32462BBC72850017FBCF /* EditExerciseTableViewController.swift */,
+				A6BD32522BBC90530017FBCF /* WorkoutTableViewController.swift */,
+				A6BD32542BBC90780017FBCF /* EditWorkoutTableViewController.swift */,
+				A68FF29A2BBCB9EF007611D4 /* SelectExerciseTableViewController.swift */,
+				A68FF2A42BBCD983007611D4 /* SelectGroupTableViewController.swift */,
 			);
 			path = controllers;
 			sourceTree = "<group>";
@@ -174,6 +207,8 @@
 		A6BD32402BBC70490017FBCF /* model */ = {
 			isa = PBXGroup;
 			children = (
+				A68FF2A02BBCD805007611D4 /* ExerciseGroup+CoreDataClass.swift */,
+				A6BD324A2BBC8FC90017FBCF /* Workout+CoreDataClass.swift */,
 				A6BD32412BBC70860017FBCF /* Exercise+CoreDataClass.swift */,
 			);
 			path = model;
@@ -183,6 +218,9 @@
 			isa = PBXGroup;
 			children = (
 				A6BD32482BBC7CD70017FBCF /* DataLoader.swift */,
+				A68FF29C2BBCBA23007611D4 /* ExerciseTableViewDataSource.swift */,
+				A68FF29E2BBCC594007611D4 /* WorkoutTableViewDataSource.swift */,
+				A68FF2A62BBCE579007611D4 /* GroupTableViewDataSource.swift */,
 			);
 			path = dataLoading;
 			sourceTree = "<group>";
@@ -319,12 +357,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				A6BD32432BBC70860017FBCF /* Exercise+CoreDataClass.swift in Sources */,
+				A68FF29B2BBCB9EF007611D4 /* SelectExerciseTableViewController.swift in Sources */,
 				A6BD320A2BBC6CD00017FBCF /* ExerciseTableViewController.swift in Sources */,
+				A68FF29F2BBCC594007611D4 /* WorkoutTableViewDataSource.swift in Sources */,
+				A68FF2A72BBCE579007611D4 /* GroupTableViewDataSource.swift in Sources */,
+				A6BD32532BBC90530017FBCF /* WorkoutTableViewController.swift in Sources */,
+				A68FF29D2BBCBA23007611D4 /* ExerciseTableViewDataSource.swift in Sources */,
 				A6BD32492BBC7CD70017FBCF /* DataLoader.swift in Sources */,
+				A682BA382BBDC68D00F3DD91 /* StringHelper.swift in Sources */,
 				A6BD32062BBC6CD00017FBCF /* AppDelegate.swift in Sources */,
+				A68FF2A22BBCD805007611D4 /* ExerciseGroup+CoreDataClass.swift in Sources */,
 				A6BD32082BBC6CD00017FBCF /* SceneDelegate.swift in Sources */,
 				A6BD32102BBC6CD00017FBCF /* altering.xcdatamodeld in Sources */,
 				A6BD32472BBC72850017FBCF /* EditExerciseTableViewController.swift in Sources */,
+				A68FF2A52BBCD983007611D4 /* SelectGroupTableViewController.swift in Sources */,
+				A6BD324E2BBC8FC90017FBCF /* Workout+CoreDataClass.swift in Sources */,
+				A6BD32552BBC90780017FBCF /* EditWorkoutTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -514,6 +562,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -542,6 +591,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
