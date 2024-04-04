@@ -13,6 +13,22 @@ class WorkoutTableViewController: UITableViewController {
     var workoutDataSource = WorkoutTableViewDataSource()
     let dataLoader = DataLoader.shared
     
+    // MARK: Helpers
+    
+    func daysBetween(start: Date, end: Date) -> Int? {
+        let calendar = Calendar.current
+        // Remove the time component by extracting only the year, month, and day components
+        let startDate = calendar.startOfDay(for: start)
+        let endDate = calendar.startOfDay(for: end)
+        
+        let components = calendar.dateComponents([.day], from: startDate, to: endDate)
+        if let days = components.day {
+            return days - 1
+        } else {
+            return nil
+        }
+    }
+    
     // MARK: Actions
     
     @objc func addWorkout() {
@@ -65,6 +81,27 @@ class WorkoutTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return self.workoutDataSource.titleForSection(section)
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        if self.workoutDataSource.numberOfSections(tableView) > section + 1 {
+            if let nextWorkoutDate = self.workoutDataSource.workoutsForSection(section + 1)?.first?.date,
+               let currentWorkoutDate = self.workoutDataSource.workoutsForSection(section)?.first?.date {
+                if let restDays = daysBetween(start: nextWorkoutDate, end: currentWorkoutDate) {
+                    if restDays == 0 {
+                        return nil
+                    } else {
+                        return "\(restDays) rest day\(restDays == 1 ? "" : "s")"
+                    }
+                } else {
+                    return nil
+                }
+            } else {
+                return nil
+            }
+        } else {
+            return nil
+        }
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
