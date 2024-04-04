@@ -79,7 +79,7 @@ class ExerciseTableViewController: UITableViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == EXERCISE_SEGUE_IDENTIFIER {
-            let vc = segue.destination as? EditExerciseTableViewController
+            let vc = segue.destination as? EditExerciseViewController
             vc?.existingExerciseNames = self.exerciseDataSource.exerciseNames()
             if let exercise = sender as? Exercise {
                 vc?.exercise = exercise

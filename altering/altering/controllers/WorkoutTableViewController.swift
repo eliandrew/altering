@@ -27,6 +27,8 @@ class WorkoutTableViewController: UITableViewController {
         
         tableView.register(UINib(nibName: "WorkoutFooterView", bundle: nil), forHeaderFooterViewReuseIdentifier: WORKOUT_FOOTER_VIEW_IDENTIFIER)
         
+        tableView.tableFooterView = nil
+        
         dataLoader.loadAllWorkouts { fetchedWorkouts in
             if let fetchedWorkouts = fetchedWorkouts {
                 self.workoutDataSource.setWorkouts(fetchedWorkouts)
@@ -87,6 +89,10 @@ class WorkoutTableViewController: UITableViewController {
         } else {
             return 0.0
         }
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 40.0
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {

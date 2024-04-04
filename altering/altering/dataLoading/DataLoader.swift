@@ -52,6 +52,23 @@ class DataLoader {
         }
     }
     
+    func loadWorkoutsFor(_ exercise: Exercise, completion: @escaping ([Workout]?) -> Void) {
+        DispatchQueue.global().async {
+            let fetchRequest = Workout.fetchRequest()
+            let exercisePredicate = NSPredicate(format: "exercise == %@", exercise)
+            fetchRequest.predicate = exercisePredicate
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
+            
+            do {
+                let fetchResults = try self.context.fetch(fetchRequest)
+                return completion(fetchResults)
+            } catch {
+                print("Error Fetching Exercise Workouts")
+                return completion(nil)
+            }
+        }
+    }
+    
     func loadPreviousWorkout(_ exercise: Exercise, date: Date, completion: @escaping (Workout?) -> Void) {
         DispatchQueue.global().async {
             let fetchRequest = Workout.fetchRequest()
