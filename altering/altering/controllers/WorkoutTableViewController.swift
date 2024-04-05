@@ -22,17 +22,74 @@ class WorkoutTableViewController: UITableViewController {
     
     // MARK: View Lifecycle
     
+    func streakImage(_ streakLength: Int) -> UIImage? {
+        let images = [
+            "figure.core.training",
+            "figure.mixed.cardio",
+            "figure.pilates",
+            "figure.rolling",
+            "figure.cross.training",
+            "figure.indoor.cycle",
+            "figure.outdoor.cycle",
+            "figure.yoga",
+            "figure.jumprope",
+            "figure.mind.and.body",
+            "dumbbell",
+            "figure.stair.stepper",
+            "figure.play",
+            "figure.step.training",
+            "figure.flexibility",
+            "figure.rower"
+        ]
+        
+        let streakImageName = streakLength < images.count + 2 ? images[streakLength - 2] : "star.circle.fill"
+        
+        return UIImage(systemName: streakImageName)
+    }
+    
+    func streakLength() -> Int {
+        let streakRestMax = 3
+        var streakLength = 1
+        let nSections = self.workoutDataSource.numberOfSections(self.tableView)
+        for i in 0..<nSections {
+            guard let restDays = self.workoutDataSource.restDaysNumberForSection(self.tableView, section: i) else {
+                return streakLength
+            }
+            if restDays <= streakRestMax {
+                streakLength += 1
+            } else {
+                return streakLength
+            }
+        }
+        return streakLength
+    }
+    
+    func setupWorkoutStreakView() -> WorkoutStreakView? {
+       
+        let streakLength = self.streakLength()
+        if streakLength > 1 {
+            let streakView: WorkoutStreakView = WorkoutStreakView.fromNib()
+            streakView.streakLabel?.text = "\(streakLength) workout streak!"
+            streakView.streakImageView?.image = streakImage(streakLength)
+            return streakView
+        } else {
+            return nil
+        }
+    }
+    
     func setupView() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addWorkout))
         
         tableView.register(UINib(nibName: "WorkoutFooterView", bundle: nil), forHeaderFooterViewReuseIdentifier: WORKOUT_FOOTER_VIEW_IDENTIFIER)
-        
+
         tableView.tableFooterView = nil
+        
         
         dataLoader.loadAllWorkouts { fetchedWorkouts in
             if let fetchedWorkouts = fetchedWorkouts {
                 self.workoutDataSource.setWorkouts(fetchedWorkouts)
                 DispatchQueue.main.sync {
+                    self.tableView.tableHeaderView = self.setupWorkoutStreakView()
                     self.tableView.reloadData()
                 }
             }
@@ -102,6 +159,7 @@ class WorkoutTableViewController: UITableViewController {
             dataLoader.saveContext()
             self.workoutDataSource.removeWorkout(at: indexPath)
             self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            self.tableView.tableHeaderView = nil
         }
     }
     

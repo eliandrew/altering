@@ -109,23 +109,27 @@ class WorkoutTableViewDataSource {
         }
     }
     
-    func restDaysForSection(_ tableView: UITableView, section: Int) -> String? {
+    func restDaysNumberForSection(_ tableView: UITableView, section: Int) -> Int? {
         if self.numberOfSections(tableView) > section + 1 {
             if let nextWorkoutDate = self.workoutsForSection(section + 1)?.first?.date,
                let currentWorkoutDate = self.workoutsForSection(section)?.first?.date {
                 if let daysBetween = daysBetween(start: nextWorkoutDate, end: currentWorkoutDate) {
                     let restDays = daysBetween - 1
-                    if restDays == 0 {
-                        return nil
-                    } else {
-                        return "\(restDays) rest day\(restDays == 1 ? "" : "s")"
-                    }
+                    return restDays
                 } else {
                     return nil
                 }
             } else {
                 return nil
             }
+        } else {
+            return nil
+        }
+    }
+    
+    func restDaysForSection(_ tableView: UITableView, section: Int) -> String? {
+        if let restDaysNumber = self.restDaysNumberForSection(tableView, section: section) {
+            return restDaysNumber == 0 ? nil : "\(restDaysNumber) rest day\(restDaysNumber == 1 ? "" : "s")"
         } else {
             return nil
         }

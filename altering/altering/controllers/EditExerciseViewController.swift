@@ -109,7 +109,8 @@ class EditExerciseViewController: UIViewController {
             "figure.stair.stepper",
             "figure.play",
             "figure.step.training",
-            "figure.flexibility"
+            "figure.flexibility",
+            "figure.rower"
         ]
         
         return UIImage(systemName: images.randomElement() ?? "dumbbell")
