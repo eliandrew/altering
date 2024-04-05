@@ -272,24 +272,22 @@
                         <sections>
                             <tableViewSection headerTitle="Date" id="YpA-OT-UTT">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="60" id="mfn-Jm-QxQ">
-                                        <rect key="frame" x="0.0" y="50" width="393" height="60"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="80" id="mfn-Jm-QxQ">
+                                        <rect key="frame" x="0.0" y="50" width="393" height="80"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="mfn-Jm-QxQ" id="yMI-oc-Jft">
-                                            <rect key="frame" x="0.0" y="0.0" width="393" height="60"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="80"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" translatesAutoresizingMaskIntoConstraints="NO" id="5iC-Vq-VVL">
-                                                    <rect key="frame" x="0.0" y="0.0" width="150" height="60"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="150" id="fDG-tP-Jll"/>
-                                                    </constraints>
+                                                    <rect key="frame" x="0.0" y="2" width="193" height="76"/>
                                                 </datePicker>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="bottom" secondItem="5iC-Vq-VVL" secondAttribute="bottom" id="Kcd-XN-gLP"/>
-                                                <constraint firstItem="5iC-Vq-VVL" firstAttribute="top" secondItem="yMI-oc-Jft" secondAttribute="top" id="aZA-nB-oqC"/>
-                                                <constraint firstItem="5iC-Vq-VVL" firstAttribute="leading" secondItem="yMI-oc-Jft" secondAttribute="leading" id="qQF-tp-oeX"/>
+                                                <constraint firstAttribute="trailing" secondItem="5iC-Vq-VVL" secondAttribute="trailing" constant="200" id="RL2-K1-NuB"/>
+                                                <constraint firstItem="5iC-Vq-VVL" firstAttribute="leading" secondItem="yMI-oc-Jft" secondAttribute="leading" id="XQA-Tg-i34"/>
+                                                <constraint firstAttribute="bottom" secondItem="5iC-Vq-VVL" secondAttribute="bottom" constant="2" id="q4T-Id-wwr"/>
+                                                <constraint firstItem="5iC-Vq-VVL" firstAttribute="top" secondItem="yMI-oc-Jft" secondAttribute="top" constant="2" id="rae-aU-6V0"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -298,7 +296,7 @@
                             <tableViewSection headerTitle="Exercise" id="nFF-DF-iDQ">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="60" id="JAl-gH-XYa">
-                                        <rect key="frame" x="0.0" y="188" width="393" height="60"/>
+                                        <rect key="frame" x="0.0" y="208" width="393" height="60"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="JAl-gH-XYa" id="DZi-5y-H7A">
                                             <rect key="frame" x="0.0" y="0.0" width="362.66666666666669" height="60"/>
@@ -327,7 +325,7 @@
                             <tableViewSection headerTitle="Notes" id="OpH-Ix-zBX">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="250" id="7QY-sH-kCd">
-                                        <rect key="frame" x="0.0" y="326" width="393" height="250"/>
+                                        <rect key="frame" x="0.0" y="346" width="393" height="250"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="7QY-sH-kCd" id="DSb-oq-PWp">
                                             <rect key="frame" x="0.0" y="0.0" width="393" height="250"/>
@@ -356,7 +354,7 @@
                             <tableViewSection headerTitle="Previous Notes" id="yiO-J0-ncu">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="250" id="2Sn-mv-viJ">
-                                        <rect key="frame" x="0.0" y="654" width="393" height="250"/>
+                                        <rect key="frame" x="0.0" y="674" width="393" height="250"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="2Sn-mv-viJ" id="yI6-IM-TTe">
                                             <rect key="frame" x="0.0" y="0.0" width="393" height="250"/>
@@ -375,6 +373,8 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="yOp-Zk-o0e" firstAttribute="top" secondItem="yI6-IM-TTe" secondAttribute="topMargin" id="6W0-DK-F9B"/>
+                                                <constraint firstAttribute="bottom" secondItem="yOp-Zk-o0e" secondAttribute="bottom" constant="-11" id="RZg-xb-vwl"/>
+                                                <constraint firstAttribute="bottom" secondItem="yOp-Zk-o0e" secondAttribute="bottom" constant="-11" id="ZRf-YG-gCI"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="yOp-Zk-o0e" secondAttribute="trailing" id="gSo-s6-hsk"/>
                                                 <constraint firstItem="yOp-Zk-o0e" firstAttribute="leading" secondItem="yI6-IM-TTe" secondAttribute="leadingMargin" id="q92-Sg-nXb"/>
                                             </constraints>
@@ -398,7 +398,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="B9j-ku-sbv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2644" y="674"/>
+            <point key="canvasLocation" x="2643.5114503816794" y="673.94366197183103"/>
         </scene>
         <!--Select Exercise Table View Controller-->
         <scene sceneID="bOg-25-EgI">
