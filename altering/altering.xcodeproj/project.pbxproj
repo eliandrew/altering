@@ -56,6 +56,19 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		A63DDB482BC0891500A50E01 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		A6115A2C2BBF410A00CC04B3 /* WorkoutNotesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutNotesTableViewCell.swift; sourceTree = "<group>"; };
 		A6115A2D2BBF410A00CC04B3 /* WorkoutNotesTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkoutNotesTableViewCell.xib; sourceTree = "<group>"; };
@@ -64,6 +77,8 @@
 		A627F1D92BC0522E0006C7F5 /* ViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHelper.swift; sourceTree = "<group>"; };
 		A628F39E2BBEF05400DF5E09 /* WorkoutFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutFooterView.swift; sourceTree = "<group>"; };
 		A628F3A02BBEF64300DF5E09 /* WorkoutFooterView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkoutFooterView.xib; sourceTree = "<group>"; };
+		A63DDB352BC0891300A50E01 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		A63DDB372BC0891300A50E01 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		A682BA372BBDC68D00F3DD91 /* StringHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringHelper.swift; sourceTree = "<group>"; };
 		A68FF29A2BBCB9EF007611D4 /* SelectExerciseTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectExerciseTableViewController.swift; sourceTree = "<group>"; };
 		A68FF29C2BBCBA23007611D4 /* ExerciseTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseTableViewDataSource.swift; sourceTree = "<group>"; };
@@ -118,6 +133,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A63DDB342BC0891300A50E01 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A63DDB352BC0891300A50E01 /* WidgetKit.framework */,
+				A63DDB372BC0891300A50E01 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		A682BA362BBDC68100F3DD91 /* helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -133,6 +157,7 @@
 				A6BD32042BBC6CD00017FBCF /* altering */,
 				A6BD321E2BBC6CD30017FBCF /* alteringTests */,
 				A6BD32282BBC6CD30017FBCF /* alteringUITests */,
+				A63DDB342BC0891300A50E01 /* Frameworks */,
 				A6BD32032BBC6CD00017FBCF /* Products */,
 			);
 			sourceTree = "<group>";
@@ -256,6 +281,7 @@
 				A6BD31FE2BBC6CD00017FBCF /* Sources */,
 				A6BD31FF2BBC6CD00017FBCF /* Frameworks */,
 				A6BD32002BBC6CD00017FBCF /* Resources */,
+				A63DDB482BC0891500A50E01 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -578,6 +604,7 @@
 		A6BD32302BBC6CD30017FBCF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -608,6 +635,7 @@
 		A6BD32312BBC6CD30017FBCF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;

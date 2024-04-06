@@ -8,6 +8,7 @@ class ExerciseTableViewController: UITableViewController {
     
     // MARK: Properties
     
+    let searchController = UISearchController(searchResultsController: nil)
     var exerciseDataSource = ExerciseTableViewDataSource()
     let dataLoader = DataLoader.shared
     
@@ -21,6 +22,12 @@ class ExerciseTableViewController: UITableViewController {
     
     func setupView() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addExercise))
+        
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search"
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
         
         dataLoader.loadAllExercises { fetchedExercises in
             if let fetchedExercises = fetchedExercises {
@@ -85,6 +92,17 @@ class ExerciseTableViewController: UITableViewController {
                 vc?.exercise = exercise
             }
         }
+    }
+}
+
+extension ExerciseTableViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        if let searchText = searchController.searchBar.text, !searchText.isEmpty {
+            self.exerciseDataSource.setSearchText(searchText)
+        } else {
+            self.exerciseDataSource.setSearchText(nil)
+        }
+        self.tableView.reloadData()
     }
 }
 

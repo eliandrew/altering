@@ -8,6 +8,30 @@ class ExerciseTableViewDataSource {
     var exercisesByGroup: [String : [Exercise]] = [:]
     var exerciseGroupKeys = [String]()
     
+    private var searchText: String?
+    private var searchExercisesByGroup: [String : [Exercise]] = [:]
+    private var searchExerciseGroupKeys = [String]()
+    
+    func setSearchText(_ text: String?) {
+        self.searchText = text
+        self.searchExercisesByGroup = [:]
+        self.searchExerciseGroupKeys = [String]()
+        if let searchText = self.searchText?.lowercased(), !searchText.isEmpty {
+            for (group, exercises) in self.exercisesByGroup {
+                let searchExercises = exercises.filter { exercise in
+                    exercise.name?.lowercased().contains(searchText) ?? false
+                }
+                if searchExercises.count > 0 {
+                    self.searchExercisesByGroup[group] = searchExercises
+                }
+            }
+            self.searchExerciseGroupKeys = self.searchExercisesByGroup.map({ $0.key })
+        } else {
+            self.searchExerciseGroupKeys = self.exerciseGroupKeys
+            self.searchExercisesByGroup = self.exercisesByGroup
+        }
+    }
+    
     // MARK: Helpers
     
     func lastPerformed(exercise: Exercise) -> String? {
@@ -40,13 +64,14 @@ class ExerciseTableViewDataSource {
         }
         self.exercisesByGroup = newExercisesByGroup
         self.exerciseGroupKeys = newExerciseGroupKeys.sorted()
+        self.searchExercisesByGroup = self.exercisesByGroup
+        self.searchExerciseGroupKeys = self.exerciseGroupKeys
     }
     
     func exercisesForSection(_ section: Int) -> [Exercise]? {
-        if section < self.exerciseGroupKeys.count {
-            let groupKey = self.exerciseGroupKeys[section]
-            let n = self.exercisesByGroup[groupKey]
-            return n
+        if section < self.searchExerciseGroupKeys.count {
+            let groupKey = self.searchExerciseGroupKeys[section]
+            return self.searchExercisesByGroup[groupKey]
         } else {
             return nil
         }
@@ -68,7 +93,7 @@ class ExerciseTableViewDataSource {
     }
     
     func numberOfSections(_ tableView: UITableView) -> Int {
-        return self.exerciseGroupKeys.count
+        return self.searchExerciseGroupKeys.count
     }
     
     func numberOfRowsInSection(_ tableView: UITableView, section: Int) -> Int {
@@ -93,8 +118,8 @@ class ExerciseTableViewDataSource {
     }
     
     func titleForSection(_ section: Int) -> String? {
-        if section < self.exerciseGroupKeys.count {
-            return self.exerciseGroupKeys[section]
+        if section < self.searchExerciseGroupKeys.count {
+            return self.searchExerciseGroupKeys[section]
         } else {
             return nil
         }

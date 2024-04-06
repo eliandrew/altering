@@ -15,27 +15,29 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="ST2-PM-ddq">
-                    <rect key="frame" x="89" y="10" width="215" height="50"/>
+                    <rect key="frame" x="114" y="23" width="165" height="24"/>
                     <subviews>
-                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star.circle.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="TmF-yU-32O">
-                            <rect key="frame" x="0.0" y="1" width="50" height="48.666666666666671"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="50" id="PGQ-cf-QAn"/>
-                                <constraint firstAttribute="height" constant="50" id="zx3-4o-28h"/>
-                            </constraints>
-                        </imageView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="5 workout streak!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ugz-SO-GBX">
-                            <rect key="frame" x="50" y="13" width="165" height="24"/>
+                            <rect key="frame" x="0.0" y="0.0" width="165" height="24"/>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
                 </stackView>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="star.circle.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="TmF-yU-32O">
+                    <rect key="frame" x="59" y="11" width="50" height="48.666666666666671"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="50" id="PGQ-cf-QAn"/>
+                        <constraint firstAttribute="height" constant="50" id="zx3-4o-28h"/>
+                    </constraints>
+                </imageView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" systemColor="secondarySystemBackgroundColor"/>
             <constraints>
+                <constraint firstItem="TmF-yU-32O" firstAttribute="centerY" secondItem="ugz-SO-GBX" secondAttribute="centerY" id="3Ct-UE-QKl"/>
+                <constraint firstItem="ST2-PM-ddq" firstAttribute="leading" secondItem="TmF-yU-32O" secondAttribute="trailing" constant="5" id="5zB-wk-nhd"/>
                 <constraint firstItem="ST2-PM-ddq" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="aD4-Kp-eI2"/>
                 <constraint firstItem="ST2-PM-ddq" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="qGz-oy-OV6"/>
             </constraints>
