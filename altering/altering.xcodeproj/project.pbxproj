@@ -21,6 +21,9 @@
 		A68FF2A22BBCD805007611D4 /* ExerciseGroup+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68FF2A02BBCD805007611D4 /* ExerciseGroup+CoreDataClass.swift */; };
 		A68FF2A52BBCD983007611D4 /* SelectGroupTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68FF2A42BBCD983007611D4 /* SelectGroupTableViewController.swift */; };
 		A68FF2A72BBCE579007611D4 /* GroupTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68FF2A62BBCE579007611D4 /* GroupTableViewDataSource.swift */; };
+		A6A860AE2BC3372900A1DF74 /* WorkoutCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A860AD2BC3372900A1DF74 /* WorkoutCalendarView.swift */; };
+		A6A860B02BC34DA600A1DF74 /* WorkoutRestDayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A860AF2BC34DA600A1DF74 /* WorkoutRestDayView.swift */; };
+		A6A860B22BC34E2F00A1DF74 /* WorkoutRestDayView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A6A860B12BC34E2F00A1DF74 /* WorkoutRestDayView.xib */; };
 		A6BD32062BBC6CD00017FBCF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BD32052BBC6CD00017FBCF /* AppDelegate.swift */; };
 		A6BD32082BBC6CD00017FBCF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BD32072BBC6CD00017FBCF /* SceneDelegate.swift */; };
 		A6BD320A2BBC6CD00017FBCF /* ExerciseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BD32092BBC6CD00017FBCF /* ExerciseTableViewController.swift */; };
@@ -86,6 +89,9 @@
 		A68FF2A02BBCD805007611D4 /* ExerciseGroup+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExerciseGroup+CoreDataClass.swift"; sourceTree = "<group>"; };
 		A68FF2A42BBCD983007611D4 /* SelectGroupTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectGroupTableViewController.swift; sourceTree = "<group>"; };
 		A68FF2A62BBCE579007611D4 /* GroupTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupTableViewDataSource.swift; sourceTree = "<group>"; };
+		A6A860AD2BC3372900A1DF74 /* WorkoutCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WorkoutCalendarView.swift; path = altering/controllers/WorkoutCalendarView.swift; sourceTree = SOURCE_ROOT; };
+		A6A860AF2BC34DA600A1DF74 /* WorkoutRestDayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutRestDayView.swift; sourceTree = "<group>"; };
+		A6A860B12BC34E2F00A1DF74 /* WorkoutRestDayView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkoutRestDayView.xib; sourceTree = "<group>"; };
 		A6BD32022BBC6CD00017FBCF /* Altered.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Altered.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6BD32052BBC6CD00017FBCF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A6BD32072BBC6CD00017FBCF /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -240,12 +246,15 @@
 		A6BD323B2BBC6EE80017FBCF /* views */ = {
 			isa = PBXGroup;
 			children = (
+				A6A860AD2BC3372900A1DF74 /* WorkoutCalendarView.swift */,
 				A628F39E2BBEF05400DF5E09 /* WorkoutFooterView.swift */,
 				A628F3A02BBEF64300DF5E09 /* WorkoutFooterView.xib */,
 				A6115A2C2BBF410A00CC04B3 /* WorkoutNotesTableViewCell.swift */,
 				A6115A2D2BBF410A00CC04B3 /* WorkoutNotesTableViewCell.xib */,
 				A627F1D52BC04E920006C7F5 /* WorkoutStreakView.swift */,
 				A627F1D72BC04EA60006C7F5 /* WorkoutStreakView.xib */,
+				A6A860AF2BC34DA600A1DF74 /* WorkoutRestDayView.swift */,
+				A6A860B12BC34E2F00A1DF74 /* WorkoutRestDayView.xib */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -378,6 +387,7 @@
 			files = (
 				A6115A2F2BBF410A00CC04B3 /* WorkoutNotesTableViewCell.xib in Resources */,
 				A6BD32122BBC6CD30017FBCF /* Assets.xcassets in Resources */,
+				A6A860B22BC34E2F00A1DF74 /* WorkoutRestDayView.xib in Resources */,
 				A6BD32152BBC6CD30017FBCF /* Base in Resources */,
 				A6BD320D2BBC6CD00017FBCF /* Base in Resources */,
 				A627F1D82BC04EA60006C7F5 /* WorkoutStreakView.xib in Resources */,
@@ -411,6 +421,7 @@
 				A627F1D62BC04E920006C7F5 /* WorkoutStreakView.swift in Sources */,
 				A68FF29B2BBCB9EF007611D4 /* SelectExerciseTableViewController.swift in Sources */,
 				A6BD320A2BBC6CD00017FBCF /* ExerciseTableViewController.swift in Sources */,
+				A6A860B02BC34DA600A1DF74 /* WorkoutRestDayView.swift in Sources */,
 				A68FF29F2BBCC594007611D4 /* WorkoutTableViewDataSource.swift in Sources */,
 				A68FF2A72BBCE579007611D4 /* GroupTableViewDataSource.swift in Sources */,
 				A6BD32532BBC90530017FBCF /* WorkoutTableViewController.swift in Sources */,
@@ -426,6 +437,7 @@
 				A6115A2E2BBF410A00CC04B3 /* WorkoutNotesTableViewCell.swift in Sources */,
 				A68FF2A52BBCD983007611D4 /* SelectGroupTableViewController.swift in Sources */,
 				A6BD324E2BBC8FC90017FBCF /* Workout+CoreDataClass.swift in Sources */,
+				A6A860AE2BC3372900A1DF74 /* WorkoutCalendarView.swift in Sources */,
 				A6BD32552BBC90780017FBCF /* EditWorkoutTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

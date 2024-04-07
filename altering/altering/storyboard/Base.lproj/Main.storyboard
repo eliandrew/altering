@@ -317,7 +317,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="Kwi-e8-2tZ" kind="presentation" identifier="selectExerciseSegue" id="LZ5-1o-Mwi"/>
+                                            <segue destination="Kwi-e8-2tZ" kind="show" identifier="selectExerciseSegue" id="LZ5-1o-Mwi"/>
                                         </connections>
                                     </tableViewCell>
                                 </cells>
@@ -405,7 +405,7 @@
             <objects>
                 <tableViewController id="Kwi-e8-2tZ" customClass="SelectExerciseTableViewController" customModule="Altered" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="6Tn-SO-lQp">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
@@ -423,6 +423,7 @@
                             <outlet property="delegate" destination="Kwi-e8-2tZ" id="jpX-wC-SQX"/>
                         </connections>
                     </tableView>
+                    <navigationItem key="navigationItem" id="ZoW-DS-4vO"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lrq-b4-I5h" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

@@ -6,6 +6,7 @@ class WorkoutTableViewController: UITableViewController {
     
     let WORKOUT_CELL_IDENTIFIER = "workoutCell"
     let WORKOUT_FOOTER_VIEW_IDENTIFIER = "workoutFooterView"
+    let WORKOUT_REST_DAY_FOOTER_VIEW_IDENTIFIER = "restDayFooterView"
     
     let WORKOUT_SEGUE_IDENTIFIER = "workoutSegue"
     
@@ -27,7 +28,6 @@ class WorkoutTableViewController: UITableViewController {
             "figure.core.training",
             "figure.mixed.cardio",
             "figure.pilates",
-            "figure.rolling",
             "figure.cross.training",
             "figure.indoor.cycle",
             "figure.outdoor.cycle",
@@ -51,7 +51,7 @@ class WorkoutTableViewController: UITableViewController {
         let streakRestMax = 3
         var streakLength = 1
         let nSections = self.workoutDataSource.numberOfSections(self.tableView)
-        for i in 0..<nSections {
+        for i in 1..<nSections {
             guard let restDays = self.workoutDataSource.restDaysNumberForSection(self.tableView, section: i) else {
                 return streakLength
             }
@@ -81,6 +81,7 @@ class WorkoutTableViewController: UITableViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addWorkout))
         
         tableView.register(UINib(nibName: "WorkoutFooterView", bundle: nil), forHeaderFooterViewReuseIdentifier: WORKOUT_FOOTER_VIEW_IDENTIFIER)
+        tableView.register(UINib(nibName: "WorkoutRestDayView", bundle: nil), forHeaderFooterViewReuseIdentifier: WORKOUT_REST_DAY_FOOTER_VIEW_IDENTIFIER)
 
         tableView.tableFooterView = nil
         
@@ -131,10 +132,17 @@ class WorkoutTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         if let restDays = self.workoutDataSource.restDaysForSection(tableView, section: section) {
-            let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: WORKOUT_FOOTER_VIEW_IDENTIFIER) as? WorkoutFooterView
-            footerView?.restDaysLabel?.text = restDays
-            footerView?.restDaysLabel?.font = UIFont.systemFont(ofSize: 25.0)
-            return footerView
+            if section == 0 {
+                let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: WORKOUT_REST_DAY_FOOTER_VIEW_IDENTIFIER) as? WorkoutRestDayView
+                footerView?.restingDaysLabel.text = restDays
+                footerView?.restingDaysLabel?.font = UIFont.systemFont(ofSize: 25.0, weight: .semibold)
+                return footerView
+            } else {
+                let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: WORKOUT_FOOTER_VIEW_IDENTIFIER) as? WorkoutFooterView
+                footerView?.restDaysLabel?.font = UIFont.systemFont(ofSize: 25.0)
+                footerView?.restDaysLabel.text = restDays
+                return footerView
+            }
         } else {
             return nil
         }
@@ -142,14 +150,18 @@ class WorkoutTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if let _ = self.workoutDataSource.restDaysForSection(tableView, section: section) {
-            return 75.0
+            return section == 0 ? 110.0 : 75.0
         } else {
             return 0.0
         }
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 40.0
+        if let _ = self.workoutDataSource.titleForSection(section) {
+            return 40.0
+        } else {
+            return 0.0
+        }
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -158,8 +170,8 @@ class WorkoutTableViewController: UITableViewController {
             dataLoader.deleteWorkout(workout)
             dataLoader.saveContext()
             self.workoutDataSource.removeWorkout(at: indexPath)
-            self.tableView.deleteRows(at: [indexPath], with: .automatic)
             self.tableView.tableHeaderView = nil
+            self.tableView.reloadData()
         }
     }
     

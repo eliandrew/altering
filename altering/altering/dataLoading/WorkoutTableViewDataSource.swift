@@ -7,6 +7,7 @@ class WorkoutTableViewDataSource {
     var workoutsByDate: [String : [Workout]] = [:]
     var workoutDateKeys = [String]()
     
+    
     // MARK: Helpers
     
     func removeWorkout(at indexPath: IndexPath) {
@@ -29,6 +30,8 @@ class WorkoutTableViewDataSource {
             self.dateTitleFrom(date) ?? "No Date"
         })
         self.workoutsByDate = newWorkoutsByDateKey
+        self.workoutDateKeys.insert("Rest", at: 0)
+        self.workoutsByDate["Rest"] = [Workout]()
     }
     
     func workoutsForSection(_ section: Int) -> [Workout]? {
@@ -77,7 +80,9 @@ class WorkoutTableViewDataSource {
     }
     
     func titleForSection(_ section: Int) -> String? {
-        if section < self.workoutDateKeys.count {
+        if section == 0 {
+            return nil
+        } else if section < self.workoutDateKeys.count {
             return self.workoutDateKeys[section]
         } else {
             return nil
@@ -110,7 +115,14 @@ class WorkoutTableViewDataSource {
     }
     
     func restDaysNumberForSection(_ tableView: UITableView, section: Int) -> Int? {
-        if self.numberOfSections(tableView) > section + 1 {
+        if section == 0 {
+            if let lastDate = self.workoutsForSection(1)?.first?.date,
+               let currentRestDays = daysBetween(start: lastDate, end: Date()) {
+                return currentRestDays > 1 ? currentRestDays : nil
+            } else {
+                return nil
+            }
+        } else if self.numberOfSections(tableView) > section + 1 {
             if let nextWorkoutDate = self.workoutsForSection(section + 1)?.first?.date,
                let currentWorkoutDate = self.workoutsForSection(section)?.first?.date {
                 if let daysBetween = daysBetween(start: nextWorkoutDate, end: currentWorkoutDate) {
@@ -129,7 +141,12 @@ class WorkoutTableViewDataSource {
     
     func restDaysForSection(_ tableView: UITableView, section: Int) -> String? {
         if let restDaysNumber = self.restDaysNumberForSection(tableView, section: section) {
-            return restDaysNumber == 0 ? nil : "\(restDaysNumber) rest day\(restDaysNumber == 1 ? "" : "s")"
+            if section == 0 {
+                let restedDays = restDaysNumber - 1
+                return restDaysNumber == 0 ? nil : "Rested \(restedDays) day\(restedDays == 1 ? "" : "s")"
+            } else {
+                return restDaysNumber == 0 ? nil : "\(restDaysNumber) rest day\(restDaysNumber == 1 ? "" : "s")"
+            }
         } else {
             return nil
         }

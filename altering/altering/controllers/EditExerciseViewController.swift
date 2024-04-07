@@ -98,7 +98,6 @@ class EditExerciseViewController: UIViewController {
             "figure.core.training",
             "figure.mixed.cardio",
             "figure.pilates",
-            "figure.rolling",
             "figure.cross.training",
             "figure.indoor.cycle",
             "figure.outdoor.cycle",

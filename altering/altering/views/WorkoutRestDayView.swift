@@ -1,8 +1,8 @@
 import UIKit
 
-class WorkoutFooterView: UITableViewHeaderFooterView {
-    @IBOutlet weak var restDaysLabel: UILabel!
-    @IBOutlet weak var restDaysImageView: UIImageView!
+class WorkoutRestDayView: UITableViewHeaderFooterView {
+    @IBOutlet weak var restingDaysLabel: UILabel!
+    @IBOutlet weak var restingDaysImageView: UIImageView!
         
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
