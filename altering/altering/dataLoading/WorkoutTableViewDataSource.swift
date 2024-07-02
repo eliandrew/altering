@@ -41,8 +41,9 @@ class WorkoutTableViewDataSource {
         self.workoutsByDate = newWorkoutsByDateKey
     }
     
-    func expandSection(_ section: Int) {
-        self.workoutsByDate[self.workoutDateKeys[section]]?.isExpanded = true
+    func toggleExpandSection(_ section: Int) {
+        let isExpanded = self.workoutsByDate[self.workoutDateKeys[section]]?.isExpanded ?? false
+        self.workoutsByDate[self.workoutDateKeys[section]]?.isExpanded = !isExpanded
     }
     
     func workoutSection(_ section: Int) -> WorkoutSection? {
@@ -85,7 +86,8 @@ class WorkoutTableViewDataSource {
     func numberOfRowsInSection(_ tableView: UITableView, section: Int) -> Int {
         if let workoutSection = self.workoutSection(section) {
             let unexpandedCount = workoutSection.workouts.count <= MAX_WORKOUTS ? workoutSection.workouts.count : MAX_WORKOUTS + 1
-            return workoutSection.isExpanded ? workoutSection.workouts.count : unexpandedCount
+            let expandedCount = workoutSection.workouts.count <= MAX_WORKOUTS ? workoutSection.workouts.count : workoutSection.workouts.count + 1
+            return workoutSection.isExpanded ? expandedCount : unexpandedCount
         } else {
             return 0
         }
@@ -96,6 +98,7 @@ class WorkoutTableViewDataSource {
         guard let workout = workoutForIndexPath(indexPath) else {
             let cell = tableView.dequeueReusableCell(withIdentifier: EXPAND_WORKOUT_CELL_IDENTIFIER, for: indexPath) as! ExpandWorkoutsTableViewCell
             cell.expandLabel.text = self.expandTitleForSection(indexPath.section)
+            cell.expandImageView.image = self.expandImageForSection(indexPath.section)
             return cell
         }
         
@@ -117,9 +120,21 @@ class WorkoutTableViewDataSource {
         }
         
         if !workoutSection.isExpanded {
-            return "Plus \(workoutSection.workouts.count - MAX_WORKOUTS) More"
+            return "Show \(workoutSection.workouts.count - MAX_WORKOUTS) More"
         } else {
+            return "Collapse"
+        }
+    }
+    
+    func expandImageForSection(_ section: Int) -> UIImage? {
+        guard let workoutSection = self.workoutSection(section) else {
             return nil
+        }
+        
+        if !workoutSection.isExpanded {
+            return UIImage(systemName:"chevron.down.circle")
+        } else {
+            return UIImage(systemName:"chevron.up.circle")
         }
     }
     

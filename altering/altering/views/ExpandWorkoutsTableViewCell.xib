@@ -22,7 +22,7 @@
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="gsF-f6-dPd">
                                 <rect key="frame" x="0.0" y="1" width="19.666666666666668" height="84"/>
-                                <imageReference key="image" image="plus.circle.fill" catalog="system" symbolScale="default"/>
+                                <imageReference key="image" image="chevron.down.circle" catalog="system" symbolScale="default"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Plus 6 More" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gis-aI-eAu">
                                 <rect key="frame" x="27.666666666666664" y="0.0" width="106.66666666666669" height="85.333333333333329"/>
@@ -56,6 +56,6 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="plus.circle.fill" catalog="system" width="128" height="123"/>
+        <image name="chevron.down.circle" catalog="system" width="128" height="123"/>
     </resources>
 </document>

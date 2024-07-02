@@ -215,7 +215,7 @@ class WorkoutTableViewController: UITableViewController {
         if let workout = self.workoutDataSource.workoutForIndexPath(indexPath) {
             performSegue(withIdentifier: WORKOUT_SEGUE_IDENTIFIER, sender: workout)
         } else {
-            self.workoutDataSource.expandSection(indexPath.section)
+            self.workoutDataSource.toggleExpandSection(indexPath.section)
             self.tableView.reloadSections(IndexSet(integer: indexPath.section), with: .automatic)
         }
     }
