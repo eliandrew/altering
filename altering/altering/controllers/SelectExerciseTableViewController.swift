@@ -10,7 +10,22 @@ class SelectExerciseTableViewController: UITableViewController {
     var delegate: SelectExerciseDelegate?
     let dataLoader = DataLoader.shared
     
+    let searchController = UISearchController(searchResultsController: nil)
+    
+    @objc func exit() {
+        navigationController?.popViewController(animated: true)
+    }
+    
     func setupView() {
+        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(exit))
+        
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search"
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
+        
         dataLoader.loadAllExercises { fetchedExercises in
             if let fetchedExercises = fetchedExercises {
                 self.exerciseDataSource.setExercises(fetchedExercises)
@@ -53,6 +68,17 @@ class SelectExerciseTableViewController: UITableViewController {
         if let exercise = self.exerciseDataSource.exerciseForIndexPath(indexPath) {
             delegate?.didSelectExercise(exercise)
         }
-        self.dismiss(animated: true)
+        self.navigationController?.popViewController(animated: true)
+    }
+}
+
+extension SelectExerciseTableViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        if let searchText = searchController.searchBar.text, !searchText.isEmpty {
+            self.exerciseDataSource.setSearchText(searchText)
+        } else {
+            self.exerciseDataSource.setSearchText(nil)
+        }
+        self.tableView.reloadData()
     }
 }

@@ -22,11 +22,14 @@ class EditWorkoutTableViewController: UITableViewController {
     var exercise: Exercise?
     var previousWorkout: Workout?
     
+    var selectedDate: Date?
+    
     let dataLoader = DataLoader.shared
     
     // MARK: Actions
     
     @objc func dateChanged() {
+        self.selectedDate = self.datePicker.date
         if let exercise = self.exercise {
             self.loadPreviousWorkout(exercise, date: datePicker.date)
         }
@@ -42,11 +45,12 @@ class EditWorkoutTableViewController: UITableViewController {
         dataLoader.loadPreviousWorkout(exercise, date: date, completion: { w in
             self.previousWorkout = w
             DispatchQueue.main.sync {
-                self.tableView.reloadData()
                 if self.currentNotesTextView.text.isEmpty {
                     self.currentNotesTextView.text = self.previousWorkout?.notes
                 }
                 self.previousNotesTextView.text = self.previousWorkout?.notes
+                self.exerciseLabel.text = self.exercise?.name
+                self.datePicker.date = self.selectedDate ?? Date()
             }
         })
     }
@@ -70,11 +74,13 @@ class EditWorkoutTableViewController: UITableViewController {
             self.currentNotesTextView.text = notes
             self.loadPreviousWorkout(exercise, date: date)
         } else {
-            self.datePicker.date = Date()
+            self.datePicker.date = self.selectedDate ?? Date()
             self.exerciseLabel.text = "None"
             self.currentNotesTextView.text = nil
             self.previousNotesTextView.text = nil
         }
+        
+        self.selectedDate = self.datePicker.date
     }
     
     @objc func saveWorkout() {

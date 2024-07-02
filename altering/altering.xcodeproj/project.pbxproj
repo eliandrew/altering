@@ -9,11 +9,14 @@
 /* Begin PBXBuildFile section */
 		A6115A2E2BBF410A00CC04B3 /* WorkoutNotesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6115A2C2BBF410A00CC04B3 /* WorkoutNotesTableViewCell.swift */; };
 		A6115A2F2BBF410A00CC04B3 /* WorkoutNotesTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A6115A2D2BBF410A00CC04B3 /* WorkoutNotesTableViewCell.xib */; };
+		A61760F62BC7607700381C91 /* AddWorkoutTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A61760F52BC7607700381C91 /* AddWorkoutTableViewCell.xib */; };
+		A61760F72BC7607700381C91 /* AddWorkoutTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61760F42BC7607700381C91 /* AddWorkoutTableViewCell.swift */; };
 		A627F1D62BC04E920006C7F5 /* WorkoutStreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A627F1D52BC04E920006C7F5 /* WorkoutStreakView.swift */; };
 		A627F1D82BC04EA60006C7F5 /* WorkoutStreakView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A627F1D72BC04EA60006C7F5 /* WorkoutStreakView.xib */; };
 		A627F1DA2BC0522E0006C7F5 /* ViewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A627F1D92BC0522E0006C7F5 /* ViewHelper.swift */; };
 		A628F39F2BBEF05400DF5E09 /* WorkoutFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A628F39E2BBEF05400DF5E09 /* WorkoutFooterView.swift */; };
 		A628F3A12BBEF64300DF5E09 /* WorkoutFooterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A628F3A02BBEF64300DF5E09 /* WorkoutFooterView.xib */; };
+		A638587D2C33214F00B075E7 /* DataWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A638587C2C33214F00B075E7 /* DataWriter.swift */; };
 		A682BA382BBDC68D00F3DD91 /* StringHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A682BA372BBDC68D00F3DD91 /* StringHelper.swift */; };
 		A68FF29B2BBCB9EF007611D4 /* SelectExerciseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68FF29A2BBCB9EF007611D4 /* SelectExerciseTableViewController.swift */; };
 		A68FF29D2BBCBA23007611D4 /* ExerciseTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68FF29C2BBCBA23007611D4 /* ExerciseTableViewDataSource.swift */; };
@@ -75,11 +78,14 @@
 /* Begin PBXFileReference section */
 		A6115A2C2BBF410A00CC04B3 /* WorkoutNotesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutNotesTableViewCell.swift; sourceTree = "<group>"; };
 		A6115A2D2BBF410A00CC04B3 /* WorkoutNotesTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkoutNotesTableViewCell.xib; sourceTree = "<group>"; };
+		A61760F42BC7607700381C91 /* AddWorkoutTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWorkoutTableViewCell.swift; sourceTree = "<group>"; };
+		A61760F52BC7607700381C91 /* AddWorkoutTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddWorkoutTableViewCell.xib; sourceTree = "<group>"; };
 		A627F1D52BC04E920006C7F5 /* WorkoutStreakView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutStreakView.swift; sourceTree = "<group>"; };
 		A627F1D72BC04EA60006C7F5 /* WorkoutStreakView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkoutStreakView.xib; sourceTree = "<group>"; };
 		A627F1D92BC0522E0006C7F5 /* ViewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHelper.swift; sourceTree = "<group>"; };
 		A628F39E2BBEF05400DF5E09 /* WorkoutFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutFooterView.swift; sourceTree = "<group>"; };
 		A628F3A02BBEF64300DF5E09 /* WorkoutFooterView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkoutFooterView.xib; sourceTree = "<group>"; };
+		A638587C2C33214F00B075E7 /* DataWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataWriter.swift; sourceTree = "<group>"; };
 		A63DDB352BC0891300A50E01 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		A63DDB372BC0891300A50E01 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		A682BA372BBDC68D00F3DD91 /* StringHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringHelper.swift; sourceTree = "<group>"; };
@@ -139,6 +145,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A638587B2C33213700B075E7 /* dataWriting */ = {
+			isa = PBXGroup;
+			children = (
+				A638587C2C33214F00B075E7 /* DataWriter.swift */,
+			);
+			path = dataWriting;
+			sourceTree = "<group>";
+		};
 		A63DDB342BC0891300A50E01 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -181,6 +195,7 @@
 		A6BD32042BBC6CD00017FBCF /* altering */ = {
 			isa = PBXGroup;
 			children = (
+				A638587B2C33213700B075E7 /* dataWriting */,
 				A682BA362BBDC68100F3DD91 /* helpers */,
 				A6BD32452BBC711A0017FBCF /* dataLoading */,
 				A6BD32162BBC6CD30017FBCF /* Info.plist */,
@@ -255,6 +270,8 @@
 				A627F1D72BC04EA60006C7F5 /* WorkoutStreakView.xib */,
 				A6A860AF2BC34DA600A1DF74 /* WorkoutRestDayView.swift */,
 				A6A860B12BC34E2F00A1DF74 /* WorkoutRestDayView.xib */,
+				A61760F42BC7607700381C91 /* AddWorkoutTableViewCell.swift */,
+				A61760F52BC7607700381C91 /* AddWorkoutTableViewCell.xib */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -388,6 +405,7 @@
 				A6115A2F2BBF410A00CC04B3 /* WorkoutNotesTableViewCell.xib in Resources */,
 				A6BD32122BBC6CD30017FBCF /* Assets.xcassets in Resources */,
 				A6A860B22BC34E2F00A1DF74 /* WorkoutRestDayView.xib in Resources */,
+				A61760F62BC7607700381C91 /* AddWorkoutTableViewCell.xib in Resources */,
 				A6BD32152BBC6CD30017FBCF /* Base in Resources */,
 				A6BD320D2BBC6CD00017FBCF /* Base in Resources */,
 				A627F1D82BC04EA60006C7F5 /* WorkoutStreakView.xib in Resources */,
@@ -431,7 +449,9 @@
 				A6BD32062BBC6CD00017FBCF /* AppDelegate.swift in Sources */,
 				A68FF2A22BBCD805007611D4 /* ExerciseGroup+CoreDataClass.swift in Sources */,
 				A627F1DA2BC0522E0006C7F5 /* ViewHelper.swift in Sources */,
+				A61760F72BC7607700381C91 /* AddWorkoutTableViewCell.swift in Sources */,
 				A6BD32082BBC6CD00017FBCF /* SceneDelegate.swift in Sources */,
+				A638587D2C33214F00B075E7 /* DataWriter.swift in Sources */,
 				A6BD32102BBC6CD00017FBCF /* altering.xcdatamodeld in Sources */,
 				A6BD32472BBC72850017FBCF /* EditExerciseViewController.swift in Sources */,
 				A6115A2E2BBF410A00CC04B3 /* WorkoutNotesTableViewCell.swift in Sources */,
