@@ -131,7 +131,7 @@ class EditWorkoutTableViewController: UITableViewController {
         case 3:
             if let date = previousWorkout?.date, let title = self.workoutDataSource.dateTitleFrom(date){
                 if let dayDifference = self.workoutDataSource.daysBetween(start: date, end: self.datePicker.date) {
-                    return "\(title) (\(dayDifference) day\(dayDifference == 1 ? "" : "s") ago)"
+                    return "\(title) (\(dayDifference) day\(dayDifference == 1 ? "" : "s") before)"
                 } else {
                     return "On \(title)"
                 }

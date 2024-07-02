@@ -5,6 +5,7 @@ class WorkoutTableViewController: UITableViewController {
     // MARK: Constants
     
     let WORKOUT_CELL_IDENTIFIER = "workoutCell"
+    let EXPAND_WORKOUT_CELL_IDENTIFIER = "expandWorkoutCell"
     let WORKOUT_FOOTER_VIEW_IDENTIFIER = "workoutFooterView"
     let WORKOUT_REST_DAY_FOOTER_VIEW_IDENTIFIER = "restDayFooterView"
     
@@ -169,6 +170,8 @@ class WorkoutTableViewController: UITableViewController {
         
         tableView.register(UINib(nibName: "WorkoutFooterView", bundle: nil), forHeaderFooterViewReuseIdentifier: WORKOUT_FOOTER_VIEW_IDENTIFIER)
         tableView.register(UINib(nibName: "WorkoutRestDayView", bundle: nil), forHeaderFooterViewReuseIdentifier: WORKOUT_REST_DAY_FOOTER_VIEW_IDENTIFIER)
+        tableView.register(UINib(nibName: "ExpandWorkoutsTableViewCell", bundle: nil), forCellReuseIdentifier: EXPAND_WORKOUT_CELL_IDENTIFIER)
+        
 
         tableView.tableFooterView = nil
         
@@ -209,8 +212,12 @@ class WorkoutTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let workout = self.workoutDataSource.workoutForIndexPath(indexPath)
-        performSegue(withIdentifier: WORKOUT_SEGUE_IDENTIFIER, sender: workout)
+        if let workout = self.workoutDataSource.workoutForIndexPath(indexPath) {
+            performSegue(withIdentifier: WORKOUT_SEGUE_IDENTIFIER, sender: workout)
+        } else {
+            self.workoutDataSource.expandSection(indexPath.section)
+            self.tableView.reloadSections(IndexSet(integer: indexPath.section), with: .automatic)
+        }
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {

@@ -1,30 +1,37 @@
 import Foundation
 import UIKit
 
+struct WorkoutSection {
+    var isExpanded: Bool
+    var workouts: [Workout]
+}
+
 class WorkoutTableViewDataSource {
     
     let WORKOUT_CELL_IDENTIFIER = "workoutCell"
+    let EXPAND_WORKOUT_CELL_IDENTIFIER = "expandWorkoutCell"
+    let MAX_WORKOUTS = 3
     var allWorkouts: [Workout] = []
-    var workoutsByDate: [String : [Workout]] = [:]
+    var workoutsByDate: [String : WorkoutSection] = [:]
     var workoutDateKeys = [String]()
     
     
     // MARK: Helpers
     
     func removeWorkout(at indexPath: IndexPath) {
-        self.workoutsByDate[self.workoutDateKeys[indexPath.section]]?.remove(at: indexPath.row)
+        self.workoutsByDate[self.workoutDateKeys[indexPath.section]]?.workouts.remove(at: indexPath.row)
     }
     
     func setWorkouts(_ workouts: [Workout]) {
         var newWorkoutDateKeys = [Date]()
-        var newWorkoutsByDateKey: [String : [Workout]] = [:]
+        var newWorkoutsByDateKey: [String : WorkoutSection] = [:]
         for workout in workouts {
             if let date = workout.date, let dateKey = self.dateTitleFrom(date) {
                 if newWorkoutsByDateKey[dateKey] == nil {
-                    newWorkoutsByDateKey[dateKey] = []
+                    newWorkoutsByDateKey[dateKey] = WorkoutSection(isExpanded: false, workouts: [])
                     newWorkoutDateKeys.append(date)
                 }
-                newWorkoutsByDateKey[dateKey]?.append(workout)
+                newWorkoutsByDateKey[dateKey]?.workouts.append(workout)
             }
         }
         self.allWorkouts = workouts
@@ -34,7 +41,11 @@ class WorkoutTableViewDataSource {
         self.workoutsByDate = newWorkoutsByDateKey
     }
     
-    func workoutsForSection(_ section: Int) -> [Workout]? {
+    func expandSection(_ section: Int) {
+        self.workoutsByDate[self.workoutDateKeys[section]]?.isExpanded = true
+    }
+    
+    func workoutSection(_ section: Int) -> WorkoutSection? {
         if section < self.workoutDateKeys.count {
             let dateKey = self.workoutDateKeys[section]
             return self.workoutsByDate[dateKey]
@@ -43,15 +54,28 @@ class WorkoutTableViewDataSource {
         }
     }
     
+    func workoutsForSection(_ section: Int) -> [Workout]? {
+        self.workoutSection(section)?.workouts
+    }
+    
     func workoutForIndexPath(_ indexPath: IndexPath) -> Workout? {
-        if let workouts = self.workoutsForSection(indexPath.section) {
-            if indexPath.row < workouts.count {
-                return workouts[indexPath.row]
+        guard let workoutSection = self.workoutSection(indexPath.section) else {
+            return nil
+        }
+        
+        if workoutSection.isExpanded {
+            if indexPath.row < workoutSection.workouts.count {
+                return workoutSection.workouts[indexPath.row]
+            } else {
+                return nil
+            }
+        } else {
+            if indexPath.row < MAX_WORKOUTS {
+                return workoutSection.workouts[indexPath.row]
             } else {
                 return nil
             }
         }
-        return nil
     }
     
     func numberOfSections(_ tableView: UITableView) -> Int {
@@ -59,15 +83,23 @@ class WorkoutTableViewDataSource {
     }
     
     func numberOfRowsInSection(_ tableView: UITableView, section: Int) -> Int {
-        return self.workoutsForSection(section)?.count ?? 0
+        if let workoutSection = self.workoutSection(section) {
+            let unexpandedCount = workoutSection.workouts.count <= MAX_WORKOUTS ? workoutSection.workouts.count : MAX_WORKOUTS + 1
+            return workoutSection.isExpanded ? workoutSection.workouts.count : unexpandedCount
+        } else {
+            return 0
+        }
     }
     
     func cellForRowAtIndexPath(_ tableView: UITableView, indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: WORKOUT_CELL_IDENTIFIER, for: indexPath)
         
         guard let workout = workoutForIndexPath(indexPath) else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: EXPAND_WORKOUT_CELL_IDENTIFIER, for: indexPath) as! ExpandWorkoutsTableViewCell
+            cell.expandLabel.text = self.expandTitleForSection(indexPath.section)
             return cell
         }
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: WORKOUT_CELL_IDENTIFIER, for: indexPath)
         
         var content = UIListContentConfiguration.cell()
         content.text = workout.exercise?.name ?? "Missing Name"
@@ -77,6 +109,18 @@ class WorkoutTableViewDataSource {
         cell.contentConfiguration = content
         
         return cell
+    }
+    
+    func expandTitleForSection(_ section: Int) -> String? {
+        guard let workoutSection = self.workoutSection(section) else {
+            return nil
+        }
+        
+        if !workoutSection.isExpanded {
+            return "Plus \(workoutSection.workouts.count - MAX_WORKOUTS) More"
+        } else {
+            return nil
+        }
     }
     
     func titleForSection(_ section: Int) -> String? {
