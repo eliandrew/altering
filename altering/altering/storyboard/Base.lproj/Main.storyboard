@@ -2,7 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3I0-AI-dLK">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -66,7 +66,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="vJH-TR-Cv7">
-                                <rect key="frame" x="20" y="123" width="353" height="645"/>
+                                <rect key="frame" x="20" y="123" width="353" height="636"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6ct-3t-KGC">
                                         <rect key="frame" x="0.0" y="0.0" width="54" height="40"/>
@@ -115,7 +115,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" estimatedSectionHeaderHeight="-1" sectionFooterHeight="28" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Yh0-qM-jn3">
-                                        <rect key="frame" x="0.0" y="280" width="353" height="365"/>
+                                        <rect key="frame" x="0.0" y="280" width="353" height="356"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="365" id="5Va-BB-2rp"/>
                                         </constraints>
@@ -260,6 +260,52 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eqw-o8-vkH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1776" y="674"/>
+        </scene>
+        <!--Workout Program Table View Controller-->
+        <scene sceneID="PRk-SW-weM">
+            <objects>
+                <tableViewController id="jgA-aV-Y69" userLabel="Workout Program Table View Controller" customClass="WorkoutProgramTableViewController" customModule="Altered" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="lvw-5d-Uar">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="CVj-fE-YIQ">
+                                <rect key="frame" x="0.0" y="50" width="393" height="43.666667938232422"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="CVj-fE-YIQ" id="hFS-TZ-sOd">
+                                    <rect key="frame" x="0.0" y="0.0" width="393" height="43.666667938232422"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="jgA-aV-Y69" id="OsL-cw-04Y"/>
+                            <outlet property="delegate" destination="jgA-aV-Y69" id="q5d-eP-YyE"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="tOP-BY-TrG"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HoN-pk-yJy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1775" y="1422"/>
+        </scene>
+        <!--Programs-->
+        <scene sceneID="Q5r-MA-ugH">
+            <objects>
+                <navigationController id="tFC-x6-Qhu" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Programs" image="doc.text.fill" catalog="system" id="6iu-Sm-QuU"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="6mc-wg-NyV">
+                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="jgA-aV-Y69" kind="relationship" relationship="rootViewController" id="YuJ-o4-awl"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mlz-km-IzU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="886" y="1423"/>
         </scene>
         <!--Edit Workout Table View Controller-->
         <scene sceneID="btC-2u-A0V">
@@ -440,8 +486,9 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
                     <connections>
-                        <segue destination="xId-Ct-QlW" kind="relationship" relationship="viewControllers" id="o0v-FQ-2N6"/>
                         <segue destination="bjJ-iD-B7F" kind="relationship" relationship="viewControllers" id="Psm-Ec-WyJ"/>
+                        <segue destination="xId-Ct-QlW" kind="relationship" relationship="viewControllers" id="rX7-z8-E2K"/>
+                        <segue destination="tFC-x6-Qhu" kind="relationship" relationship="viewControllers" id="Phr-f1-8sy"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hI2-ZW-mnr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -469,6 +516,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="doc.text.fill" catalog="system" width="115" height="128"/>
         <image name="dumbbell.fill" catalog="system" width="128" height="72"/>
         <image name="figure.strengthtraining.traditional" catalog="system" width="128" height="119"/>
         <systemColor name="labelColor">
