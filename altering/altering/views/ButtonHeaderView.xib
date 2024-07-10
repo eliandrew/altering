@@ -3,6 +3,7 @@
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -16,23 +17,30 @@
                 <rect key="frame" x="0.0" y="0.0" width="393" height="44"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BPP Light Plan" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S84-qR-RuV">
-                        <rect key="frame" x="19.999999999999993" y="12.333333333333334" width="110.33333333333331" height="19.333333333333329"/>
-                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
-                        <color key="textColor" systemColor="secondaryLabelColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4gS-on-Uok">
-                        <rect key="frame" x="318.33333333333331" y="5" width="49.666666666666686" height="34.333333333333336"/>
-                        <state key="normal" title="Button"/>
-                        <buttonConfiguration key="configuration" style="plain" image="minus.circle.fill" catalog="system"/>
-                    </button>
+                    <stackView opaque="NO" contentMode="scaleToFill" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="RA8-Lq-ebf">
+                        <rect key="frame" x="20" y="0.0" width="353" height="44"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BPP Light Plan" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S84-qR-RuV">
+                                <rect key="frame" x="0.0" y="0.0" width="133.33333333333334" height="44"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
+                                <color key="textColor" systemColor="secondaryLabelColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4gS-on-Uok">
+                                <rect key="frame" x="137.33333333333337" y="0.0" width="215.66666666666663" height="44"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain">
+                                    <imageReference key="image" image="minus.circle.fill" catalog="system" symbolScale="small"/>
+                                </buttonConfiguration>
+                            </button>
+                        </subviews>
+                    </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailing" secondItem="4gS-on-Uok" secondAttribute="trailing" constant="25" id="IL0-e0-FCc"/>
-                    <constraint firstItem="S84-qR-RuV" firstAttribute="leading" secondItem="892-y8-f8X" secondAttribute="leading" constant="20" id="TLb-dh-pYO"/>
-                    <constraint firstItem="S84-qR-RuV" firstAttribute="centerY" secondItem="892-y8-f8X" secondAttribute="centerY" id="hZ3-wY-UXT"/>
-                    <constraint firstItem="4gS-on-Uok" firstAttribute="centerY" secondItem="892-y8-f8X" secondAttribute="centerY" id="vwC-pL-gS1"/>
+                    <constraint firstItem="RA8-Lq-ebf" firstAttribute="top" secondItem="892-y8-f8X" secondAttribute="top" id="KpP-8u-APN"/>
+                    <constraint firstAttribute="trailing" secondItem="RA8-Lq-ebf" secondAttribute="trailing" constant="20" id="VND-TJ-8eJ"/>
+                    <constraint firstItem="RA8-Lq-ebf" firstAttribute="leading" secondItem="892-y8-f8X" secondAttribute="leading" constant="20" id="lK2-IX-o7W"/>
+                    <constraint firstAttribute="bottom" secondItem="RA8-Lq-ebf" secondAttribute="bottom" id="sTX-FQ-bt0"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
