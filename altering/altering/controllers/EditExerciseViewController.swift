@@ -132,27 +132,35 @@ class EditExerciseViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveExercise))
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(exit))
         
+        // Enable large titles
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
+        
         self.workoutTableView.dataSource = self
         self.workoutTableView.register(UINib(nibName: "WorkoutNotesTableViewCell", bundle: nil), forCellReuseIdentifier: WORKOUT_CELL_IDENTIFIER)
         
         if let exercise = self.exercise {
-            dataLoader.loadWorkoutsFor(exercise) { fetchedWorkouts in
-                if let fetchedWorkouts = fetchedWorkouts {
+            dataLoader.loadWorkouts(for: exercise) { result in
+                switch result {
+                case .success(let fetchedWorkouts):
                     let workoutCount = fetchedWorkouts.count
                     self.workoutDataSource.setWorkouts(fetchedWorkouts)
-                    DispatchQueue.main.sync {
-                        if workoutCount == 0 {
-                            self.workoutTableView.backgroundView = self.tableViewBackgroundView()
-                        }
-                        self.workoutLabel.text = "\(workoutCount == 0 ? "No" : "\(fetchedWorkouts.count)") Workout\(workoutCount == 1 ? "" : "s")"
-                        self.workoutTableView.reloadData()
+                    if workoutCount == 0 {
+                        self.workoutTableView.backgroundView = self.tableViewBackgroundView()
                     }
+                    self.workoutLabel.text = "\(workoutCount == 0 ? "No" : "\(fetchedWorkouts.count)") Workout\(workoutCount == 1 ? "" : "s")"
+                    self.workoutTableView.reloadData()
+                case .failure(let error):
+                    print("Error fetching workouts: \(error)")
                 }
             }
+            title = "Edit Exercise"
         } else {
             self.workoutDataSource.setWorkouts([Workout]())
             self.workoutTableView.backgroundView = self.tableViewBackgroundView()
             self.workoutTableView.reloadData()
+            
+            title = "Create Exercise"
         }
         
         self.nameTextField.text = self.exercise?.name

@@ -8,12 +8,13 @@ struct WorkoutSection {
 
 class WorkoutTableViewDataSource {
     
-    let WORKOUT_CELL_IDENTIFIER = "workoutCell"
+    let WORKOUT_CELL_IDENTIFIER = "workoutCellIdentifier"
     let EXPAND_WORKOUT_CELL_IDENTIFIER = "expandWorkoutCell"
     let MAX_WORKOUTS = 3
     var allWorkouts: [Workout] = []
     var workoutsByDate: [String : WorkoutSection] = [:]
     var workoutDateKeys = [String]()
+    var firstWorkout: [String : Workout] = [:]
     
     
     // MARK: Helpers
@@ -26,6 +27,13 @@ class WorkoutTableViewDataSource {
         var newWorkoutDateKeys = [Date]()
         var newWorkoutsByDateKey: [String : WorkoutSection] = [:]
         for workout in workouts {
+            if let exerciseName = workout.exercise?.name, let date = workout.date {
+                if firstWorkout[exerciseName] == nil {
+                    firstWorkout[exerciseName] = workout
+                } else if let currentDate = firstWorkout[exerciseName]?.date, date < currentDate {
+                    firstWorkout[exerciseName] = workout
+                }
+            }
             if let date = workout.date, let dateKey = self.dateTitleFrom(date) {
                 if newWorkoutsByDateKey[dateKey] == nil {
                     newWorkoutsByDateKey[dateKey] = WorkoutSection(isExpanded: false, workouts: [])
@@ -102,14 +110,18 @@ class WorkoutTableViewDataSource {
             return cell
         }
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: WORKOUT_CELL_IDENTIFIER, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: WORKOUT_CELL_IDENTIFIER, for: indexPath) as! MultiIconTableViewCell
         
-        var content = UIListContentConfiguration.cell()
-        content.text = workout.exercise?.name ?? "Missing Name"
-        content.textProperties.font = UIFont.systemFont(ofSize: 20)
-        content.secondaryText = workout.exercise?.group?.name ?? "None"
-        content.secondaryTextProperties.font = UIFont.systemFont(ofSize: 15)
-        cell.contentConfiguration = content
+        cell.titleLabel.text = workout.exercise?.name ?? "Missing Name"
+        cell.subtitleLabel.text = workout.exercise?.group?.name ?? "None"
+        cell.iconImageView.image = nil
+        cell.subIconImageView.image = nil
+        if let exerciseName = workout.exercise?.name, let firstWorkout = firstWorkout[exerciseName], firstWorkout == workout {
+            cell.iconImageView.image = UIImage(systemName: "figure.wave")
+        }
+        if let program = workout.program {
+            cell.subIconImageView.image = UIImage(systemName: "doc.text.fill")
+        }
         
         return cell
     }

@@ -4,7 +4,7 @@ class WorkoutTableViewController: UITableViewController {
 
     // MARK: Constants
     
-    let WORKOUT_CELL_IDENTIFIER = "workoutCell"
+    let WORKOUT_CELL_IDENTIFIER = "workoutCellIdentifier"
     let EXPAND_WORKOUT_CELL_IDENTIFIER = "expandWorkoutCell"
     let WORKOUT_FOOTER_VIEW_IDENTIFIER = "workoutFooterView"
     let WORKOUT_REST_DAY_FOOTER_VIEW_IDENTIFIER = "restDayFooterView"
@@ -150,7 +150,6 @@ class WorkoutTableViewController: UITableViewController {
        
         let streakLength = self.streakLength()
         let streakView: WorkoutStreakView = WorkoutStreakView.fromNib()
-//        let restDayView: WorkoutRestDayView = WorkoutRestDayView.fromNib()
         
         if streakLength > 1 {
             streakView.streakImageView?.image = streakImage(streakLength)
@@ -171,16 +170,30 @@ class WorkoutTableViewController: UITableViewController {
         tableView.register(UINib(nibName: "WorkoutFooterView", bundle: nil), forHeaderFooterViewReuseIdentifier: WORKOUT_FOOTER_VIEW_IDENTIFIER)
         tableView.register(UINib(nibName: "WorkoutRestDayView", bundle: nil), forHeaderFooterViewReuseIdentifier: WORKOUT_REST_DAY_FOOTER_VIEW_IDENTIFIER)
         tableView.register(UINib(nibName: "ExpandWorkoutsTableViewCell", bundle: nil), forCellReuseIdentifier: EXPAND_WORKOUT_CELL_IDENTIFIER)
+        self.tableView.register(UINib(nibName: "MultiIconTableViewCell", bundle: nil), forCellReuseIdentifier: WORKOUT_CELL_IDENTIFIER)
         
+        
+        // Set the title for the large title
+        title = "Workouts"
 
+        // Enable large titles
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
         tableView.tableFooterView = nil
         
         
-        dataLoader.loadAllWorkouts { fetchedWorkouts in
-            if let fetchedWorkouts = fetchedWorkouts {
+        dataLoader.loadAllWorkouts { result in
+            switch result {
+            case .success(let fetchedWorkouts):
                 self.workoutDataSource.setWorkouts(fetchedWorkouts)
-                DispatchQueue.main.sync {
+                DispatchQueue.main.async {
                     self.tableView.tableHeaderView = self.setupWorkoutStreakView()
+                    self.tableView.reloadData()
+                }
+            case .failure(let error):
+                print("Error fetching exercises: \(error)")
+                self.workoutDataSource.setWorkouts([])
+                DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
             }

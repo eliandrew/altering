@@ -3,7 +3,7 @@
     <entity name="Exercise" representedClassName="Exercise" syncable="YES" codeGenerationType="category">
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="group" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ExerciseGroup" inverseName="exercise" inverseEntity="ExerciseGroup"/>
-        <relationship name="plans" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WorkoutPlan" inverseName="exercise" inverseEntity="WorkoutPlan"/>
+        <relationship name="plans" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="WorkoutPlan" inverseName="exercise" inverseEntity="WorkoutPlan"/>
         <relationship name="workouts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Workout" inverseName="exercise" inverseEntity="Workout"/>
     </entity>
     <entity name="ExerciseGroup" representedClassName="ExerciseGroup" syncable="YES" codeGenerationType="category">
@@ -14,15 +14,18 @@
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="notes" optional="YES" attributeType="String"/>
         <relationship name="exercise" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Exercise" inverseName="workouts" inverseEntity="Exercise"/>
+        <relationship name="program" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WorkoutProgram" inverseName="workouts" inverseEntity="WorkoutProgram"/>
     </entity>
-    <entity name="WorkoutPlan" representedClassName="WorkoutPlan" syncable="YES" codeGenerationType="class">
+    <entity name="WorkoutPlan" representedClassName="WorkoutPlan" syncable="YES" codeGenerationType="category">
         <attribute name="numWorkouts" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="exercise" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Exercise" inverseName="plans" inverseEntity="Exercise"/>
         <relationship name="programs" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="WorkoutProgram" inverseName="plans" inverseEntity="WorkoutProgram"/>
     </entity>
-    <entity name="WorkoutProgram" representedClassName="WorkoutProgram" syncable="YES" codeGenerationType="class">
+    <entity name="WorkoutProgram" representedClassName="WorkoutProgram" syncable="YES" codeGenerationType="category">
         <attribute name="end" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="start" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="plans" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="WorkoutPlan" inverseName="programs" inverseEntity="WorkoutPlan"/>
+        <relationship name="workouts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Workout" inverseName="program" inverseEntity="Workout"/>
     </entity>
 </model>

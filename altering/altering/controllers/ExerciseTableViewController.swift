@@ -29,10 +29,25 @@ class ExerciseTableViewController: UITableViewController {
         navigationItem.searchController = searchController
         definesPresentationContext = true
         
-        dataLoader.loadAllExercises { fetchedExercises in
-            if let fetchedExercises = fetchedExercises {
+        // Set the title for the large title
+        title = "Exercises"
+
+        // Enable large titles
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
+        tableView.tableFooterView = nil
+        
+        dataLoader.loadAllExercises { result in
+            switch result {
+            case .success(let fetchedExercises):
                 self.exerciseDataSource.setExercises(fetchedExercises)
-                DispatchQueue.main.sync {
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            case .failure(let error):
+                print("Error fetching exercises: \(error)")
+                self.exerciseDataSource.setExercises([])
+                DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
             }

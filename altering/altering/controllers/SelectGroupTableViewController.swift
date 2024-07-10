@@ -32,10 +32,17 @@ class SelectGroupTableViewController: UITableViewController {
     }
     
     func setupView() {
-        dataLoader.loadAllGroups { fetchedGroups in
-            if let fetchedGroups = fetchedGroups {
+        dataLoader.loadAllGroups { result in
+            switch result {
+            case .success(let fetchedGroups):
                 self.groupDataSource.exerciseGroups = fetchedGroups
-                DispatchQueue.main.sync {
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            case .failure(let error):
+                print("Error fetching exercises: \(error)")
+                self.groupDataSource.exerciseGroups = []
+                DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
             }

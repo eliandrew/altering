@@ -26,10 +26,26 @@ class SelectExerciseTableViewController: UITableViewController {
         navigationItem.searchController = searchController
         definesPresentationContext = true
         
-        dataLoader.loadAllExercises { fetchedExercises in
-            if let fetchedExercises = fetchedExercises {
+        // Set the title for the large title
+        title = "Select Exercise"
+
+        // Enable large titles
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
+        
+       
+        
+        dataLoader.loadAllExercises { result in
+            switch result {
+            case .success(let fetchedExercises):
                 self.exerciseDataSource.setExercises(fetchedExercises)
-                DispatchQueue.main.sync {
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            case .failure(let error):
+                print("Error fetching exercises: \(error)")
+                self.exerciseDataSource.setExercises([])
+                DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
             }
@@ -65,6 +81,7 @@ class SelectExerciseTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         if let exercise = self.exerciseDataSource.exerciseForIndexPath(indexPath) {
             delegate?.didSelectExercise(exercise)
         }
