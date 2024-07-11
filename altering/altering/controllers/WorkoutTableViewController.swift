@@ -1,5 +1,12 @@
 import UIKit
 
+struct ProgressInfo {
+    var title: String
+    var subtitle: String
+    var image: UIImage?
+    var progress: Float
+}
+
 class WorkoutTableViewController: UITableViewController {
 
     // MARK: Constants
@@ -10,6 +17,82 @@ class WorkoutTableViewController: UITableViewController {
     let WORKOUT_REST_DAY_FOOTER_VIEW_IDENTIFIER = "restDayFooterView"
     
     let WORKOUT_SEGUE_IDENTIFIER = "workoutSegue"
+    let PROGRESS_SEGUE_IDENTIFIER = "progressSegue"
+    
+    let imageNames = [
+        "figure.american.football",
+        "figure.archery",
+        "figure.australian.football",
+        "figure.badminton",
+        "figure.barre",
+        "figure.baseball",
+        "figure.basketball",
+        "figure.bowling",
+        "figure.boxing",
+        "figure.climbing",
+        "figure.cooldown",
+        "figure.core.training",
+        "figure.cricket",
+        "figure.skiing.crosscountry",
+        "figure.cross.training",
+        "figure.curling",
+        "figure.dance",
+        "figure.disc.sports",
+        "figure.skiing.downhill",
+        "figure.elliptical",
+        "figure.equestrian.sports",
+        "figure.fencing",
+        "figure.fishing",
+        "figure.flexibility",
+        "figure.strengthtraining.functional",
+        "figure.golf",
+        "figure.gymnastics",
+        "figure.hand.cycling",
+        "figure.handball",
+        "figure.highintensity.intervaltraining",
+        "figure.hiking",
+        "figure.hockey",
+        "figure.hunting",
+        "figure.indoor.cycle",
+        "figure.jumprope",
+        "figure.kickboxing",
+        "figure.lacrosse",
+        "figure.martial.arts",
+        "figure.mind.and.body",
+        "figure.mixed.cardio",
+        "figure.open.water.swim",
+        "figure.outdoor.cycle",
+        "figure.pickleball",
+        "figure.pilates",
+        "figure.play",
+        "figure.pool.swim",
+        "figure.racquetball",
+        "figure.rolling",
+        "figure.rower",
+        "figure.rugby",
+        "figure.sailing",
+        "figure.skating",
+        "figure.snowboarding",
+        "figure.soccer",
+        "figure.socialdance",
+        "figure.softball",
+        "figure.squash",
+        "figure.stair.stepper",
+        "figure.stairs",
+        "figure.step.training",
+        "figure.surfing",
+        "figure.table.tennis",
+        "figure.taichi",
+        "figure.tennis",
+        "figure.track.and.field",
+        "figure.strengthtraining.traditional",
+        "figure.volleyball",
+        "figure.water.fitness",
+        "figure.waterpolo",
+        "figure.wrestling",
+        "figure.yoga",
+        "figure.walk"
+    ]
     
     // MARK: Properties
     
@@ -39,83 +122,7 @@ class WorkoutTableViewController: UITableViewController {
     // MARK: View Lifecycle
     
     func streakImage(_ streakLength: Int) -> UIImage? {
-        let images = [
-            "figure.american.football",
-            "figure.archery",
-            "figure.australian.football",
-            "figure.badminton",
-            "figure.barre",
-            "figure.baseball",
-            "figure.basketball",
-            "figure.bowling",
-            "figure.boxing",
-            "figure.climbing",
-            "figure.cooldown",
-            "figure.core.training",
-            "figure.cricket",
-            "figure.skiing.crosscountry",
-            "figure.cross.training",
-            "figure.curling",
-            "figure.dance",
-            "figure.disc.sports",
-            "figure.skiing.downhill",
-            "figure.elliptical",
-            "figure.equestrian.sports",
-            "figure.fencing",
-            "figure.fishing",
-            "figure.flexibility",
-            "figure.strengthtraining.functional",
-            "figure.golf",
-            "figure.gymnastics",
-            "figure.hand.cycling",
-            "figure.handball",
-            "figure.highintensity.intervaltraining",
-            "figure.hiking",
-            "figure.hockey",
-            "figure.hunting",
-            "figure.indoor.cycle",
-            "figure.jumprope",
-            "figure.kickboxing",
-            "figure.lacrosse",
-            "figure.martial.arts",
-            "figure.mind.and.body",
-            "figure.mixed.cardio",
-            "figure.open.water.swim",
-            "figure.outdoor.cycle",
-            "figure.pickleball",
-            "figure.pilates",
-            "figure.play",
-            "figure.pool.swim",
-            "figure.racquetball",
-            "figure.rolling",
-            "figure.rower",
-            "figure.rugby",
-            "figure.sailing",
-            "figure.skating",
-            "figure.snowboarding",
-            "figure.soccer",
-            "figure.socialdance",
-            "figure.softball",
-            "figure.squash",
-            "figure.stair.stepper",
-            "figure.stairs",
-            "figure.step.training",
-            "figure.surfing",
-            "figure.table.tennis",
-            "figure.taichi",
-            "figure.tennis",
-            "figure.track.and.field",
-            "figure.strengthtraining.traditional",
-            "figure.volleyball",
-            "figure.water.fitness",
-            "figure.waterpolo",
-            "figure.wrestling",
-            "figure.yoga",
-            "figure.walk"
-        ]
-        
-        let streakImageName = images[streakLength % images.count]
-        
+        let streakImageName = imageNames[streakLength % imageNames.count]
         return UIImage(systemName: streakImageName)
     }
     
@@ -276,9 +283,42 @@ class WorkoutTableViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == WORKOUT_SEGUE_IDENTIFIER {
             let vc = segue.destination as? EditWorkoutTableViewController
+            vc?.delegate = self
             if let workout = sender as? Workout {
                 vc?.workout = workout
+                vc?.originalWorkoutProgram = workout.program
             }
+        } else if segue.identifier == PROGRESS_SEGUE_IDENTIFIER , let progressInfo = sender as? ProgressInfo {
+            let vc = segue.destination as? ProgramProgressViewController
+            vc?.progressTitleText = progressInfo.title
+            vc?.progressSubtitleText = progressInfo.subtitle
+            vc?.progressImage = progressInfo.image
+            vc?.progress = progressInfo.progress
+        }
+    }
+    
+    func basicAlertController(title: String, message: String) -> UIAlertController {
+        let ac = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .cancel))
+        return ac
+    }
+}
+
+extension WorkoutTableViewController: EditWorkoutDelegate {
+    func didUpdateWorkoutProgram(_ workout: Workout) {
+        if let progress = workout.progress(), let progressPointHit = workout.progressPointHit() {
+            let isOver = progress > progressPointHit
+            var (title, message) = ("Congrats!", "You're\(isOver ? " over" : "") \(Int(progressPointHit * 100))% done with \(workout.exercise?.name ?? "Exercise") in \(workout.program?.name ?? "Workout Program")")
+            var image = UIImage(systemName: imageNames.randomElement() ?? "figure.wave")
+            if (progressPointHit == 0.0) {
+                (title, message) = ("Woohoo!", "That was your first workout for \(workout.exercise?.name ?? "Exercise") in \(workout.program?.name ?? "Workout Program")")
+            } else if (progressPointHit == 1.0) {
+                (title, message) = ("Boom!", "You just finished \(workout.exercise?.name ?? "Exercise") in \(workout.program?.name ?? "Workout Program")")
+                image = UIImage(systemName: "star.circle.fill")
+            }
+            let progressInfo = ProgressInfo(title: title, subtitle: message, image: image, progress: progress)
+            
+            self.performSegue(withIdentifier: PROGRESS_SEGUE_IDENTIFIER, sender: progressInfo)
         }
     }
 }

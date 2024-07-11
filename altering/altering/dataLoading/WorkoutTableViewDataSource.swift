@@ -119,7 +119,7 @@ class WorkoutTableViewDataSource {
         if let exerciseName = workout.exercise?.name, let firstWorkout = firstWorkout[exerciseName], firstWorkout == workout {
             cell.iconImageView.image = UIImage(systemName: "figure.wave")
         }
-        if let program = workout.program {
+        if let _ = workout.program {
             cell.subIconImageView.image = UIImage(systemName: "doc.text.fill")
         }
         

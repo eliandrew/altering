@@ -60,6 +60,7 @@
 		A6BD324E2BBC8FC90017FBCF /* Workout+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BD324A2BBC8FC90017FBCF /* Workout+CoreDataClass.swift */; };
 		A6BD32532BBC90530017FBCF /* WorkoutTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BD32522BBC90530017FBCF /* WorkoutTableViewController.swift */; };
 		A6BD32552BBC90780017FBCF /* EditWorkoutTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BD32542BBC90780017FBCF /* EditWorkoutTableViewController.swift */; };
+		A6C823402C4064E7009B6DED /* ProgramProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6C8233F2C4064E7009B6DED /* ProgramProgressViewController.swift */; };
 		A6CFE1382C3476F800FBC4FC /* ExpandWorkoutsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A6CFE1372C3476F800FBC4FC /* ExpandWorkoutsTableViewCell.xib */; };
 		A6CFE1392C3476F800FBC4FC /* ExpandWorkoutsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6CFE1362C3476F800FBC4FC /* ExpandWorkoutsTableViewCell.swift */; };
 		A6E734812C3DE87B006B1836 /* SelectWorkoutProgramTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E734802C3DE87B006B1836 /* SelectWorkoutProgramTableViewController.swift */; };
@@ -157,6 +158,7 @@
 		A6BD324A2BBC8FC90017FBCF /* Workout+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Workout+CoreDataClass.swift"; sourceTree = "<group>"; };
 		A6BD32522BBC90530017FBCF /* WorkoutTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutTableViewController.swift; sourceTree = "<group>"; };
 		A6BD32542BBC90780017FBCF /* EditWorkoutTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditWorkoutTableViewController.swift; sourceTree = "<group>"; };
+		A6C8233F2C4064E7009B6DED /* ProgramProgressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramProgressViewController.swift; sourceTree = "<group>"; };
 		A6CFE1362C3476F800FBC4FC /* ExpandWorkoutsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandWorkoutsTableViewCell.swift; sourceTree = "<group>"; };
 		A6CFE1372C3476F800FBC4FC /* ExpandWorkoutsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ExpandWorkoutsTableViewCell.xib; sourceTree = "<group>"; };
 		A6E734802C3DE87B006B1836 /* SelectWorkoutProgramTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectWorkoutProgramTableViewController.swift; sourceTree = "<group>"; };
@@ -281,6 +283,7 @@
 				A60974B22C39E04700857577 /* WorkoutProgramTableViewController.swift */,
 				A60974BE2C3A25D300857577 /* EditWorkoutProgramTableViewController.swift */,
 				A6E734802C3DE87B006B1836 /* SelectWorkoutProgramTableViewController.swift */,
+				A6C8233F2C4064E7009B6DED /* ProgramProgressViewController.swift */,
 			);
 			path = controllers;
 			sourceTree = "<group>";
@@ -534,6 +537,7 @@
 				A61760F72BC7607700381C91 /* AddWorkoutTableViewCell.swift in Sources */,
 				A6BD32082BBC6CD00017FBCF /* SceneDelegate.swift in Sources */,
 				A60974CA2C3B319700857577 /* DatePickerTableViewCell.swift in Sources */,
+				A6C823402C4064E7009B6DED /* ProgramProgressViewController.swift in Sources */,
 				A638587D2C33214F00B075E7 /* DataWriter.swift in Sources */,
 				A6BD32102BBC6CD00017FBCF /* altering.xcdatamodeld in Sources */,
 				A6CFE1392C3476F800FBC4FC /* ExpandWorkoutsTableViewCell.swift in Sources */,

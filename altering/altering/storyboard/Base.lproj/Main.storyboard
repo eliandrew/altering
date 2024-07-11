@@ -3,6 +3,7 @@
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -232,6 +233,7 @@
                     <navigationItem key="navigationItem" id="46d-xC-epy"/>
                     <connections>
                         <segue destination="NMT-on-qby" kind="show" identifier="workoutSegue" id="1bk-QN-0Be"/>
+                        <segue destination="Va9-gb-X01" kind="presentation" identifier="progressSegue" id="u7y-fa-W2n"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eqw-o8-vkH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -527,21 +529,21 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="searchWorkoutProgramCell" textLabel="VIg-cx-qdP" detailTextLabel="efU-i8-PpS" style="IBUITableViewCellStyleSubtitle" id="vlf-80-xTy">
-                                <rect key="frame" x="0.0" y="50" width="393" height="43.666667938232422"/>
+                                <rect key="frame" x="0.0" y="50" width="393" height="62.666667938232422"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="vlf-80-xTy" id="Qgv-QH-26X">
-                                    <rect key="frame" x="0.0" y="0.0" width="393" height="43.666667938232422"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="393" height="62.666667938232422"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="VIg-cx-qdP">
-                                            <rect key="frame" x="19.999999999999996" y="3" width="37.666666666666664" height="24"/>
+                                            <rect key="frame" x="19.999999999999996" y="13" width="37.666666666666664" height="24"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="efU-i8-PpS">
-                                            <rect key="frame" x="19.999999999999996" y="26.999999999999996" width="43.666666666666664" height="14.333333333333334"/>
+                                            <rect key="frame" x="19.999999999999996" y="37" width="43.666666666666664" height="14.333333333333334"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="0.0"/>
                                             <nil key="textColor"/>
@@ -561,6 +563,88 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="e2M-BJ-PCP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="4321" y="674"/>
+        </scene>
+        <!--Program Progress View Controller-->
+        <scene sceneID="V6A-qP-dre">
+            <objects>
+                <viewController id="Va9-gb-X01" customClass="ProgramProgressViewController" customModule="Altered" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" opaque="NO" contentMode="scaleToFill" id="W4U-5L-cw1">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2GI-DY-6jR">
+                                <rect key="frame" x="25" y="175" width="343" height="467"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="xtY-8T-JIo">
+                                        <rect key="frame" x="20" y="88.666666666666686" width="303" height="250"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="SwI-md-IKx">
+                                                <rect key="frame" x="0.0" y="-2.3333333333333357" width="303" height="55.333333333333336"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="50" id="Ypg-iW-zbJ"/>
+                                                </constraints>
+                                                <imageReference key="image" image="star.circle.fill" catalog="system" symbolScale="large"/>
+                                            </imageView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Boom!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="87R-su-pMW">
+                                                <rect key="frame" x="0.0" y="70" width="303" height="30"/>
+                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You just completed Front Squat in the 5/3/1 Plan Program" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SGB-1I-OCj">
+                                                <rect key="frame" x="0.0" y="120" width="303" height="48"/>
+                                                <fontDescription key="fontDescription" type="system" weight="thin" pointSize="20"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4Bw-sQ-blS">
+                                                <rect key="frame" x="0.0" y="188" width="303" height="4"/>
+                                            </progressView>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PVm-ys-KHB">
+                                                <rect key="frame" x="0.0" y="212" width="303" height="38"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="tinted" title="Dismiss" cornerStyle="capsule">
+                                                    <fontDescription key="titleFontDescription" type="system" weight="semibold" pointSize="20"/>
+                                                </buttonConfiguration>
+                                                <connections>
+                                                    <action selector="actionButtonPressed:" destination="Va9-gb-X01" eventType="touchUpInside" id="APH-UV-BoH"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="xtY-8T-JIo" firstAttribute="leading" secondItem="2GI-DY-6jR" secondAttribute="leading" constant="20" id="6pe-5p-JfJ"/>
+                                    <constraint firstItem="xtY-8T-JIo" firstAttribute="centerY" secondItem="2GI-DY-6jR" secondAttribute="centerY" constant="-20" id="9Tl-nn-nzB"/>
+                                    <constraint firstAttribute="trailing" secondItem="xtY-8T-JIo" secondAttribute="trailing" constant="20" id="N4P-jD-Pw1"/>
+                                    <constraint firstItem="xtY-8T-JIo" firstAttribute="centerX" secondItem="2GI-DY-6jR" secondAttribute="centerX" id="Vt8-CG-FMx"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="H57-Hq-vZW"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="H57-Hq-vZW" firstAttribute="trailing" secondItem="2GI-DY-6jR" secondAttribute="trailing" constant="25" id="0OZ-Jo-y1g"/>
+                            <constraint firstItem="2GI-DY-6jR" firstAttribute="top" secondItem="H57-Hq-vZW" secondAttribute="top" constant="175" id="1FU-Xn-fDo"/>
+                            <constraint firstItem="2GI-DY-6jR" firstAttribute="leading" secondItem="H57-Hq-vZW" secondAttribute="leading" constant="25" id="UUq-18-89S"/>
+                            <constraint firstItem="H57-Hq-vZW" firstAttribute="bottom" secondItem="2GI-DY-6jR" secondAttribute="bottom" constant="200" id="pzo-zN-HTP"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="0fw-eB-k1z"/>
+                    <connections>
+                        <outlet property="actionButton" destination="PVm-ys-KHB" id="RwH-A8-grn"/>
+                        <outlet property="backgroundView" destination="2GI-DY-6jR" id="LsE-Sa-nWw"/>
+                        <outlet property="progressImageView" destination="SwI-md-IKx" id="YtX-bb-ZEs"/>
+                        <outlet property="progressSubtitleLabel" destination="SGB-1I-OCj" id="SWI-YN-wuF"/>
+                        <outlet property="progressTitleLabel" destination="87R-su-pMW" id="7AC-T9-Uhx"/>
+                        <outlet property="progressView" destination="4Bw-sQ-blS" id="BqJ-ho-Zwe"/>
+                        <outlet property="stackView" destination="xtY-8T-JIo" id="h6z-Ik-udf"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Dat-JI-CYN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5151.9083969465646" y="673.94366197183103"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="Ir9-7T-9nh">
@@ -603,7 +687,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="klS-dr-tLp"/>
+        <segue reference="LZ5-1o-Mwi"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="100" width="128" height="128"/>
@@ -611,6 +695,7 @@
         <image name="dumbbell.fill" catalog="system" width="128" height="72"/>
         <image name="figure.strengthtraining.traditional" catalog="system" width="128" height="119"/>
         <image name="minus.circle" catalog="system" width="128" height="123"/>
+        <image name="star.circle.fill" catalog="system" width="128" height="123"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

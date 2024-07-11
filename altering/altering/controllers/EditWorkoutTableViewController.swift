@@ -1,5 +1,9 @@
 import UIKit
 
+protocol EditWorkoutDelegate {
+    func didUpdateWorkoutProgram(_ workout: Workout)
+}
+
 class EditWorkoutTableViewController: UITableViewController {
 
     // MARK: Constants
@@ -18,6 +22,8 @@ class EditWorkoutTableViewController: UITableViewController {
     
     // MARK: Properties
     
+    var delegate: EditWorkoutDelegate?
+    
     var workoutDataSource = WorkoutTableViewDataSource()
     
     var workout: Workout?
@@ -26,6 +32,7 @@ class EditWorkoutTableViewController: UITableViewController {
     var previousWorkout: Workout?
     
     var selectedDate: Date?
+    var originalWorkoutProgram: WorkoutProgram?
     
     let dataLoader = DataLoader.shared
     
@@ -112,6 +119,9 @@ class EditWorkoutTableViewController: UITableViewController {
             workout.exercise = self.exercise
             workout.program = self.program
             saveDataContext()
+            if let newProgram = workout.program, originalWorkoutProgram != newProgram {
+                self.delegate?.didUpdateWorkoutProgram(workout)
+            }
         } else {
             guard let exercise = self.exercise else {
                 present(basicAlertController(title: "Missing Exercise", message: "Workout must have an Exercise"), animated: true)
@@ -123,6 +133,9 @@ class EditWorkoutTableViewController: UITableViewController {
             newWorkout.program = self.program
             newWorkout.notes = self.currentNotesTextView.text
             saveDataContext()
+            if let _ = self.program {
+                self.delegate?.didUpdateWorkoutProgram(newWorkout)
+            }
         }
     }
     

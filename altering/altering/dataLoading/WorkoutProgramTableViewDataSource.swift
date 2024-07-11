@@ -90,22 +90,26 @@ class WorkoutProgramTableViewDataSource {
         }
         if let endDate = program.end {
             if endDate < Date.now {
-                return ("Ended \(daysBetween(start: endDate, end: Date.now) ?? 0) days ago", lateColor)
+                let days = daysBetween(start: endDate, end: Date.now) ?? 0
+                return ("Ended \(days) day\(days == 1 ? "" : "s") ago", lateColor)
             } else {
-                return ("Ends in \(daysBetween(start: Date.now, end: endDate) ?? 0) days", defaultColor)
+                let days = daysBetween(start: Date.now, end: endDate) ?? 0
+                return ("Ends in \(days) day\(days == 1 ? "" : "s")", defaultColor)
             }
         }
         if let startDate = program.start {
             if startDate < Date.now {
-                return ("Started \(daysBetween(start: startDate, end: Date.now) ?? 0) days ago", defaultColor)
+                let days = daysBetween(start: startDate, end: Date.now) ?? 0
+                return ("Started \(days) day\(days == 1 ? "" : "s") ago", defaultColor)
             } else {
-                return ("Starts in \(daysBetween(start: Date.now, end: startDate) ?? 0) days", defaultColor)
+                let days = daysBetween(start: Date.now, end: startDate) ?? 0
+                return ("Starts in \(days) day\(days == 1 ? "" : "s")", defaultColor)
             }
         } else if let firstWorkout = workouts.sorted(by: { w1, w2 in
             w1.date! < w2.date!
         }).last {
             let days = daysBetween(start: firstWorkout.date ?? Date.now, end: Date.now) ?? 0
-            return ("Last workout \(days == 0 ? "was today" : "\(days) days ago")", defaultColor)
+            return ("Last workout \(days == 0 ? "was today" : "\(days) day\(days == 1 ? "" : "s") ago")", defaultColor)
         } else {
             return ("No workouts yet", defaultColor)
         }
