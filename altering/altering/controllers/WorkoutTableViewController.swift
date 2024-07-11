@@ -316,9 +316,16 @@ extension WorkoutTableViewController: EditWorkoutDelegate {
                 (title, message) = ("Boom!", "You just finished \(workout.exercise?.name ?? "Exercise") in \(workout.program?.name ?? "Workout Program")")
                 image = UIImage(systemName: "star.circle.fill")
             }
-            let progressInfo = ProgressInfo(title: title, subtitle: message, image: image, progress: progress)
             
-            self.performSegue(withIdentifier: PROGRESS_SEGUE_IDENTIFIER, sender: progressInfo)
+            if let program = workout.program, let programCompleted = program.isComplete(), programCompleted {
+                let progressInfo = ProgressInfo(title: "Program Complete!", subtitle: "You just completed \(program.name ?? "Workout Program")", image: UIImage(systemName: "trophy.circle.fill"), progress: progress)
+                self.performSegue(withIdentifier: PROGRESS_SEGUE_IDENTIFIER, sender: progressInfo)
+            } else {
+                let progressInfo = ProgressInfo(title: title, subtitle: message, image: image, progress: progress)
+                self.performSegue(withIdentifier: PROGRESS_SEGUE_IDENTIFIER, sender: progressInfo)
+            }
+                        
+            
         }
     }
 }

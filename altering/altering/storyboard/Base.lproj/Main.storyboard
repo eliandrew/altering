@@ -583,7 +583,7 @@
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="50" id="Ypg-iW-zbJ"/>
                                                 </constraints>
-                                                <imageReference key="image" image="star.circle.fill" catalog="system" symbolScale="large"/>
+                                                <imageReference key="image" image="trophy.circle.fill" catalog="system" symbolScale="large"/>
                                             </imageView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Boom!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="87R-su-pMW">
                                                 <rect key="frame" x="0.0" y="70" width="303" height="30"/>
@@ -695,7 +695,7 @@
         <image name="dumbbell.fill" catalog="system" width="128" height="72"/>
         <image name="figure.strengthtraining.traditional" catalog="system" width="128" height="119"/>
         <image name="minus.circle" catalog="system" width="128" height="123"/>
-        <image name="star.circle.fill" catalog="system" width="128" height="123"/>
+        <image name="trophy.circle.fill" catalog="system" width="128" height="123"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

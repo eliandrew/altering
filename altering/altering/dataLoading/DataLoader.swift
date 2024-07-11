@@ -152,7 +152,7 @@ class DataLoader {
     func loadAllWorkoutPrograms(completion: @escaping (Result<[WorkoutProgram], Error>) -> Void) {
         DispatchQueue.global().async {
             let fetchRequest: NSFetchRequest<WorkoutProgram> = WorkoutProgram.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: false)]
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
             
             do {
                 let fetchResults = try self.viewContext.fetch(fetchRequest)
