@@ -86,14 +86,16 @@ class EditWorkoutTableViewController: UITableViewController {
         navigationItem.largeTitleDisplayMode = .always
         tableView.tableFooterView = nil
         
-        if let workout = workout, let exercise = workout.exercise, let date = workout.date, let notes = workout.notes {
-            self.exercise = exercise
+        if let workout = workout, let date = workout.date, let notes = workout.notes {
+            self.exercise = exercise ?? workout.exercise
             self.program = program ?? workout.program
             self.datePicker.date = date
             self.programLabel.text = workout.program?.name ?? "None"
             self.exerciseLabel.text = self.exercise?.name ?? "None"
             self.currentNotesTextView.text = notes
-            self.loadPreviousWorkout(exercise, date: date)
+            if let exercise {
+                self.loadPreviousWorkout(exercise, date: date)
+            }
             
             // Set the title for the large title
             title = "Edit Workout"
@@ -137,6 +139,7 @@ class EditWorkoutTableViewController: UITableViewController {
                 self.delegate?.didUpdateWorkoutProgram(newWorkout)
             }
         }
+       
     }
     
     @objc func exit() {

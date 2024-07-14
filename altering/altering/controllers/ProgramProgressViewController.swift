@@ -11,9 +11,9 @@ class ProgramProgressViewController: UIViewController {
     @IBOutlet weak var backgroundView: UIView!
     
     var progressTitleText: String?
-    var progressSubtitleText: String?
+    var progressSubtitleText: NSAttributedString?
     var progressImage: UIImage?
-    var progress: Float = 0.0
+    var progress: Float? = 0.0
     
     @IBAction func actionButtonPressed(_ sender: Any) {
         self.dismiss(animated: true)
@@ -24,19 +24,28 @@ class ProgramProgressViewController: UIViewController {
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
         backgroundView.layer.cornerRadius = 20
         backgroundView.layer.masksToBounds = true
-        if self.progress == 1.0 {
-            self.progressView.tintColor = .systemGreen
+        if let progress {
+            self.progressView.isHidden = false
+            if progress == 1.0 {
+                self.progressView.tintColor = .systemGreen
+            } else {
+                self.progressView.tintColor = .systemBlue
+            }
         } else {
-            self.progressView.tintColor = .systemBlue
+            self.progressView.isHidden = true
         }
+        
         self.progressTitleLabel.text = progressTitleText
-        self.progressSubtitleLabel.text = progressSubtitleText
+        self.progressSubtitleLabel.attributedText = progressSubtitleText
         self.progressImageView.image = progressImage
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self.progressView.setProgress(self.progress, animated: true)
+        if let progress {
+            self.progressView.setProgress(progress, animated: true)
+        }
     }
     
     

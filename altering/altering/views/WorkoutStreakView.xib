@@ -2,7 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -32,17 +32,28 @@
                         <constraint firstAttribute="height" constant="50" id="zx3-4o-28h"/>
                     </constraints>
                 </imageView>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="medal.star.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="3PH-dS-pVD">
+                    <rect key="frame" x="341" y="21.333333333333332" width="27" height="29.333333333333353"/>
+                    <color key="tintColor" systemColor="systemBlueColor"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="27" id="bqf-ti-RzX"/>
+                        <constraint firstAttribute="height" constant="27" id="get-BF-b9N"/>
+                    </constraints>
+                </imageView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" systemColor="secondarySystemBackgroundColor"/>
             <constraints>
+                <constraint firstItem="3PH-dS-pVD" firstAttribute="centerY" secondItem="ugz-SO-GBX" secondAttribute="centerY" id="1y9-Qn-VYI"/>
                 <constraint firstItem="TmF-yU-32O" firstAttribute="centerY" secondItem="ugz-SO-GBX" secondAttribute="centerY" id="3Ct-UE-QKl"/>
                 <constraint firstItem="ST2-PM-ddq" firstAttribute="leading" secondItem="TmF-yU-32O" secondAttribute="trailing" constant="5" id="5zB-wk-nhd"/>
                 <constraint firstItem="ST2-PM-ddq" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="aD4-Kp-eI2"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="3PH-dS-pVD" secondAttribute="trailing" constant="25" id="ljs-pb-n6j"/>
                 <constraint firstItem="ST2-PM-ddq" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="qGz-oy-OV6"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
+                <outlet property="longestStreakImageView" destination="3PH-dS-pVD" id="Yb0-FT-HNH"/>
                 <outlet property="streakImageView" destination="TmF-yU-32O" id="Vhn-Wa-yRa"/>
                 <outlet property="streakLabel" destination="ugz-SO-GBX" id="ZaA-FS-Y8u"/>
             </connections>
@@ -50,9 +61,13 @@
         </view>
     </objects>
     <resources>
+        <image name="medal.star.fill" catalog="system" width="92" height="128"/>
         <image name="star.circle.fill" catalog="system" width="128" height="123"/>
         <systemColor name="secondarySystemBackgroundColor">
             <color red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemBlueColor">
+            <color red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

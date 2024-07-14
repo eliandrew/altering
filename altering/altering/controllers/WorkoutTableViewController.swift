@@ -2,14 +2,16 @@ import UIKit
 
 struct ProgressInfo {
     var title: String
-    var subtitle: String
+    var subtitle: NSAttributedString
     var image: UIImage?
-    var progress: Float
+    var progress: Float?
 }
 
 class WorkoutTableViewController: UITableViewController {
 
     // MARK: Constants
+    
+    let STREAK_REST_MAX = 3
     
     let WORKOUT_CELL_IDENTIFIER = "workoutCellIdentifier"
     let EXPAND_WORKOUT_CELL_IDENTIFIER = "expandWorkoutCell"
@@ -135,17 +137,20 @@ class WorkoutTableViewController: UITableViewController {
     }
     
     func streakLength() -> Int {
-        let streakRestMax = 3
-        if self.currentRestDays() > streakRestMax {
+        
+        if self.currentRestDays() > STREAK_REST_MAX {
             return 0
         }
         var streakLength = 1
         let nSections = self.workoutDataSource.numberOfSections(self.tableView)
+        if nSections == 0 {
+            return 0
+        }
         for i in 0..<nSections {
             guard let restDays = self.workoutDataSource.restDaysNumberForSection(self.tableView, section: i) else {
                 return streakLength
             }
-            if restDays <= streakRestMax {
+            if restDays <= STREAK_REST_MAX {
                 streakLength += 1
             } else {
                 return streakLength
@@ -156,6 +161,7 @@ class WorkoutTableViewController: UITableViewController {
     
     func setupWorkoutStreakView() -> UIView? {
        
+        let longestStreakLength = UserDefaults.standard.integer(forKey: "maxStreakLength")
         let streakLength = self.streakLength()
         let streakView: WorkoutStreakView = WorkoutStreakView.fromNib()
         
@@ -166,6 +172,26 @@ class WorkoutTableViewController: UITableViewController {
         } else {
             streakView.streakImageView?.image = UIImage(systemName: "star.circle.fill")
             streakView.streakLabel?.text = "Start a new streak!"
+        }
+        
+        switch STREAK_REST_MAX - self.currentRestDays() {
+        case 0:
+            streakView.streakImageView.tintColor = .systemRed
+            streakView.streakLabel.textColor = .systemRed
+            streakView.longestStreakImageView.tintColor = .systemRed
+        case 1:
+            streakView.streakImageView.tintColor = .systemYellow
+            streakView.streakLabel.textColor = .systemYellow
+            streakView.longestStreakImageView.tintColor = .systemYellow
+        default:
+            streakView.streakImageView.tintColor = .systemBlue
+            streakView.streakLabel.textColor = .label
+            streakView.longestStreakImageView.tintColor = .systemBlue
+        }
+        
+        streakView.longestStreakImageView.isHidden = streakLength <= 1 || streakLength < longestStreakLength
+        if streakLength > longestStreakLength {
+            UserDefaults.standard.set(streakLength, forKey: "maxStreakLength")
         }
         
         return streakView
@@ -195,6 +221,7 @@ class WorkoutTableViewController: UITableViewController {
             case .success(let fetchedWorkouts):
                 self.workoutDataSource.setWorkouts(fetchedWorkouts)
                 DispatchQueue.main.async {
+                    self.longestStreakNotification()
                     self.tableView.tableHeaderView = self.setupWorkoutStreakView()
                     self.tableView.reloadData()
                 }
@@ -303,23 +330,49 @@ class WorkoutTableViewController: UITableViewController {
         ac.addAction(UIAlertAction(title: "OK", style: .cancel))
         return ac
     }
+    
+    func attributedProgressSubtitle(_ fullText: String, boldTexts: [String]) -> NSAttributedString {
+        let attributedString = NSMutableAttributedString(string: fullText)
+        let boldRanges = boldTexts.map { text in
+            (fullText as NSString).range(of: text)
+        }
+        let boldFont = UIFont.boldSystemFont(ofSize: 20.0)
+        for boldRange in boldRanges {
+            attributedString.addAttribute(.font, value: boldFont, range: boldRange)
+        }
+        return attributedString
+    }
+    
+    func longestStreakNotification() {
+        let longestStreakLength = UserDefaults.standard.integer(forKey: "maxStreakLength")
+        let streakLength = self.streakLength()
+        if streakLength > longestStreakLength {
+            let attributedSubtitle = self.attributedProgressSubtitle("You just set a new streak record of \(streakLength) workouts!", boldTexts: ["\(streakLength)"])
+            let streakInfo = ProgressInfo(title: "Streak Record!", subtitle: attributedSubtitle, image: UIImage(systemName: "medal.star.fill"), progress: nil)
+            self.performSegue(withIdentifier: PROGRESS_SEGUE_IDENTIFIER, sender: streakInfo)
+        }
+    }
 }
 
 extension WorkoutTableViewController: EditWorkoutDelegate {
     func didUpdateWorkoutProgram(_ workout: Workout) {
         if let progress = workout.progress(), let progressPointHit = workout.progressPointHit() {
             let isOver = progress > progressPointHit
-            var (title, message) = ("Congrats!", "You're\(isOver ? " over" : "") \(Int(progressPointHit * 100))% done with \(workout.exercise?.name ?? "Exercise") in \(workout.program?.name ?? "Workout Program")")
+            var attributedMessage = self.attributedProgressSubtitle("You're\(isOver ? " over" : "") \(Int(progressPointHit * 100))% done with \(workout.exercise?.name ?? "Exercise") in \(workout.program?.name ?? "Workout Program")", boldTexts: ["\(Int(progressPointHit * 100))%", "\(workout.exercise?.name ?? "Exercise")", "\(workout.program?.name ?? "Workout Program")"])
+            var (title, message) = ("Congrats!", attributedMessage)
             var image = UIImage(systemName: imageNames.randomElement() ?? "figure.wave")
             if (progressPointHit == 0.0) {
-                (title, message) = ("Woohoo!", "That was your first workout for \(workout.exercise?.name ?? "Exercise") in \(workout.program?.name ?? "Workout Program")")
+                attributedMessage = self.attributedProgressSubtitle("That was your first workout for \(workout.exercise?.name ?? "Exercise") in \(workout.program?.name ?? "Workout Program")", boldTexts: ["\(workout.exercise?.name ?? "Exercise")", "\(workout.program?.name ?? "Workout Program")"])
+                (title, message) = ("Woohoo!", attributedMessage)
             } else if (progressPointHit == 1.0) {
-                (title, message) = ("Boom!", "You just finished \(workout.exercise?.name ?? "Exercise") in \(workout.program?.name ?? "Workout Program")")
+                attributedMessage = self.attributedProgressSubtitle("You just finished \(workout.exercise?.name ?? "Exercise") in \(workout.program?.name ?? "Workout Program")", boldTexts: ["\(workout.exercise?.name ?? "Exercise")", "\(workout.program?.name ?? "Workout Program")"])
+                (title, message) = ("Boom!", attributedMessage)
                 image = UIImage(systemName: "star.circle.fill")
             }
             
             if let program = workout.program, let programCompleted = program.isComplete(), programCompleted {
-                let progressInfo = ProgressInfo(title: "Program Complete!", subtitle: "You just completed \(program.name ?? "Workout Program")", image: UIImage(systemName: "trophy.circle.fill"), progress: progress)
+                attributedMessage = self.attributedProgressSubtitle("You just completed \(program.name ?? "Workout Program")", boldTexts: ["\(program.name ?? "Workout Program")"])
+                let progressInfo = ProgressInfo(title: "Program Complete!", subtitle: attributedMessage, image: UIImage(systemName: "trophy.circle.fill"), progress: progress)
                 self.performSegue(withIdentifier: PROGRESS_SEGUE_IDENTIFIER, sender: progressInfo)
             } else {
                 let progressInfo = ProgressInfo(title: title, subtitle: message, image: image, progress: progress)
