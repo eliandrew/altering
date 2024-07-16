@@ -51,6 +51,10 @@ class EditWorkoutProgramTableViewController: UITableViewController {
             
         } else {
             let newProgram = dataLoader.createNewWorkoutProgram()
+            guard let name = self.programName, name.isEmpty == false else {
+                present(basicAlertController(title: "Missing Program Name", message: "Program must have a name"), animated: true)
+                return
+            }
             newProgram.name = self.programName
             newProgram.start = self.programStartDateActive ? self.programStartDate : nil
             newProgram.end = self.programEndDateActive ? self.programEndDate : nil
@@ -239,6 +243,10 @@ extension EditWorkoutProgramTableViewController: UITextFieldDelegate {
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
+        self.programName = textField.text
+    }
+    
+    func textFieldDidChangeSelection(_ textField: UITextField) {
         self.programName = textField.text
     }
 }

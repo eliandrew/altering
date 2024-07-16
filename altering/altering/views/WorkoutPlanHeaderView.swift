@@ -10,6 +10,7 @@ class WorkoutPlanHeaderView: UIView {
     @IBOutlet weak var remainingSubtitleLabel: UILabel!
     @IBOutlet weak var completedWorkoutCountLabel: UILabel!
     @IBOutlet weak var completedSubtitleLabel: UILabel!
+    @IBOutlet weak var detailImageView: UIImageView?
     
     func setPlanProgress() {
         self.progressBar.setProgress(self.progress ?? 0, animated: true)
@@ -24,7 +25,9 @@ class WorkoutPlanHeaderView: UIView {
             self.remainingWorkoutCountLabel.text = "0"
             self.remainingSubtitleLabel.text = "remaining"
             self.completedWorkoutCountLabel.text = "\(workouts.count)"
-            self.completedWorkoutCountLabel.text = "completed"
+            self.completedSubtitleLabel.text = "completed"
+            self.detailImageView?.image = UIImage(systemName: "checkmark.circle.fill")
+            self.detailImageView?.tintColor = .systemGreen
         } else {
             self.progressBar.tintColor = .systemBlue
             self.remainingWorkoutCountLabel.text = "\(workoutPlan.numWorkouts - Int64(workouts.count))"

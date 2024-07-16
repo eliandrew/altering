@@ -22,7 +22,7 @@
                             <constraint firstAttribute="height" constant="50" id="1gG-bN-Sfu"/>
                         </constraints>
                         <state key="normal" title="Button"/>
-                        <buttonConfiguration key="configuration" style="tinted" image="plus.app.fill" catalog="system" cornerStyle="capsule"/>
+                        <buttonConfiguration key="configuration" style="tinted" cornerStyle="capsule"/>
                     </button>
                 </subviews>
                 <constraints>
@@ -40,7 +40,4 @@
             <point key="canvasLocation" x="45.801526717557252" y="25.35211267605634"/>
         </tableViewCell>
     </objects>
-    <resources>
-        <image name="plus.app.fill" catalog="system" width="128" height="114"/>
-    </resources>
 </document>

@@ -89,7 +89,7 @@ class ExerciseTableViewController: UITableViewController {
             dataLoader.deleteExercise(exercise)
             dataLoader.saveContext()
             self.exerciseDataSource.removeExercise(at: indexPath)
-            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            self.tableView.reloadData()
         }
     }
     
@@ -101,7 +101,7 @@ class ExerciseTableViewController: UITableViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == EXERCISE_SEGUE_IDENTIFIER {
-            let vc = segue.destination as? EditExerciseViewController
+            let vc = segue.destination as? EditExerciseTableViewController
             vc?.existingExerciseNames = self.exerciseDataSource.exerciseNames()
             if let exercise = sender as? Exercise {
                 vc?.exercise = exercise
