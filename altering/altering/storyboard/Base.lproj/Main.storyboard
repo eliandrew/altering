@@ -256,11 +256,41 @@
                     <navigationItem key="navigationItem" id="tOP-BY-TrG"/>
                     <connections>
                         <segue destination="OCe-39-zZN" kind="show" identifier="editWorkoutProgramSegue" id="qnc-vP-iUC"/>
+                        <segue destination="Zbt-d2-51o" kind="show" identifier="workoutPlanSegue" id="YKp-5z-egW"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HoN-pk-yJy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1775" y="1422"/>
+        </scene>
+        <!--Workout Plan Table View Controller-->
+        <scene sceneID="vYc-Ef-vDV">
+            <objects>
+                <tableViewController id="Zbt-d2-51o" customClass="WorkoutPlanTableViewController" customModule="Altered" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="QpJ-TO-FWE">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="U8P-Ny-ajt">
+                                <rect key="frame" x="0.0" y="50" width="393" height="43.666667938232422"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="U8P-Ny-ajt" id="G1Z-Jh-Dki">
+                                    <rect key="frame" x="0.0" y="0.0" width="393" height="43.666667938232422"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="Zbt-d2-51o" id="WJF-JK-Wls"/>
+                            <outlet property="delegate" destination="Zbt-d2-51o" id="m4a-FS-rVe"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="E1p-ub-QCO"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eGZ-jd-Ya6" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1775" y="2173"/>
         </scene>
         <!--Edit Workout Program Table View Controller-->
         <scene sceneID="EvV-UE-1UM">
@@ -449,7 +479,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="393" height="250"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" editable="NO" text="Previous Exercise Notes" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yOp-Zk-o0e">
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Previous Exercise Notes" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yOp-Zk-o0e">
                                                     <rect key="frame" x="20" y="11" width="353" height="250"/>
                                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                     <constraints>

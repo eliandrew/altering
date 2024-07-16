@@ -106,7 +106,6 @@ class WorkoutTableViewController: UITableViewController {
     
     @objc func addWorkout() {
         performSegue(withIdentifier: WORKOUT_SEGUE_IDENTIFIER, sender: nil)
-//        performSegue(withIdentifier: PROGRESS_SEGUE_IDENTIFIER, sender: ProgressInfo(title: "test", subtitle: "test", image: UIImage(systemName: "figure.wave"), progress: 1.0))
     }
     
     @objc func exportWorkouts() {

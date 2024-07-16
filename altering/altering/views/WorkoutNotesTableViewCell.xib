@@ -2,7 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -17,32 +17,58 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="200"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="5 rounds" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="fEf-Po-6hQ">
-                        <rect key="frame" x="10" y="10" width="300" height="180"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="180" id="tBk-Sp-vRx"/>
-                        </constraints>
-                        <color key="textColor" systemColor="labelColor"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                    </textView>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="ckm-IV-dhY">
+                        <rect key="frame" x="20" y="10" width="280" height="180"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="95j-e9-ojB">
+                                <rect key="frame" x="0.0" y="0.0" width="280" height="25"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="calendar" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="eyR-yY-coB">
+                                        <rect key="frame" x="0.0" y="1.6666666666666643" width="25" height="22.000000000000004"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="25" id="3fh-cX-HX6"/>
+                                            <constraint firstAttribute="height" constant="25" id="dQU-yo-Mho"/>
+                                        </constraints>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="06/15/24 (2 days ago)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="B54-gS-Gx8">
+                                        <rect key="frame" x="35" y="0.0" width="245" height="25"/>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="5 rounds" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="chr-wZ-J8Q">
+                                <rect key="frame" x="0.0" y="35" width="280" height="145"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="56F-dd-3lc"/>
+                                </constraints>
+                                <color key="textColor" systemColor="labelColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                    </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="bottom" secondItem="fEf-Po-6hQ" secondAttribute="bottom" constant="10" id="SCA-P4-CSx"/>
-                    <constraint firstItem="fEf-Po-6hQ" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="YWu-bL-561"/>
-                    <constraint firstItem="fEf-Po-6hQ" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="10" id="g12-S9-IqG"/>
-                    <constraint firstAttribute="trailing" secondItem="fEf-Po-6hQ" secondAttribute="trailing" constant="10" id="s96-sF-OZS"/>
+                    <constraint firstAttribute="trailing" secondItem="ckm-IV-dhY" secondAttribute="trailing" constant="20" id="6Ln-9D-C4L"/>
+                    <constraint firstAttribute="bottom" secondItem="ckm-IV-dhY" secondAttribute="bottom" constant="10" id="7le-mu-dUE"/>
+                    <constraint firstItem="ckm-IV-dhY" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="JBf-6l-Cyc"/>
+                    <constraint firstItem="ckm-IV-dhY" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="pmI-M4-nn0"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
-                <outlet property="notesTextView" destination="fEf-Po-6hQ" id="Ffu-f9-ZTb"/>
+                <outlet property="calendarImageView" destination="eyR-yY-coB" id="pd7-3i-Kf9"/>
+                <outlet property="dateLabel" destination="B54-gS-Gx8" id="fo2-hM-dyh"/>
+                <outlet property="notesTextView" destination="chr-wZ-J8Q" id="Ece-cK-DJ5"/>
             </connections>
             <point key="canvasLocation" x="62.595419847328245" y="74.647887323943664"/>
         </tableViewCell>
     </objects>
     <resources>
+        <image name="calendar" catalog="system" width="128" height="107"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

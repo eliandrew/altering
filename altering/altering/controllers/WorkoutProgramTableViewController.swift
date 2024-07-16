@@ -6,6 +6,8 @@ class WorkoutProgramTableViewController: UITableViewController {
     let WORKOUT_PROGRAM_CELL_IDENTIFIER = "workoutProgramCellIdentifier"
     let WORKOUT_PROGRAM_HEADER_VIEW_IDENTIFIER = "workoutProgramHeaderViewIdentifier"
     
+    let WORKOUT_PLAN_SEGUE = "workoutPlanSegue"
+    
     var programDataSource = WorkoutProgramTableViewDataSource()
     
     let dataLoader = DataLoader.shared
@@ -76,6 +78,11 @@ class WorkoutProgramTableViewController: UITableViewController {
         return 40.0
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        self.performSegue(withIdentifier: WORKOUT_PLAN_SEGUE, sender: indexPath)
+    }
+    
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: WORKOUT_PROGRAM_HEADER_VIEW_IDENTIFIER) as? ButtonHeaderView
         headerView?.title.text = self.programDataSource.titleForSection(section)
@@ -118,6 +125,18 @@ class WorkoutProgramTableViewController: UITableViewController {
         
         // Present the alert controller
         present(alertController, animated: true, completion: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == WORKOUT_PLAN_SEGUE {
+            let vc = segue.destination as? WorkoutPlanTableViewController
+            if let indexPath = sender as? IndexPath, let plan = self.programDataSource.planForIndexPath(indexPath), let workouts = self.programDataSource.programForIndexPath(indexPath)?.workoutsForPlan(plan) {
+                vc?.workoutPlan = plan
+                vc?.workouts = workouts.sorted(by: { w1, w2 in
+                    w1.date ?? Date.now > w2.date ?? Date.now
+                })
+            }
+        }
     }
 
     

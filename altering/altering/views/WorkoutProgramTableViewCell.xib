@@ -103,7 +103,7 @@
                 <outlet property="remainingSubtitleLabel" destination="JsS-Rj-T4y" id="T3O-YN-jvE"/>
                 <outlet property="remainingWorkoutCountLabel" destination="M1R-nF-oXv" id="vP6-8A-vOV"/>
             </connections>
-            <point key="canvasLocation" x="47" y="41"/>
+            <point key="canvasLocation" x="45.801526717557252" y="40.845070422535215"/>
         </tableViewCell>
     </objects>
     <resources>

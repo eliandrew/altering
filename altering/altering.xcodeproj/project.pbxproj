@@ -30,6 +30,9 @@
 		A628F39F2BBEF05400DF5E09 /* WorkoutFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A628F39E2BBEF05400DF5E09 /* WorkoutFooterView.swift */; };
 		A628F3A12BBEF64300DF5E09 /* WorkoutFooterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A628F3A02BBEF64300DF5E09 /* WorkoutFooterView.xib */; };
 		A638587D2C33214F00B075E7 /* DataWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A638587C2C33214F00B075E7 /* DataWriter.swift */; };
+		A673E5C42C45836B00A40A91 /* WorkoutPlanTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A673E5C32C45836B00A40A91 /* WorkoutPlanTableViewController.swift */; };
+		A673E5C62C46204900A40A91 /* WorkoutPlanHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A673E5C52C46204900A40A91 /* WorkoutPlanHeaderView.swift */; };
+		A673E5C82C46206900A40A91 /* WorkoutPlanHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A673E5C72C46206900A40A91 /* WorkoutPlanHeaderView.xib */; };
 		A682BA382BBDC68D00F3DD91 /* StringHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A682BA372BBDC68D00F3DD91 /* StringHelper.swift */; };
 		A68FF29B2BBCB9EF007611D4 /* SelectExerciseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68FF29A2BBCB9EF007611D4 /* SelectExerciseTableViewController.swift */; };
 		A68FF29D2BBCBA23007611D4 /* ExerciseTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68FF29C2BBCBA23007611D4 /* ExerciseTableViewDataSource.swift */; };
@@ -124,6 +127,9 @@
 		A638587C2C33214F00B075E7 /* DataWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataWriter.swift; sourceTree = "<group>"; };
 		A63DDB352BC0891300A50E01 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		A63DDB372BC0891300A50E01 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		A673E5C32C45836B00A40A91 /* WorkoutPlanTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutPlanTableViewController.swift; sourceTree = "<group>"; };
+		A673E5C52C46204900A40A91 /* WorkoutPlanHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutPlanHeaderView.swift; sourceTree = "<group>"; };
+		A673E5C72C46206900A40A91 /* WorkoutPlanHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkoutPlanHeaderView.xib; sourceTree = "<group>"; };
 		A682BA372BBDC68D00F3DD91 /* StringHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringHelper.swift; sourceTree = "<group>"; };
 		A68FF29A2BBCB9EF007611D4 /* SelectExerciseTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectExerciseTableViewController.swift; sourceTree = "<group>"; };
 		A68FF29C2BBCBA23007611D4 /* ExerciseTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseTableViewDataSource.swift; sourceTree = "<group>"; };
@@ -284,6 +290,7 @@
 				A60974BE2C3A25D300857577 /* EditWorkoutProgramTableViewController.swift */,
 				A6E734802C3DE87B006B1836 /* SelectWorkoutProgramTableViewController.swift */,
 				A6C8233F2C4064E7009B6DED /* ProgramProgressViewController.swift */,
+				A673E5C32C45836B00A40A91 /* WorkoutPlanTableViewController.swift */,
 			);
 			path = controllers;
 			sourceTree = "<group>";
@@ -338,6 +345,8 @@
 				A6AADD262C3CA7CC004E305A /* ButtonHeaderView.xib */,
 				A6E734862C3EDF60006B1836 /* MultiIconTableViewCell.swift */,
 				A6E734872C3EDF60006B1836 /* MultiIconTableViewCell.xib */,
+				A673E5C52C46204900A40A91 /* WorkoutPlanHeaderView.swift */,
+				A673E5C72C46206900A40A91 /* WorkoutPlanHeaderView.xib */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -482,6 +491,7 @@
 				A6AADD272C3CA7CC004E305A /* ButtonHeaderView.xib in Resources */,
 				A60974CF2C3B8F0200857577 /* ButtonTableViewCell.xib in Resources */,
 				A6CFE1382C3476F800FBC4FC /* ExpandWorkoutsTableViewCell.xib in Resources */,
+				A673E5C82C46206900A40A91 /* WorkoutPlanHeaderView.xib in Resources */,
 				A60974CB2C3B319700857577 /* DatePickerTableViewCell.xib in Resources */,
 				A6BD32152BBC6CD30017FBCF /* Base in Resources */,
 				A6BD320D2BBC6CD00017FBCF /* Base in Resources */,
@@ -545,7 +555,9 @@
 				A6115A2E2BBF410A00CC04B3 /* WorkoutNotesTableViewCell.swift in Sources */,
 				A60974BA2C3A257400857577 /* WorkoutProgram+CoreDataClass.swift in Sources */,
 				A60974C62C3B305400857577 /* TextFieldTableViewCell.swift in Sources */,
+				A673E5C42C45836B00A40A91 /* WorkoutPlanTableViewController.swift in Sources */,
 				A60974BC2C3A257400857577 /* WorkoutPlan+CoreDataClass.swift in Sources */,
+				A673E5C62C46204900A40A91 /* WorkoutPlanHeaderView.swift in Sources */,
 				A6E734882C3EDF60006B1836 /* MultiIconTableViewCell.swift in Sources */,
 				A68FF2A52BBCD983007611D4 /* SelectGroupTableViewController.swift in Sources */,
 				A6BD324E2BBC8FC90017FBCF /* Workout+CoreDataClass.swift in Sources */,

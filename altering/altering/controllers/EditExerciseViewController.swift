@@ -217,6 +217,8 @@ extension EditExerciseViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: WORKOUT_CELL_IDENTIFIER, for: indexPath)
         if let notesViewCell = cell as? WorkoutNotesTableViewCell, let workout = self.workoutDataSource.workoutForIndexPath(indexPath) {
             notesViewCell.notesTextView.text = workout.notes
+            notesViewCell.notesTextView.isEditable = false
+            notesViewCell.notesTextView.isScrollEnabled = false
             return notesViewCell
         } else {
             return cell

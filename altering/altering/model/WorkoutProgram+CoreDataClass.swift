@@ -4,6 +4,16 @@ import CoreData
 @objc(WorkoutProgram)
 public class WorkoutProgram: NSManagedObject {
     
+    func workoutsForPlan(_ plan: WorkoutPlan) -> [Workout]? {
+        if let workouts = self.workouts?.allObjects as? [Workout] {
+            return workouts.filter { w in
+                w.exercise == plan.exercise
+            }
+        } else {
+            return nil
+        }
+    }
+    
     func isComplete() -> Bool? {
         if let workouts = self.workouts?.allObjects as? [Workout], let plans = self.plans?.allObjects as? [WorkoutPlan] {
             var workoutCountForExercises: [Exercise : Int] = [:]

@@ -47,16 +47,32 @@ class WorkoutProgramTableViewDataSource {
         return self.programs[section].plans?.count ?? 0
     }
     
+    func planForIndexPath(_ indexPath: IndexPath) -> WorkoutPlan? {
+        let workoutProgram = self.programs[indexPath.section]
+        if let plans = workoutProgram.plans?.allObjects as? [WorkoutPlan] {
+            let plansSorted = plans.sorted { w1, w2 in
+                w1.exercise?.name ?? "" < w2.exercise?.name ?? ""
+            }
+            return plansSorted[indexPath.row]
+        } else {
+            return nil
+        }
+    }
+    
+    func programForIndexPath(_ indexPath: IndexPath) -> WorkoutProgram? {
+        return self.programs[indexPath.section]
+    }
+    
     func cellForRowAtIndexPath(_ tableView: UITableView, indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WORKOUT_PROGRAM_CELL_IDENTIFIER, for: indexPath) as! WorkoutProgramTableViewCell
         let workoutProgram = self.programs[indexPath.section]
         if let plans = workoutProgram.plans?.allObjects as? [WorkoutPlan] {
-            let plan = plans[indexPath.row]
-            cell.exerciseLabel.text = plan.exercise?.name ?? "Exercise Missing"
-            let workouts = (workoutProgram.workouts ?? NSSet()) as! Set<Workout>
-            let planWorkouts = workouts.filter { w in
-                plan.exercise == w.exercise
+            let plansSorted = plans.sorted { w1, w2 in
+                w1.exercise?.name ?? "" < w2.exercise?.name ?? ""
             }
+            let plan = plansSorted[indexPath.row]
+            cell.exerciseLabel.text = plan.exercise?.name ?? "Exercise Missing"
+            let planWorkouts = workoutProgram.workoutsForPlan(plan) ?? []
             let progress = Float(planWorkouts.count) / Float(plan.numWorkouts)
             if progress == 1.0 {
                 cell.progressBar.tintColor = .systemGreen
@@ -81,7 +97,7 @@ class WorkoutProgramTableViewDataSource {
         return cell
     }
     
-    func getDateLabelAndTint(progress: Float, program: WorkoutProgram, workouts: Set<Workout>) -> (String, UIColor) {
+    func getDateLabelAndTint(progress: Float, program: WorkoutProgram, workouts: [Workout]) -> (String, UIColor) {
         let completedColor: UIColor = .systemGreen
         let lateColor: UIColor = .systemRed
         let defaultColor: UIColor = .systemBlue
