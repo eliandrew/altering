@@ -17,6 +17,9 @@ class WorkoutPlanTableViewController: UITableViewController {
         super.viewDidLoad()
         
         tableView.register(UINib(nibName: "WorkoutNotesTableViewCell", bundle: nil), forCellReuseIdentifier: WORKOUT_NOTES_CELL_IDENTIFIER)
+        
+        navigationItem.largeTitleDisplayMode = .never
+        
         self.tableView.tableHeaderView = self.setupHeaderView()
     }
     
