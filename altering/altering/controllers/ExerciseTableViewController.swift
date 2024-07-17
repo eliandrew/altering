@@ -84,12 +84,17 @@ class ExerciseTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete, 
-            let exercise = self.exerciseDataSource.exerciseForIndexPath(indexPath) {
+        if editingStyle == .delete,
+            let exercise = self.exerciseDataSource.exerciseForIndexPath(indexPath),
+           let exercisesInSection = self.exerciseDataSource.exercisesForSection(indexPath.section) {
             dataLoader.deleteExercise(exercise)
             dataLoader.saveContext()
             self.exerciseDataSource.removeExercise(at: indexPath)
-            self.tableView.reloadData()
+            if exercisesInSection.count == 1 {
+                tableView.deleteSections(IndexSet(integer: indexPath.section), with: .automatic)
+            } else {
+                tableView.deleteRows(at: [indexPath], with: .automatic)
+            }
         }
     }
     

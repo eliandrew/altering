@@ -48,7 +48,17 @@ class ExerciseTableViewDataSource {
     }
     
     func removeExercise(at indexPath: IndexPath) {
-        self.exercisesByGroup[self.exerciseGroupKeys[indexPath.section]]?.remove(at: indexPath.row)
+        if let group = self.exercisesByGroup[self.exerciseGroupKeys[indexPath.section]] {
+            let key = self.exerciseGroupKeys[indexPath.section]
+            if group.count == 1 {
+                let keyRemoved = self.exerciseGroupKeys.remove(at: indexPath.section)
+                let groupRemoved = self.exercisesByGroup.removeValue(forKey: key)
+            } else {
+                self.exercisesByGroup[key]?.remove(at: indexPath.row)
+            }
+            self.searchExercisesByGroup = self.exercisesByGroup
+            self.searchExerciseGroupKeys = self.exerciseGroupKeys
+        }
     }
     
     func setExercises(_ exercises: [Exercise]) {
