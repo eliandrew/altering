@@ -43,3 +43,34 @@ func standardDateTitle(_ date: Date?, referenceDate: Date, reference: DateTitleR
     }
     return "\(dateTitle ?? "No Date") (\(referenceDaysTitle))"
 }
+
+func areYearsSame(date1: Date, date2: Date) -> Bool {
+    let calendar = Calendar.current
+    let year1 = calendar.component(.year, from: date1)
+    let year2 = calendar.component(.year, from: date2)
+    return year1 == year2
+}
+
+func formatSectionTitle(_ date: Date) -> String {
+    let dateFormatter = DateFormatter()
+    if areYearsSame(date1: date, date2: Date.now) {
+        dateFormatter.dateFormat = "MMM"
+    } else {
+        dateFormatter.dateFormat = "MMM yy"
+    }
+    
+    return dateFormatter.string(from: date)
+}
+
+func convertDateStringToTitle(_ dateString: String) -> String? {
+    // Create a date formatter for the input string
+    let inputDateFormatter = DateFormatter()
+    inputDateFormatter.dateFormat = "EEE MM/dd/yy"
+    
+    // Parse the input date string into a Date object
+    guard let date = inputDateFormatter.date(from: dateString) else {
+        return nil
+    }
+    
+    return formatSectionTitle(date)
+}

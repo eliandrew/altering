@@ -16,11 +16,24 @@ class WorkoutTableViewDataSource {
     var workoutDateKeys = [String]()
     var firstWorkout: [String : Workout] = [:]
     
+    var sectionTitles: [String]?
+    
     
     // MARK: Helpers
     
     func removeWorkout(at indexPath: IndexPath) {
-        self.workoutsByDate[self.workoutDateKeys[indexPath.section]]?.workouts.remove(at: indexPath.row)
+        if let group = self.workoutsByDate[self.workoutDateKeys[indexPath.section]] {
+            let key = self.workoutDateKeys[indexPath.section]
+            if group.workouts.count == 1 {
+                self.workoutDateKeys.remove(at: indexPath.section)
+                self.workoutsByDate.removeValue(forKey: key)
+                self.sectionTitles?.removeAll(where: { title in
+                    title == convertDateStringToTitle(key)
+                })
+            } else {
+                self.workoutsByDate[key]?.workouts.remove(at: indexPath.row)
+            }
+        }
     }
     
     func setWorkouts(_ workouts: [Workout]) {
@@ -42,10 +55,25 @@ class WorkoutTableViewDataSource {
                 newWorkoutsByDateKey[dateKey]?.workouts.append(workout)
             }
         }
+        newWorkoutDateKeys.sort { d1, d2 in
+            d1 > d2
+        }
         self.allWorkouts = workouts
-        self.workoutDateKeys = newWorkoutDateKeys.sorted { $0 > $1 }.map({ date in
+        self.workoutDateKeys = newWorkoutDateKeys.map({ date in
             self.dateTitleFrom(date) ?? "No Date"
         })
+        let allTitles = newWorkoutDateKeys.map { d in
+            formatSectionTitle(d)
+        }
+        var seen = Set<String>()
+        self.sectionTitles = allTitles.filter { element in
+            if seen.contains(element) {
+                return false
+            } else {
+                seen.insert(element)
+                return true
+            }
+        }
         self.workoutsByDate = newWorkoutsByDateKey
     }
     
@@ -87,6 +115,16 @@ class WorkoutTableViewDataSource {
         }
     }
     
+    func sectionIndexTitles() -> [String]? {
+        return self.sectionTitles
+    }
+    
+    func sectionForSectionIndexTitle(_ title: String, at index: Int) -> Int {
+        return self.workoutDateKeys.firstIndex { dateKey in
+            title == convertDateStringToTitle(dateKey)
+        } ?? 0
+    }
+    
     func numberOfSections(_ tableView: UITableView) -> Int {
         return self.workoutDateKeys.count
     }
@@ -112,12 +150,22 @@ class WorkoutTableViewDataSource {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: WORKOUT_CELL_IDENTIFIER, for: indexPath) as! MultiIconTableViewCell
         
-        cell.titleLabel.text = workout.exercise?.name ?? "Exercise Deleted!"
         cell.subtitleLabel.text = workout.exercise?.group?.name ?? "None"
         cell.iconImageView.image = nil
         cell.subIconImageView.image = nil
-        if let exerciseName = workout.exercise?.name, let firstWorkout = firstWorkout[exerciseName], firstWorkout == workout {
-            cell.iconImageView.image = UIImage(systemName: "figure.wave")
+        if let exerciseName = workout.exercise?.name {
+            let firstWorkout = firstWorkout[exerciseName]
+            if firstWorkout == workout {
+                cell.iconImageView.image = UIImage(systemName: "figure.wave")
+            }
+            cell.titleLabel.text = exerciseName
+            cell.titleLabel.tintColor = .label
+            cell.iconImageView.tintColor = .systemBlue
+        } else {
+            cell.titleLabel.text = "Exercise Deleted!"
+            cell.titleLabel.tintColor = .systemRed
+            cell.iconImageView.image = UIImage(systemName: "exclamationmark.circle.fill")
+            cell.iconImageView.tintColor = .systemRed
         }
         if let _ = workout.program {
             cell.subIconImageView.image = UIImage(systemName: "doc.text.fill")

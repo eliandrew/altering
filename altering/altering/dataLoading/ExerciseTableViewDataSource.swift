@@ -51,8 +51,8 @@ class ExerciseTableViewDataSource {
         if let group = self.exercisesByGroup[self.exerciseGroupKeys[indexPath.section]] {
             let key = self.exerciseGroupKeys[indexPath.section]
             if group.count == 1 {
-                let keyRemoved = self.exerciseGroupKeys.remove(at: indexPath.section)
-                let groupRemoved = self.exercisesByGroup.removeValue(forKey: key)
+                self.exerciseGroupKeys.remove(at: indexPath.section)
+                self.exercisesByGroup.removeValue(forKey: key)
             } else {
                 self.exercisesByGroup[key]?.remove(at: indexPath.row)
             }

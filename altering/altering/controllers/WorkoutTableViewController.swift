@@ -295,14 +295,27 @@ class WorkoutTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete, 
-            let workout = self.workoutDataSource.workoutForIndexPath(indexPath) {
+        if editingStyle == .delete,
+            let workout = self.workoutDataSource.workoutForIndexPath(indexPath),
+            let workoutsInSection = self.workoutDataSource.workoutsForSection(indexPath.section) {
             dataLoader.deleteWorkout(workout)
             dataLoader.saveContext()
             self.workoutDataSource.removeWorkout(at: indexPath)
-            self.tableView.tableHeaderView = nil
-            self.tableView.reloadData()
+            
+            if workoutsInSection.count == 1 {
+                tableView.deleteSections(IndexSet(integer: indexPath.section), with: .automatic)
+            } else {
+                tableView.deleteRows(at: [indexPath], with: .automatic)
+            }
         }
+    }
+    
+    override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+        return self.workoutDataSource.sectionIndexTitles()
+    }
+    
+    override func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
+        return self.workoutDataSource.sectionForSectionIndexTitle(title, at: index)
     }
     
     // MARK: Segues

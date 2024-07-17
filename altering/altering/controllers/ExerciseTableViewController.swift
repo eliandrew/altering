@@ -85,7 +85,7 @@ class ExerciseTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete,
-            let exercise = self.exerciseDataSource.exerciseForIndexPath(indexPath),
+           let exercise = self.exerciseDataSource.exerciseForIndexPath(indexPath),
            let exercisesInSection = self.exerciseDataSource.exercisesForSection(indexPath.section) {
             dataLoader.deleteExercise(exercise)
             dataLoader.saveContext()

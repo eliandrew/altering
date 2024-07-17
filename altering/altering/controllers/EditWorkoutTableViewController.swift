@@ -113,6 +113,8 @@ class EditWorkoutTableViewController: UITableViewController {
             title = "Edit Workout"
         } else {
             title = "Create Workout"
+            
+            self.selectedDate = self.selectedDate ?? Date.now
         }
     }
     
