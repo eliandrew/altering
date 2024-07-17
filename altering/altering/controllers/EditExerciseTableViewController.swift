@@ -202,6 +202,7 @@ extension EditExerciseTableViewController {
             return cell
         case .group:
             let cell = tableView.dequeueReusableCell(withIdentifier: GROUP_CELL_IDENTIFIER, for: indexPath)
+            cell.selectionStyle = .none
             if let groupCell = cell as? ButtonTableViewCell {
                 let title = self.exerciseGroup?.name ?? (self.exercise?.group?.name ?? "None")
                 groupCell.button.setImage(nil, for: .normal)

@@ -112,7 +112,7 @@ class WorkoutTableViewDataSource {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: WORKOUT_CELL_IDENTIFIER, for: indexPath) as! MultiIconTableViewCell
         
-        cell.titleLabel.text = workout.exercise?.name ?? "Missing Name"
+        cell.titleLabel.text = workout.exercise?.name ?? "Exercise Deleted!"
         cell.subtitleLabel.text = workout.exercise?.group?.name ?? "None"
         cell.iconImageView.image = nil
         cell.subIconImageView.image = nil
