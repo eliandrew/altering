@@ -38,6 +38,8 @@ func standardDateTitle(_ date: Date?, referenceDate: Date, reference: DateTitleR
         referenceDaysTitle = "Today"
     } else if referenceDays == 1 {
         referenceDaysTitle = "Yesterday"
+    } else if referenceDays > 365 {
+        referenceDaysTitle = "Over a year ago"
     }
     return "\(dateTitle ?? "No Date") (\(referenceDaysTitle))"
 }

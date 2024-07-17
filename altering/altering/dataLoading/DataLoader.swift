@@ -83,7 +83,7 @@ class DataLoader {
         }
     }
             
-    func loadPreviousWorkout(for exercise: Exercise, before date: Date, completion: @escaping (Result<Workout?, Error>) -> Void) {
+    func loadPreviousWorkouts(for exercise: Exercise, before date: Date, completion: @escaping (Result<[Workout], Error>) -> Void) {
         DispatchQueue.global().async {
             let fetchRequest: NSFetchRequest<Workout> = Workout.fetchRequest()
             let exercisePredicate = NSPredicate(format: "exercise == %@", exercise)
@@ -95,7 +95,7 @@ class DataLoader {
             do {
                 let workouts = try self.viewContext.fetch(fetchRequest)
                 DispatchQueue.main.async {
-                    completion(.success(workouts.first))
+                    completion(.success(workouts))
                 }
             } catch {
                 DispatchQueue.main.async {

@@ -36,7 +36,10 @@ class WorkoutProgramTableViewDataSource {
     
     func setPrograms(_ programs: [WorkoutProgram]) {
         self.programs = programs
-        self.searchPrograms = programs
+        let _ = self.programs.partition { p in
+            p.isComplete() ?? false
+        }
+        self.searchPrograms = self.programs
     }
     
     func numberOfSections(_ tableView: UITableView) -> Int {

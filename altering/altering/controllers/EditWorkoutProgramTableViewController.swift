@@ -48,7 +48,11 @@ class EditWorkoutProgramTableViewController: UITableViewController {
     
     @objc func saveProgram() {
         if let program = workoutProgram {
-            
+            program.name = programName
+            program.start = programStartDateActive ? programStartDate : nil
+            program.end = programEndDateActive ? programEndDate : nil
+            program.plans = NSSet(array: workoutPlans)
+            saveDataContext()
         } else {
             let newProgram = dataLoader.createNewWorkoutProgram()
             guard let name = self.programName, name.isEmpty == false else {
@@ -77,6 +81,17 @@ class EditWorkoutProgramTableViewController: UITableViewController {
         
         if let program = self.workoutProgram {
             title = "Edit Program"
+            
+            programName = program.name
+            programStartDate = program.start
+            programStartDateActive = program.start != nil
+            programEndDate = program.end
+            programEndDateActive = program.end != nil
+            
+            if let plans = program.plans?.allObjects as? [WorkoutPlan] {
+                workoutPlans = plans
+            }
+            
         } else {
             title = "Create Program"
         }
@@ -140,6 +155,7 @@ class EditWorkoutProgramTableViewController: UITableViewController {
         case NAME_SECTION:
             let cell = tableView.dequeueReusableCell(withIdentifier: NAME_CELL_IDENTIFIER, for: indexPath) as! TextFieldTableViewCell
             cell.textField.delegate = self
+            cell.textField.text = programName
             return cell
         case START_DATE_SECTION:
             let cell = tableView.dequeueReusableCell(withIdentifier: DATE_CELL_IDENTIFIER, for: indexPath) as! DatePickerTableViewCell
@@ -147,6 +163,8 @@ class EditWorkoutProgramTableViewController: UITableViewController {
             cell.dateSwitch.tag = START_DATE_SECTION
             cell.datePicker.addTarget(self, action: #selector(datePickerChanged), for: .valueChanged)
             cell.dateSwitch.addTarget(self, action: #selector(switchChanged), for: .valueChanged)
+            cell.datePicker.date = self.programStartDate ?? Date.now
+            cell.dateSwitch.isOn = self.programStartDateActive
             return cell
         case END_DATE_SECTION:
             let cell = tableView.dequeueReusableCell(withIdentifier: DATE_CELL_IDENTIFIER, for: indexPath) as! DatePickerTableViewCell
@@ -154,10 +172,16 @@ class EditWorkoutProgramTableViewController: UITableViewController {
             cell.dateSwitch.tag = END_DATE_SECTION
             cell.datePicker.addTarget(self, action: #selector(datePickerChanged), for: .valueChanged)
             cell.dateSwitch.addTarget(self, action: #selector(switchChanged), for: .valueChanged)
+            cell.datePicker.date = self.programEndDate ?? Date.now
+            cell.dateSwitch.isOn = self.programEndDateActive
             return cell
         case ADD_WORKOUT_SECTION:
             let cell = tableView.dequeueReusableCell(withIdentifier: ADD_WORKOUT_CELL_IDENTIFIER, for: indexPath) as! ButtonTableViewCell
             cell.button.addTarget(self, action: #selector(addExercisePressed), for: .touchUpInside)
+            cell.button.setImage(UIImage(systemName: "plus.circle.fill"), for: .normal)
+            cell.button.setImage(UIImage(systemName: "plus.circle.fill"), for: .focused)
+            cell.button.setImage(UIImage(systemName: "plus.circle.fill"), for: .selected)
+            cell.button.setImage(UIImage(systemName: "plus.circle.fill"), for: .highlighted)
             return cell
         default:
             let cell = tableView.dequeueReusableCell(withIdentifier: WORKOUT_PLAN_CELL_IDENTIFIER, for: indexPath) as! WorkoutPlanTableViewCell

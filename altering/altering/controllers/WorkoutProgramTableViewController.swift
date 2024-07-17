@@ -86,12 +86,23 @@ class WorkoutProgramTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: WORKOUT_PROGRAM_HEADER_VIEW_IDENTIFIER) as? ButtonHeaderView
         headerView?.title.text = self.programDataSource.titleForSection(section)
-        headerView?.button.tag = section
-        headerView?.button.addTarget(self, action: #selector(removeProgramPressed), for: .touchUpInside)
+        headerView?.buttonRight.tag = section
+        headerView?.buttonRight.addTarget(self, action: #selector(removeProgramPressed), for: .touchUpInside)
+        headerView?.buttonCenter.tag = section
+        headerView?.buttonCenter.addTarget(self, action: #selector(editProgramPressed), for: .touchUpInside)
+        headerView?.buttonLeft.isHidden = !(self.programDataSource.programForIndexPath(IndexPath(row: 0, section: section))?.isComplete() ?? false)
         return headerView
     }
     
     // MARK - Actions
+    @objc func editProgramPressed(_ sender: Any?) {
+        if let sender = sender as? UIButton {
+            let index = sender.tag
+            let program = self.programDataSource.programs[index]
+            self.performSegue(withIdentifier: EDIT_WORKOUT_PROGRAM_SEGUE_IDENTIFIER, sender: program)
+        }
+    }
+    
     @objc func removeProgramPressed(_ sender: Any?) {
         if let sender = sender as? UIButton {
             showAlert(title: "Delete Program", message: "Are you sure you want to delete this program?") {
@@ -135,6 +146,11 @@ class WorkoutProgramTableViewController: UITableViewController {
                 vc?.workouts = workouts.sorted(by: { w1, w2 in
                     w1.date ?? Date.now > w2.date ?? Date.now
                 })
+            }
+        } else if segue.identifier == EDIT_WORKOUT_PROGRAM_SEGUE_IDENTIFIER {
+            let vc = segue.destination as? EditWorkoutProgramTableViewController
+            if let program = sender as? WorkoutProgram {
+                vc?.workoutProgram = program
             }
         }
     }

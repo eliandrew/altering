@@ -22,7 +22,7 @@
                             <constraint firstAttribute="height" constant="60" id="hFS-dV-BAD"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                        <textInputTraits key="textInputTraits"/>
+                        <textInputTraits key="textInputTraits" returnKeyType="done"/>
                     </textField>
                 </subviews>
                 <constraints>

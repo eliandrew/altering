@@ -5,6 +5,15 @@ protocol EditWorkoutDelegate {
 }
 
 class EditWorkoutTableViewController: UITableViewController {
+    
+    enum EditWorkoutTableViewSection: Int {
+        case date = 0
+        case exercise = 1
+        case program = 2
+        case notes = 3
+        case workouts = 4
+        case numSections = 5
+    }
 
     // MARK: Constants
     
@@ -12,13 +21,12 @@ class EditWorkoutTableViewController: UITableViewController {
     let SELECT_EXERCISE_SEGUE = "selectExerciseSegue"
     let SELECT_WORKOUT_PROGRAM_SEGUE = "selectWorkoutProgramSegue"
     
-    // MARK: Outlets
+    let DATE_CELL_IDENTIFIER = "dateCell"
+    let BUTTON_CELL_IDENTIFIER = "buttonCell"
+    let BASIC_CELL_IDENTIFIER = "basicCell"
+    let WORKOUT_CELL_IDENTIFIER = "workoutCell"
     
-    @IBOutlet weak var datePicker: UIDatePicker!
-    @IBOutlet weak var exerciseLabel: UILabel!
-    @IBOutlet weak var programLabel: UILabel!
-    @IBOutlet weak var currentNotesTextView: UITextView!
-    @IBOutlet weak var previousNotesTextView: UITextView!
+    // MARK: Outlets
     
     // MARK: Properties
     
@@ -29,7 +37,8 @@ class EditWorkoutTableViewController: UITableViewController {
     var workout: Workout?
     var exercise: Exercise?
     var program: WorkoutProgram?
-    var previousWorkout: Workout?
+    var previousWorkouts: [Workout]?
+    var currentNotes: String?
     
     var selectedDate: Date?
     var originalWorkoutProgram: WorkoutProgram?
@@ -38,10 +47,12 @@ class EditWorkoutTableViewController: UITableViewController {
     
     // MARK: Actions
     
-    @objc func dateChanged() {
-        self.selectedDate = self.datePicker.date
-        if let exercise = self.exercise {
-            self.loadPreviousWorkout(exercise, date: datePicker.date)
+    @objc func dateChanged(_ sender: Any?) {
+        if let datePicker = sender as? UIDatePicker {
+            self.selectedDate = datePicker.date
+            if let exercise = self.exercise {
+                self.loadPreviousWorkouts(exercise, date: datePicker.date)
+            }
         }
     }
     
@@ -51,18 +62,17 @@ class EditWorkoutTableViewController: UITableViewController {
         return ac
     }
     
-    func loadPreviousWorkout(_ exercise: Exercise, date: Date) {
-        dataLoader.loadPreviousWorkout(for: exercise, before: date, completion: { result in
+    func loadPreviousWorkouts(_ exercise: Exercise, date: Date) {
+        dataLoader.loadPreviousWorkouts(for: exercise, before: date, completion: { result in
             switch result {
-                case .success(let previousWorkout):
-                    self.previousWorkout = previousWorkout
-                    if self.currentNotesTextView.text.isEmpty {
-                        self.currentNotesTextView.text = self.previousWorkout?.notes
+                case .success(let previousWorkouts):
+                    self.previousWorkouts = previousWorkouts
+                    var indexSet = IndexSet(integer: EditWorkoutTableViewSection.workouts.rawValue)
+                    if self.currentNotes?.isEmpty ?? true  {
+                        self.currentNotes = previousWorkouts.first?.notes
+                        indexSet.insert(EditWorkoutTableViewSection.notes.rawValue)
                     }
-                    self.previousNotesTextView.text = self.previousWorkout?.notes
-                    self.exerciseLabel.text = self.exercise?.name
-                    self.programLabel.text = self.program?.name ?? "None"
-                    self.datePicker.date = self.selectedDate ?? Date()
+                    self.tableView.reloadSections(indexSet, with: .automatic)
                 case .failure(let error):
                     print("Error fetching previous exercise: \(error)")
             }
@@ -75,49 +85,42 @@ class EditWorkoutTableViewController: UITableViewController {
     }
     
     func setupView() {
-        
-        self.datePicker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
-        
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveWorkout))
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(exit))
 
+        self.tableView.register(UINib(nibName: "DatePickerTableViewCell", bundle: nil), forCellReuseIdentifier: DATE_CELL_IDENTIFIER)
+        self.tableView.register(UINib(nibName: "ButtonTableViewCell", bundle: nil), forCellReuseIdentifier: BUTTON_CELL_IDENTIFIER)
+        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: BASIC_CELL_IDENTIFIER)
+        self.tableView.register(UINib(nibName: "WorkoutNotesTableViewCell", bundle: nil), forCellReuseIdentifier: WORKOUT_CELL_IDENTIFIER)
+        
+        self.tableView.separatorStyle = .none
+        
         // Enable large titles
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
         tableView.tableFooterView = nil
         
-        if let workout = workout, let date = workout.date, let notes = workout.notes {
+        if let workout = workout {
             self.exercise = exercise ?? workout.exercise
             self.program = program ?? workout.program
-            self.datePicker.date = date
-            self.programLabel.text = workout.program?.name ?? "None"
-            self.exerciseLabel.text = self.exercise?.name ?? "None"
-            self.currentNotesTextView.text = notes
+            self.selectedDate = workout.date
+            self.currentNotes = workout.notes
             if let exercise {
-                self.loadPreviousWorkout(exercise, date: date)
+                self.loadPreviousWorkouts(exercise, date: self.selectedDate ?? Date.now)
             }
             
             // Set the title for the large title
             title = "Edit Workout"
         } else {
-            self.datePicker.date = self.selectedDate ?? Date()
-            self.exerciseLabel.text = self.exercise?.name ?? "None"
-            self.programLabel.text = self.program?.name ?? "None"
-            self.currentNotesTextView.text = nil
-            self.previousNotesTextView.text = nil
-            
-            // Set the title for the large title
             title = "Create Workout"
         }
-        
-        self.selectedDate = self.datePicker.date
     }
     
     @objc func saveWorkout() {
         
         if let workout = workout {
-            workout.date = datePicker.date
-            workout.notes = self.currentNotesTextView.text
+            workout.date = self.selectedDate
+            workout.notes = self.currentNotes
             workout.exercise = self.exercise
             workout.program = self.program
             saveDataContext()
@@ -130,10 +133,10 @@ class EditWorkoutTableViewController: UITableViewController {
                 return
             }
             let newWorkout = dataLoader.createNewWorkout()
-            newWorkout.date = self.datePicker.date
+            newWorkout.date = self.selectedDate
             newWorkout.exercise = exercise
             newWorkout.program = self.program
-            newWorkout.notes = self.currentNotesTextView.text
+            newWorkout.notes = self.currentNotes
             saveDataContext()
             if let _ = self.program {
                 self.delegate?.didUpdateWorkoutProgram(newWorkout)
@@ -155,31 +158,99 @@ class EditWorkoutTableViewController: UITableViewController {
         setupView()
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section == 1 && indexPath.row == 1 {
-            self.program = nil
-            self.programLabel.text = "None"
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        switch EditWorkoutTableViewSection(rawValue: indexPath.section) {
+        case .date:
+            let cell = tableView.dequeueReusableCell(withIdentifier: DATE_CELL_IDENTIFIER, for: indexPath)
+            if let dateCell = cell as? DatePickerTableViewCell {
+                dateCell.dateSwitch.isHidden = true
+                dateCell.datePicker.setDate(self.selectedDate ?? Date.now, animated: false)
+                dateCell.datePicker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
+            }
+            return cell
+        case .exercise:
+            let cell = tableView.dequeueReusableCell(withIdentifier: BASIC_CELL_IDENTIFIER, for: indexPath)
+            cell.imageView?.image = UIImage(systemName: "dumbbell.fill")
+            cell.textLabel?.text = exercise?.name ?? "None"
+            cell.textLabel?.numberOfLines = 0
+            cell.accessoryType = .disclosureIndicator
+            return cell
+        case .program:
+            let cell = tableView.dequeueReusableCell(withIdentifier: BASIC_CELL_IDENTIFIER, for: indexPath)
+            if indexPath.row == 0 {
+                cell.imageView?.image = UIImage(systemName: "doc.text.fill")
+                cell.textLabel?.text = self.program?.name ?? "None"
+                cell.textLabel?.numberOfLines = 0
+                cell.accessoryType = .disclosureIndicator
+            } else {
+                cell.imageView?.image = UIImage(systemName: "minus.circle")
+                cell.imageView?.tintColor = .systemRed
+                cell.textLabel?.text = "Remove Plan"
+                cell.textLabel?.textColor = .systemRed
+                cell.accessoryType = .none
+            }
+            return cell
+        case .notes:
+            let cell = tableView.dequeueReusableCell(withIdentifier: WORKOUT_CELL_IDENTIFIER, for: indexPath)
+            if let notesViewCell = cell as? WorkoutNotesTableViewCell {
+                notesViewCell.dateLabel.text = "Current Workout"
+                notesViewCell.notesTextView.text = self.currentNotes
+                notesViewCell.notesTextView.delegate = self
+                notesViewCell.notesTextView.backgroundColor = .secondarySystemBackground
+                notesViewCell.notesTextView.isEditable = true
+                notesViewCell.notesTextView.isScrollEnabled = true
+            }
+            return cell
+        case .workouts:
+            let cell = tableView.dequeueReusableCell(withIdentifier: WORKOUT_CELL_IDENTIFIER, for: indexPath)
+            if let notesViewCell = cell as? WorkoutNotesTableViewCell {
+                let workout = previousWorkouts?[indexPath.row]
+                notesViewCell.dateLabel.text = standardDateTitle(workout?.date, referenceDate: self.workout?.date ?? Date.now, reference: .before)
+                notesViewCell.notesTextView.text = workout?.notes
+                notesViewCell.notesTextView.isEditable = false
+                notesViewCell.notesTextView.isScrollEnabled = false
+                notesViewCell.notesTextView.backgroundColor = .systemBackground
+            }
+            return cell
+        default:
+            return tableView.dequeueReusableCell(withIdentifier: BASIC_CELL_IDENTIFIER, for: indexPath)
         }
-        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return EditWorkoutTableViewSection.numSections.rawValue
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        switch EditWorkoutTableViewSection(rawValue: section) {
+        case .date:
+            return 1
+        case .exercise:
+            return 1
+        case .program:
+            return 2
+        case .notes:
+            return 1
+        case .workouts:
+            return self.previousWorkouts?.count ?? 0
+        default:
+            return 0
+        }
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        switch section {
-        case 0:
+        switch EditWorkoutTableViewSection(rawValue: section) {
+        case .date:
             return "Date"
-        case 1:
-            return "Program"
-        case 2:
+        case .exercise:
             return "Exercise"
-        case 3:
+        case .program:
+            return "Program"
+        case .notes:
             return "Notes"
-        case 4:
-            if let date = previousWorkout?.date, let title = self.workoutDataSource.dateTitleFrom(date){
-                if let dayDifference = self.workoutDataSource.daysBetween(start: date, end: self.datePicker.date) {
-                    return "\(title) (\(dayDifference) day\(dayDifference == 1 ? "" : "s") before)"
-                } else {
-                    return "On \(title)"
-                }
+        case .workouts:
+            if let prevWorkouts = self.previousWorkouts, prevWorkouts.count > 0 {
+                return "\(prevWorkouts.count) Previous Workout\(prevWorkouts.count == 1 ? "" : "s")"
             } else {
                 return "No Previous Workouts"
             }
@@ -187,6 +258,48 @@ class EditWorkoutTableViewController: UITableViewController {
             return ""
         }
         
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        switch EditWorkoutTableViewSection(rawValue: indexPath.section) {
+        case .date:
+            return UITableView.automaticDimension
+        case .exercise:
+            return UITableView.automaticDimension
+        case .program:
+            return UITableView.automaticDimension
+        case .notes:
+            return 350.0
+        case .workouts:
+            return UITableView.automaticDimension
+        default:
+            return UITableView.automaticDimension
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        switch EditWorkoutTableViewSection(rawValue: indexPath.section) {
+        case .date:
+            return
+        case .exercise:
+            self.performSegue(withIdentifier: SELECT_EXERCISE_SEGUE, sender: self)
+            return
+        case .program:
+            if indexPath.row == 0 {
+                self.performSegue(withIdentifier: SELECT_WORKOUT_PROGRAM_SEGUE, sender: self)
+            } else {
+                self.program = nil
+                tableView.reloadRows(at: [IndexPath(row: 0, section: EditWorkoutTableViewSection.program.rawValue)], with: .automatic)
+            }
+            return
+        case .notes:
+            return
+        case .workouts:
+            return
+        default:
+            return
+        }
     }
 
     // MARK: Segues
@@ -211,8 +324,8 @@ class EditWorkoutTableViewController: UITableViewController {
 extension EditWorkoutTableViewController: SelectExerciseDelegate {
     func didSelectExercise(_ exercise: Exercise) {
         self.exercise = exercise
-        self.exerciseLabel.text = exercise.name ?? "None"
-        self.loadPreviousWorkout(exercise, date: datePicker.date)
+        self.tableView.reloadSections(IndexSet(integer: EditWorkoutTableViewSection.exercise.rawValue), with: .automatic)
+        self.loadPreviousWorkouts(exercise, date: self.selectedDate ?? Date.now)
     }
 }
 
@@ -220,6 +333,12 @@ extension EditWorkoutTableViewController: SelectWorkoutProgramDelegate {
     
     func didSelectWorkoutProgram(_ program: WorkoutProgram) {
         self.program = program
-        self.programLabel.text = program.name ?? "None"
+        self.tableView.reloadRows(at: [IndexPath(row: 0, section: EditWorkoutTableViewSection.program.rawValue)], with: .automatic)
+    }
+}
+
+extension EditWorkoutTableViewController: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        self.currentNotes = textView.text
     }
 }
