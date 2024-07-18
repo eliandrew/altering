@@ -42,6 +42,7 @@ class ExerciseTableViewController: UITableViewController {
             case .success(let fetchedExercises):
                 self.exerciseDataSource.setExercises(fetchedExercises)
                 DispatchQueue.main.async {
+                    self.updateBackgroundView()
                     self.tableView.reloadData()
                 }
             case .failure(let error):
@@ -53,6 +54,14 @@ class ExerciseTableViewController: UITableViewController {
             }
         }
     }
+    
+    func updateBackgroundView() {
+        if self.exerciseDataSource.exerciseNames().count == 0 {
+                tableView.backgroundView = createBackgroundView()
+            } else {
+                tableView.backgroundView = nil
+            }
+        }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -100,6 +109,53 @@ class ExerciseTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         self.exerciseDataSource.titleForSection(section)
+    }
+    
+    @objc func backgroundTapped() {
+        self.performSegue(withIdentifier: EXERCISE_SEGUE_IDENTIFIER, sender: self)
+    }
+    
+    func createBackgroundView() -> UIView {
+        let backgroundView = UIView(frame: UIScreen.main.bounds)
+
+        // Create the image view
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = UIImage(systemName: "dumbbell.fill")
+        imageView.contentMode = .scaleAspectFit
+        imageView.isUserInteractionEnabled = true
+
+        // Create and add the tap gesture recognizer
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(backgroundTapped))
+        backgroundView.addGestureRecognizer(tapGestureRecognizer)
+
+        // Create the label
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Tap for your first Exercise!"
+        label.textColor = .systemBlue
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+
+        // Add the image view and label to the background view
+        backgroundView.addSubview(imageView)
+        backgroundView.addSubview(label)
+
+        // Center the image view and set its size
+        NSLayoutConstraint.activate([
+            imageView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+            imageView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor, constant: -20),
+            imageView.widthAnchor.constraint(equalToConstant: 100), // Adjust the width
+            imageView.heightAnchor.constraint(equalToConstant: 100) // Adjust the height
+        ])
+
+        // Center the label below the image view
+        NSLayoutConstraint.activate([
+            label.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+            label.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 10)
+        ])
+
+        return backgroundView
     }
     
     // MARK: Segues

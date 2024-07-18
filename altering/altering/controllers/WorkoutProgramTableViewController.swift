@@ -38,6 +38,7 @@ class WorkoutProgramTableViewController: UITableViewController {
             case .success(let fetchedPrograms):
                 self.programDataSource.setPrograms(fetchedPrograms)
                 DispatchQueue.main.async {
+                    self.updateBackgroundView()
                     self.tableView.reloadData()
                 }
             case .failure(let error):
@@ -93,6 +94,61 @@ class WorkoutProgramTableViewController: UITableViewController {
         headerView?.buttonLeft.isHidden = !(self.programDataSource.programForIndexPath(IndexPath(row: 0, section: section))?.isComplete() ?? false)
         return headerView
     }
+    
+    @objc func backgroundTapped() {
+        self.performSegue(withIdentifier: EDIT_WORKOUT_PROGRAM_SEGUE_IDENTIFIER, sender: self)
+    }
+    
+    func createBackgroundView() -> UIView {
+        let backgroundView = UIView(frame: UIScreen.main.bounds)
+
+        // Create the image view
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = UIImage(systemName: "doc.text.fill")
+        imageView.contentMode = .scaleAspectFit
+        imageView.isUserInteractionEnabled = true
+
+        // Create and add the tap gesture recognizer
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(backgroundTapped))
+        backgroundView.addGestureRecognizer(tapGestureRecognizer)
+
+        // Create the label
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Tap for your first Program!"
+        label.textColor = .systemBlue
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+
+        // Add the image view and label to the background view
+        backgroundView.addSubview(imageView)
+        backgroundView.addSubview(label)
+
+        // Center the image view and set its size
+        NSLayoutConstraint.activate([
+            imageView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+            imageView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor, constant: -20),
+            imageView.widthAnchor.constraint(equalToConstant: 100), // Adjust the width
+            imageView.heightAnchor.constraint(equalToConstant: 100) // Adjust the height
+        ])
+
+        // Center the label below the image view
+        NSLayoutConstraint.activate([
+            label.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+            label.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 10)
+        ])
+
+        return backgroundView
+    }
+    
+    func updateBackgroundView() {
+        if self.programDataSource.programs.count == 0 {
+                tableView.backgroundView = createBackgroundView()
+            } else {
+                tableView.backgroundView = nil
+            }
+        }
     
     // MARK - Actions
     @objc func editProgramPressed(_ sender: Any?) {

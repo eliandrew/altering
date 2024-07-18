@@ -222,12 +222,14 @@ class WorkoutTableViewController: UITableViewController {
                 DispatchQueue.main.async {
                     self.longestStreakNotification()
                     self.tableView.tableHeaderView = self.setupWorkoutStreakView()
+                    self.updateBackgroundView()
                     self.tableView.reloadData()
                 }
             case .failure(let error):
                 print("Error fetching exercises: \(error)")
                 self.workoutDataSource.setWorkouts([])
                 DispatchQueue.main.async {
+                    self.updateBackgroundView()
                     self.tableView.reloadData()
                 }
             }
@@ -318,6 +320,61 @@ class WorkoutTableViewController: UITableViewController {
         return self.workoutDataSource.sectionForSectionIndexTitle(title, at: index)
     }
     
+    @objc func backgroundTapped() {
+        self.performSegue(withIdentifier: WORKOUT_SEGUE_IDENTIFIER, sender: nil)
+    }
+    
+    func createBackgroundView() -> UIView {
+        let backgroundView = UIView(frame: UIScreen.main.bounds)
+
+        // Create the image view
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = UIImage(systemName: "figure.strengthtraining.traditional")
+        imageView.contentMode = .scaleAspectFit
+        imageView.isUserInteractionEnabled = true
+
+        // Create and add the tap gesture recognizer
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(backgroundTapped))
+        backgroundView.addGestureRecognizer(tapGestureRecognizer)
+
+        // Create the label
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Tap for your first Workout!"
+        label.textColor = .systemBlue
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+
+        // Add the image view and label to the background view
+        backgroundView.addSubview(imageView)
+        backgroundView.addSubview(label)
+
+        // Center the image view and set its size
+        NSLayoutConstraint.activate([
+            imageView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+            imageView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor, constant: -20),
+            imageView.widthAnchor.constraint(equalToConstant: 100), // Adjust the width
+            imageView.heightAnchor.constraint(equalToConstant: 100) // Adjust the height
+        ])
+
+        // Center the label below the image view
+        NSLayoutConstraint.activate([
+            label.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+            label.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 10)
+        ])
+
+        return backgroundView
+    }
+    
+    func updateBackgroundView() {
+        if self.workoutDataSource.allWorkouts.count == 0 {
+                tableView.backgroundView = createBackgroundView()
+            } else {
+                tableView.backgroundView = nil
+            }
+        }
+    
     // MARK: Segues
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -359,7 +416,7 @@ class WorkoutTableViewController: UITableViewController {
         let longestStreakLength = UserDefaults.standard.integer(forKey: "maxStreakLength")
         let streakLength = self.streakLength()
         if streakLength > longestStreakLength {
-            let attributedSubtitle = self.attributedProgressSubtitle("You just set a new streak record of \(streakLength) workouts!", boldTexts: ["\(streakLength)"])
+            let attributedSubtitle = self.attributedProgressSubtitle("You just set a new streak record of \(streakLength) workout\(streakLength == 1 ? "" : "s")!", boldTexts: ["\(streakLength)"])
             let streakInfo = ProgressInfo(title: "Streak Record!", subtitle: attributedSubtitle, image: UIImage(systemName: "medal.star.fill"), progress: nil)
             self.performSegue(withIdentifier: PROGRESS_SEGUE_IDENTIFIER, sender: streakInfo)
         }
