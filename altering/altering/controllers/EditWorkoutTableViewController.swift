@@ -63,6 +63,7 @@ class EditWorkoutTableViewController: UITableViewController {
     }
     
     func loadPreviousWorkouts(_ exercise: Exercise, date: Date) {
+        print("loading previous workouts")
         dataLoader.loadPreviousWorkouts(for: exercise, before: date, completion: { result in
             switch result {
                 case .success(let previousWorkouts):
@@ -100,14 +101,15 @@ class EditWorkoutTableViewController: UITableViewController {
         navigationItem.largeTitleDisplayMode = .always
         tableView.tableFooterView = nil
         
+        if let exercise {
+            self.loadPreviousWorkouts(exercise, date: self.selectedDate ?? Date.now)
+        }
+        
         if let workout = workout {
             self.exercise = exercise ?? workout.exercise
             self.program = program ?? workout.program
             self.selectedDate = workout.date
             self.currentNotes = workout.notes
-            if let exercise {
-                self.loadPreviousWorkouts(exercise, date: self.selectedDate ?? Date.now)
-            }
             
             // Set the title for the large title
             title = "Edit Workout"

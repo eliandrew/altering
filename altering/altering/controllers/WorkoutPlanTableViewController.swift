@@ -2,11 +2,16 @@ import UIKit
 
 class WorkoutPlanTableViewController: UITableViewController {
     
+    let ADD_WORKOUT_SEGUE = "addWorkoutSegue"
+    
     let WORKOUT_NOTES_CELL_IDENTIFIER = "workoutNotesCell"
     let WORKOUT_PROGRAM_CELL_IDENTIFIER = "workoutProgramCellIdentifier"
     
+    let dataLoader = DataLoader.shared
+    
     var workouts: [Workout]?
     var workoutPlan: WorkoutPlan?
+    var program: WorkoutProgram?
     
     enum WorkoutPlanSections: Int {
         case workouts = 0
@@ -16,15 +21,56 @@ class WorkoutPlanTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addWorkout))
+        
         tableView.register(UINib(nibName: "WorkoutNotesTableViewCell", bundle: nil), forCellReuseIdentifier: WORKOUT_NOTES_CELL_IDENTIFIER)
         
         navigationItem.largeTitleDisplayMode = .never
-        
-        self.tableView.tableHeaderView = self.setupHeaderView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupView()
+    }
+    
+    func setupView() {
+        if let program {
+            dataLoader.reloadWorkoutProgram(program) { result in
+                switch result {
+                case .success(let updatedProgram):
+                    if let reloadedProgram = updatedProgram, let plan = self.workoutPlan {
+                        self.program = reloadedProgram
+                        self.workouts = self.program?.workoutsForPlan(plan)
+                    }
+                    DispatchQueue.main.async {
+                        self.tableView.tableHeaderView = self.setupHeaderView()
+                        self.tableView.reloadData()
+                    }
+                case .failure(let error):
+                    print("Error reloading program: \(error)")
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                }
+            }
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         (self.tableView.tableHeaderView as? WorkoutPlanHeaderView)?.setPlanProgress()
+    }
+    
+    @objc func addWorkout() {
+        self.performSegue(withIdentifier: ADD_WORKOUT_SEGUE, sender: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == ADD_WORKOUT_SEGUE {
+            if let vc = segue.destination as? EditWorkoutTableViewController {
+                vc.exercise = self.workoutPlan?.exercise
+                vc.program = self.program
+            }
+        }
     }
     
     func setupHeaderView() -> UIView? {

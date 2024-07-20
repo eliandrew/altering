@@ -148,6 +148,7 @@
                     <connections>
                         <segue destination="NMT-on-qby" kind="show" identifier="workoutSegue" id="1bk-QN-0Be"/>
                         <segue destination="Va9-gb-X01" kind="presentation" identifier="progressSegue" id="u7y-fa-W2n"/>
+                        <segue destination="HHi-fp-VnD" kind="show" identifier="streakCalendarSegue" id="rwU-95-RIZ"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eqw-o8-vkH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -185,22 +186,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="U8P-Ny-ajt">
-                                <rect key="frame" x="0.0" y="50" width="393" height="43.666667938232422"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="U8P-Ny-ajt" id="G1Z-Jh-Dki">
-                                    <rect key="frame" x="0.0" y="0.0" width="393" height="43.666667938232422"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="Zbt-d2-51o" id="WJF-JK-Wls"/>
                             <outlet property="delegate" destination="Zbt-d2-51o" id="m4a-FS-rVe"/>
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="E1p-ub-QCO"/>
+                    <connections>
+                        <segue destination="NMT-on-qby" kind="show" identifier="addWorkoutSegue" id="ndB-Lm-tkF"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eGZ-jd-Ya6" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -428,6 +422,22 @@
             </objects>
             <point key="canvasLocation" x="5151.9083969465646" y="673.94366197183103"/>
         </scene>
+        <!--Streak View Controller-->
+        <scene sceneID="inv-J9-0QR">
+            <objects>
+                <viewController id="HHi-fp-VnD" customClass="StreakViewController" customModule="Altered" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="OEQ-ja-Jsu">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="3fe-BF-mzj"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="CoB-Pz-WUe"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hcT-ZS-RDO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5152" y="1382"/>
+        </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="Ir9-7T-9nh">
             <objects>
@@ -470,6 +480,7 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="xcq-kl-0w7"/>
+        <segue reference="ndB-Lm-tkF"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="doc." width="128" height="128"/>

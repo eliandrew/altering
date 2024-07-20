@@ -167,6 +167,25 @@ class DataLoader {
         }
     }
     
+    func reloadWorkoutProgram(_ program: WorkoutProgram, completion: @escaping (Result<WorkoutProgram?, Error>) -> Void) {
+        DispatchQueue.global().async {
+            let fetchRequest: NSFetchRequest<WorkoutProgram> = WorkoutProgram.fetchRequest()
+            let programPredicate = NSPredicate(format: "name == %@", program.name ?? "program")
+            fetchRequest.predicate = programPredicate
+            
+            do {
+                let fetchResults = try self.viewContext.fetch(fetchRequest)
+                DispatchQueue.main.async {
+                    completion(.success(fetchResults.first))
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
     func createNewWorkoutProgram() -> WorkoutProgram {
         return WorkoutProgram(context: viewContext)
     }

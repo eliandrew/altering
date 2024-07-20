@@ -20,81 +20,7 @@ class WorkoutTableViewController: UITableViewController {
     
     let WORKOUT_SEGUE_IDENTIFIER = "workoutSegue"
     let PROGRESS_SEGUE_IDENTIFIER = "progressSegue"
-    
-    let imageNames = [
-        "figure.american.football",
-        "figure.archery",
-        "figure.australian.football",
-        "figure.badminton",
-        "figure.barre",
-        "figure.baseball",
-        "figure.basketball",
-        "figure.bowling",
-        "figure.boxing",
-        "figure.climbing",
-        "figure.cooldown",
-        "figure.core.training",
-        "figure.cricket",
-        "figure.skiing.crosscountry",
-        "figure.cross.training",
-        "figure.curling",
-        "figure.dance",
-        "figure.disc.sports",
-        "figure.skiing.downhill",
-        "figure.elliptical",
-        "figure.equestrian.sports",
-        "figure.fencing",
-        "figure.fishing",
-        "figure.flexibility",
-        "figure.strengthtraining.functional",
-        "figure.golf",
-        "figure.gymnastics",
-        "figure.hand.cycling",
-        "figure.handball",
-        "figure.highintensity.intervaltraining",
-        "figure.hiking",
-        "figure.hockey",
-        "figure.hunting",
-        "figure.indoor.cycle",
-        "figure.jumprope",
-        "figure.kickboxing",
-        "figure.lacrosse",
-        "figure.martial.arts",
-        "figure.mind.and.body",
-        "figure.mixed.cardio",
-        "figure.open.water.swim",
-        "figure.outdoor.cycle",
-        "figure.pickleball",
-        "figure.pilates",
-        "figure.play",
-        "figure.pool.swim",
-        "figure.racquetball",
-        "figure.rolling",
-        "figure.rower",
-        "figure.rugby",
-        "figure.sailing",
-        "figure.skating",
-        "figure.snowboarding",
-        "figure.soccer",
-        "figure.socialdance",
-        "figure.softball",
-        "figure.squash",
-        "figure.stair.stepper",
-        "figure.stairs",
-        "figure.step.training",
-        "figure.surfing",
-        "figure.table.tennis",
-        "figure.taichi",
-        "figure.tennis",
-        "figure.track.and.field",
-        "figure.strengthtraining.traditional",
-        "figure.volleyball",
-        "figure.water.fitness",
-        "figure.waterpolo",
-        "figure.wrestling",
-        "figure.yoga",
-        "figure.walk"
-    ]
+    let STREAK_CALENDAR_SEGUE_IDENTIFIER = "streakCalendarSegue"
     
     // MARK: Properties
     
@@ -122,11 +48,6 @@ class WorkoutTableViewController: UITableViewController {
     }
     
     // MARK: View Lifecycle
-    
-    func streakImage(_ streakLength: Int) -> UIImage? {
-        let streakImageName = imageNames[streakLength % imageNames.count]
-        return UIImage(systemName: streakImageName)
-    }
     
     func currentRestDays() -> Int {
         guard let firstWorkout = self.workoutDataSource.workoutForIndexPath(IndexPath(row: 0, section: 0))?.date, let daysBetween = self.workoutDataSource.daysBetween(start: firstWorkout, end: Date()) else {
@@ -193,6 +114,10 @@ class WorkoutTableViewController: UITableViewController {
             UserDefaults.standard.set(streakLength, forKey: "maxStreakLength")
         }
         
+        // Create and add the tap gesture recognizer
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(streakViewTapped))
+        streakView.addGestureRecognizer(tapGestureRecognizer)
+        
         return streakView
     }
     
@@ -211,7 +136,7 @@ class WorkoutTableViewController: UITableViewController {
 
         // Enable large titles
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.largeTitleDisplayMode = .always
+        navigationItem.largeTitleDisplayMode = .automatic
         tableView.tableFooterView = nil
         
         
@@ -320,6 +245,10 @@ class WorkoutTableViewController: UITableViewController {
         return self.workoutDataSource.sectionForSectionIndexTitle(title, at: index)
     }
     
+    @objc func streakViewTapped() {
+        self.performSegue(withIdentifier: STREAK_CALENDAR_SEGUE_IDENTIFIER, sender: nil)
+    }
+    
     @objc func backgroundTapped() {
         self.performSegue(withIdentifier: WORKOUT_SEGUE_IDENTIFIER, sender: nil)
     }
@@ -377,6 +306,8 @@ class WorkoutTableViewController: UITableViewController {
     
     // MARK: Segues
     
+   
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == WORKOUT_SEGUE_IDENTIFIER {
             let vc = segue.destination as? EditWorkoutTableViewController
@@ -391,6 +322,9 @@ class WorkoutTableViewController: UITableViewController {
             vc?.progressSubtitleText = progressInfo.subtitle
             vc?.progressImage = progressInfo.image
             vc?.progress = progressInfo.progress
+        } else if segue.identifier == STREAK_CALENDAR_SEGUE_IDENTIFIER {
+            let vc = segue.destination as? StreakViewController
+            vc?.workouts = workoutDataSource.allWorkouts
         }
     }
     
@@ -429,7 +363,7 @@ extension WorkoutTableViewController: EditWorkoutDelegate {
             let isOver = progress > progressPointHit
             var attributedMessage = self.attributedProgressSubtitle("You're\(isOver ? " over" : "") \(Int(progressPointHit * 100))% done with \(workout.exercise?.name ?? "Exercise") in \(workout.program?.name ?? "Workout Program")", boldTexts: ["\(Int(progressPointHit * 100))%", "\(workout.exercise?.name ?? "Exercise")", "\(workout.program?.name ?? "Workout Program")"])
             var (title, message) = ("Congrats!", attributedMessage)
-            var image = UIImage(systemName: imageNames.randomElement() ?? "figure.wave")
+            var image = UIImage(systemName: streakImageNames.randomElement() ?? "figure.wave")
             if (progressPointHit == 0.0) {
                 attributedMessage = self.attributedProgressSubtitle("That was your first workout for \(workout.exercise?.name ?? "Exercise") in \(workout.program?.name ?? "Workout Program")", boldTexts: ["\(workout.exercise?.name ?? "Exercise")", "\(workout.program?.name ?? "Workout Program")"])
                 (title, message) = ("Woohoo!", attributedMessage)

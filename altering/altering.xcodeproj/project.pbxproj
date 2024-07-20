@@ -48,6 +48,9 @@
 		A6AADD1F2C3C678F004E305A /* WorkoutProgramTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A6AADD1D2C3C678F004E305A /* WorkoutProgramTableViewCell.xib */; };
 		A6AADD252C3CA7A1004E305A /* ButtonHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6AADD242C3CA7A1004E305A /* ButtonHeaderView.swift */; };
 		A6AADD272C3CA7CC004E305A /* ButtonHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A6AADD262C3CA7CC004E305A /* ButtonHeaderView.xib */; };
+		A6AD917C2C4B20900074F182 /* StreakViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6AD917B2C4B20900074F182 /* StreakViewController.swift */; };
+		A6AD917E2C4C33230074F182 /* DateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6AD917D2C4C33230074F182 /* DateHelper.swift */; };
+		A6AD91802C4C35EA0074F182 /* StreakHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6AD917F2C4C35EA0074F182 /* StreakHelper.swift */; };
 		A6BD32062BBC6CD00017FBCF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BD32052BBC6CD00017FBCF /* AppDelegate.swift */; };
 		A6BD32082BBC6CD00017FBCF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BD32072BBC6CD00017FBCF /* SceneDelegate.swift */; };
 		A6BD320A2BBC6CD00017FBCF /* ExerciseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BD32092BBC6CD00017FBCF /* ExerciseTableViewController.swift */; };
@@ -146,6 +149,9 @@
 		A6AADD1D2C3C678F004E305A /* WorkoutProgramTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkoutProgramTableViewCell.xib; sourceTree = "<group>"; };
 		A6AADD242C3CA7A1004E305A /* ButtonHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonHeaderView.swift; sourceTree = "<group>"; };
 		A6AADD262C3CA7CC004E305A /* ButtonHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ButtonHeaderView.xib; sourceTree = "<group>"; };
+		A6AD917B2C4B20900074F182 /* StreakViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakViewController.swift; sourceTree = "<group>"; };
+		A6AD917D2C4C33230074F182 /* DateHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateHelper.swift; sourceTree = "<group>"; };
+		A6AD917F2C4C35EA0074F182 /* StreakHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakHelper.swift; sourceTree = "<group>"; };
 		A6BD32022BBC6CD00017FBCF /* Altered.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Altered.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6BD32052BBC6CD00017FBCF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A6BD32072BBC6CD00017FBCF /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -222,6 +228,8 @@
 				A682BA372BBDC68D00F3DD91 /* StringHelper.swift */,
 				A627F1D92BC0522E0006C7F5 /* ViewHelper.swift */,
 				A69F3AE92C46E72C009000C0 /* DateWriting.swift */,
+				A6AD917D2C4C33230074F182 /* DateHelper.swift */,
+				A6AD917F2C4C35EA0074F182 /* StreakHelper.swift */,
 			);
 			path = helpers;
 			sourceTree = "<group>";
@@ -294,6 +302,7 @@
 				A6E734802C3DE87B006B1836 /* SelectWorkoutProgramTableViewController.swift */,
 				A6C8233F2C4064E7009B6DED /* ProgramProgressViewController.swift */,
 				A673E5C32C45836B00A40A91 /* WorkoutPlanTableViewController.swift */,
+				A6AD917B2C4B20900074F182 /* StreakViewController.swift */,
 			);
 			path = controllers;
 			sourceTree = "<group>";
@@ -534,7 +543,9 @@
 				A6A860B02BC34DA600A1DF74 /* WorkoutRestDayView.swift in Sources */,
 				A68FF29F2BBCC594007611D4 /* WorkoutTableViewDataSource.swift in Sources */,
 				A68FF2A72BBCE579007611D4 /* GroupTableViewDataSource.swift in Sources */,
+				A6AD917C2C4B20900074F182 /* StreakViewController.swift in Sources */,
 				A6BD32532BBC90530017FBCF /* WorkoutTableViewController.swift in Sources */,
+				A6AD917E2C4C33230074F182 /* DateHelper.swift in Sources */,
 				A68FF29D2BBCBA23007611D4 /* ExerciseTableViewDataSource.swift in Sources */,
 				A6BD32492BBC7CD70017FBCF /* DataLoader.swift in Sources */,
 				A60974CE2C3B8F0200857577 /* ButtonTableViewCell.swift in Sources */,
@@ -559,6 +570,7 @@
 				A6115A2E2BBF410A00CC04B3 /* WorkoutNotesTableViewCell.swift in Sources */,
 				A60974BA2C3A257400857577 /* WorkoutProgram+CoreDataClass.swift in Sources */,
 				A60974C62C3B305400857577 /* TextFieldTableViewCell.swift in Sources */,
+				A6AD91802C4C35EA0074F182 /* StreakHelper.swift in Sources */,
 				A673E5C42C45836B00A40A91 /* WorkoutPlanTableViewController.swift in Sources */,
 				A60974BC2C3A257400857577 /* WorkoutPlan+CoreDataClass.swift in Sources */,
 				A673E5C62C46204900A40A91 /* WorkoutPlanHeaderView.swift in Sources */,

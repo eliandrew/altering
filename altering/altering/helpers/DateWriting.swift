@@ -51,6 +51,17 @@ func areYearsSame(date1: Date, date2: Date) -> Bool {
     return year1 == year2
 }
 
+func areDatesSame(date1: Date, date2: Date) -> Bool {
+    let calendar = Calendar.current
+    let year1 = calendar.component(.year, from: date1)
+    let year2 = calendar.component(.year, from: date2)
+    let month1 = calendar.component(.month, from: date1)
+    let month2 = calendar.component(.month, from: date2)
+    let day1 = calendar.component(.day, from: date1)
+    let day2 = calendar.component(.day, from: date2)
+    return year1 == year2 && month1 == month2 && day1 == day2
+}
+
 func formatSectionTitle(_ date: Date) -> String {
     let dateFormatter = DateFormatter()
     if areYearsSame(date1: date, date2: Date.now) {

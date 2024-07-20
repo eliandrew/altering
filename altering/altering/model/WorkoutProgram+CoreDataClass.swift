@@ -8,6 +8,12 @@ public class WorkoutProgram: NSManagedObject {
         if let workouts = self.workouts?.allObjects as? [Workout] {
             return workouts.filter { w in
                 w.exercise == plan.exercise
+            }.sorted { w1, w2 in
+                if let w1Date = w1.date, let w2Date = w2.date {
+                    return w1Date > w2Date
+                } else {
+                    return w1.exercise?.name ?? "a" > w2.exercise?.name ?? "b"
+                }
             }
         } else {
             return nil

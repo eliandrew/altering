@@ -197,11 +197,10 @@ class WorkoutProgramTableViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == WORKOUT_PLAN_SEGUE {
             let vc = segue.destination as? WorkoutPlanTableViewController
-            if let indexPath = sender as? IndexPath, let plan = self.programDataSource.planForIndexPath(indexPath), let workouts = self.programDataSource.programForIndexPath(indexPath)?.workoutsForPlan(plan) {
+            if let indexPath = sender as? IndexPath, let plan = self.programDataSource.planForIndexPath(indexPath), let program = self.programDataSource.programForIndexPath(indexPath), let workouts = program.workoutsForPlan(plan) {
                 vc?.workoutPlan = plan
-                vc?.workouts = workouts.sorted(by: { w1, w2 in
-                    w1.date ?? Date.now > w2.date ?? Date.now
-                })
+                vc?.program = program
+                vc?.workouts = workouts
             }
         } else if segue.identifier == EDIT_WORKOUT_PROGRAM_SEGUE_IDENTIFIER {
             let vc = segue.destination as? EditWorkoutProgramTableViewController
