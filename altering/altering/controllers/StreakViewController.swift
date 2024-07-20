@@ -56,11 +56,18 @@ class StreakViewController: UIViewController {
     
     func configureCalendarView() {
         let calendar = Calendar.current
+        let dateSelection = UICalendarSelectionSingleDate(delegate: self)
+        calendarView.selectionBehavior = dateSelection
         calendarView.visibleDateComponents = calendar.dateComponents([.month, .day, .year], from: Date())
     }
 }
 
 extension StreakViewController: UICalendarViewDelegate {
+    
+    func dateSelection(_ selection: UICalendarSelectionSingleDate, canSelectDate dateComponents: DateComponents?) -> Bool {
+        return true
+    }
+    
     func calendarView(_ calendarView: UICalendarView, decorationFor dateComponents: DateComponents) -> UICalendarView.Decoration? {
         if let month = dateComponents.month, let year = dateComponents.year, let visibleMonth = calendarView.visibleDateComponents.month, let visibleYear = calendarView.visibleDateComponents.year {
             
@@ -91,5 +98,11 @@ extension StreakViewController: UICalendarViewDelegate {
         } else {
             return nil
         }
+    }
+}
+
+extension StreakViewController: UICalendarSelectionSingleDateDelegate {
+    func dateSelection(_ selection: UICalendarSelectionSingleDate, didSelectDate dateComponents: DateComponents?) {
+        print("DATE SELECTED \(dateComponents)")
     }
 }
