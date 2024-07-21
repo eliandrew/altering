@@ -324,7 +324,7 @@ class WorkoutTableViewController: UITableViewController {
             vc?.progress = progressInfo.progress
         } else if segue.identifier == STREAK_CALENDAR_SEGUE_IDENTIFIER {
             let vc = segue.destination as? StreakViewController
-            vc?.workouts = workoutDataSource.allWorkouts
+            vc?.workouts = workoutDataSource.workoutsByDate.mapValues({$0.workouts})
         }
     }
     

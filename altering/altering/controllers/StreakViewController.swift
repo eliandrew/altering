@@ -2,11 +2,12 @@ import UIKit
 
 class StreakViewController: UIViewController {
     
+    let WORKOUT_DAY_VIEW_SEGUE = "workoutDayViewSegue"
+    
     let calendarView = UICalendarView()
     
     var workoutDates: Set<DateComponents> = []
-    
-    var workouts: [Workout] = []
+    var workouts: [String : [Workout]] = [:]
     var streaks: [[DateComponents]] = []
     
     override func viewDidLoad() {
@@ -42,16 +43,32 @@ class StreakViewController: UIViewController {
         configureCalendarView()
     }
     
+    func dateFromTitle(_ title: String, includeYear: Bool = true) -> Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = includeYear ? "EE MM/dd/yy" : "EE MM/dd"
+        return dateFormatter.date(from: title)
+    }
+    
+    func dateTitleFrom(_ date: Date?, includeYear: Bool = true) -> String? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = includeYear ? "EE MM/dd/yy" : "EE MM/dd"
+        
+        if let date = date {
+            return dateFormatter.string(from: date)
+        } else {
+            return nil
+        }
+    }
+    
+    func titleFromComponents(_ title: String, includeYear: Bool = true) -> Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = includeYear ? "EE MM/dd/yy" : "EE MM/dd"
+        return dateFormatter.date(from: title)
+    }
+    
     func setupWorkoutDates() -> Set<DateComponents> {
         let calendar = Calendar.current
-        var uniqueDates = Set<DateComponents>()
-        let workoutDates = workouts.compactMap{$0.date}
-        for date in workoutDates {
-            let components = calendar.dateComponents([.month, .day, .year], from: date)
-            uniqueDates.insert(components)
-        }
-        
-        return uniqueDates
+        return Set(workouts.keys.compactMap({dateFromTitle($0)}).map({calendar.dateComponents([.month, .day, .year], from: $0)}))
     }
     
     func configureCalendarView() {
@@ -89,7 +106,7 @@ extension StreakViewController: UICalendarViewDelegate {
                     return UICalendarView.Decoration.image(
                         image,
                         color: UIColor.systemBlue,
-                        size: .large
+                        size: .medium
                     )
                 }
             } else {
@@ -99,10 +116,20 @@ extension StreakViewController: UICalendarViewDelegate {
             return nil
         }
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == WORKOUT_DAY_VIEW_SEGUE {
+            if let vc = segue.destination as? WorkoutDayViewTableViewController, let workouts = sender as? [Workout] {
+                vc.workouts = workouts
+            }
+        }
+    }
 }
 
 extension StreakViewController: UICalendarSelectionSingleDateDelegate {
     func dateSelection(_ selection: UICalendarSelectionSingleDate, didSelectDate dateComponents: DateComponents?) {
-        print("DATE SELECTED \(dateComponents)")
+        if let title = dateTitleFrom(dateComponents?.date), let workouts = workouts[title] {
+            self.performSegue(withIdentifier: WORKOUT_DAY_VIEW_SEGUE, sender: workouts)
+        }
     }
 }

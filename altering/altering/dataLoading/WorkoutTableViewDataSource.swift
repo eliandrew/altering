@@ -18,6 +18,8 @@ class WorkoutTableViewDataSource {
     
     var sectionTitles: [String]?
     
+    var isPreview = false
+    
     
     // MARK: Helpers
     
@@ -100,7 +102,7 @@ class WorkoutTableViewDataSource {
             return nil
         }
         
-        if workoutSection.isExpanded {
+        if workoutSection.isExpanded || isPreview {
             if indexPath.row < workoutSection.workouts.count {
                 return workoutSection.workouts[indexPath.row]
             } else {
@@ -131,6 +133,7 @@ class WorkoutTableViewDataSource {
     
     func numberOfRowsInSection(_ tableView: UITableView, section: Int) -> Int {
         if let workoutSection = self.workoutSection(section) {
+            if isPreview { return workoutSection.workouts.count }
             let unexpandedCount = workoutSection.workouts.count <= MAX_WORKOUTS ? workoutSection.workouts.count : MAX_WORKOUTS + 1
             let expandedCount = workoutSection.workouts.count <= MAX_WORKOUTS ? workoutSection.workouts.count : workoutSection.workouts.count + 1
             return workoutSection.isExpanded ? expandedCount : unexpandedCount
@@ -155,7 +158,7 @@ class WorkoutTableViewDataSource {
         cell.subIconImageView.image = nil
         if let exerciseName = workout.exercise?.name {
             let firstWorkout = firstWorkout[exerciseName]
-            if firstWorkout == workout {
+            if firstWorkout == workout && !isPreview {
                 cell.iconImageView.image = UIImage(systemName: "figure.wave")
             }
             cell.titleLabel.text = exerciseName
@@ -170,6 +173,9 @@ class WorkoutTableViewDataSource {
         if let _ = workout.program {
             cell.subIconImageView.image = UIImage(systemName: "doc.text.fill")
         }
+        
+        cell.accessoryType = isPreview ? .none : .disclosureIndicator
+        cell.selectionStyle = isPreview ? .none : .default
         
         return cell
     }
