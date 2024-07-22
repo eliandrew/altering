@@ -131,5 +131,6 @@ extension StreakViewController: UICalendarSelectionSingleDateDelegate {
         if let title = dateTitleFrom(dateComponents?.date), let workouts = workouts[title] {
             self.performSegue(withIdentifier: WORKOUT_DAY_VIEW_SEGUE, sender: workouts)
         }
+        selection.setSelected(nil, animated: true)
     }
 }

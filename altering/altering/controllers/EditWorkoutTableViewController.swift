@@ -101,10 +101,6 @@ class EditWorkoutTableViewController: UITableViewController {
         navigationItem.largeTitleDisplayMode = .always
         tableView.tableFooterView = nil
         
-        if let exercise {
-            self.loadPreviousWorkouts(exercise, date: self.selectedDate ?? Date.now)
-        }
-        
         if let workout = workout {
             self.exercise = exercise ?? workout.exercise
             self.program = program ?? workout.program
@@ -117,6 +113,10 @@ class EditWorkoutTableViewController: UITableViewController {
             title = "Create Workout"
             
             self.selectedDate = self.selectedDate ?? Date.now
+        }
+        
+        if let exercise {
+            self.loadPreviousWorkouts(exercise, date: self.selectedDate ?? Date.now)
         }
     }
     
