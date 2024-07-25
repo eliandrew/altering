@@ -4,6 +4,17 @@ import CoreData
 @objc(WorkoutProgram)
 public class WorkoutProgram: NSManagedObject {
     
+    func toCSVString() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let startDate = self.start != nil ? dateFormatter.string(from: self.start ?? Date.now as Date) : "none"
+        let endDate = self.end != nil ? dateFormatter.string(from: self.end ?? Date.now as Date) : "none"
+        
+        let programName = "\"\(self.name ?? "none")\""
+        
+       return ""
+    }
+    
     func workoutsForPlan(_ plan: WorkoutPlan) -> [Workout]? {
         if let workouts = self.workouts?.allObjects as? [Workout] {
             return workouts.filter { w in

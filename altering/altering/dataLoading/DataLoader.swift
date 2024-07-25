@@ -8,12 +8,58 @@ class DataLoader {
     
     private init() {}
     
-    let persistentContainer = (UIApplication.shared.delegate as! AppDelegate).persistentContainer
+    var persistentContainer = (UIApplication.shared.delegate as! AppDelegate).persistentContainer
     
     private var viewContext: NSManagedObjectContext {
         return persistentContainer.viewContext
     }
     
+    // MARK: - Core Data File Management
+        
+    func exportCoreData(to destinationURL: URL, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let storeURL = persistentContainer.persistentStoreCoordinator.persistentStores.first?.url else {
+            completion(.failure(NSError(domain: "DataLoader", code: 1, userInfo: [NSLocalizedDescriptionKey: "Unable to locate Core Data store"])))
+            return
+        }
+        
+        do {
+            let fileManager = FileManager.default
+            if fileManager.fileExists(atPath: destinationURL.path) {
+                try fileManager.removeItem(at: destinationURL)
+            }
+            try fileManager.copyItem(at: storeURL, to: destinationURL)
+            completion(.success(()))
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
+    func importCoreData(from sourceURL: URL, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let storeURL = persistentContainer.persistentStoreCoordinator.persistentStores.first?.url else {
+            completion(.failure(NSError(domain: "DataLoader", code: 1, userInfo: [NSLocalizedDescriptionKey: "Unable to locate Core Data store"])))
+            return
+        }
+        
+        do {
+            let fileManager = FileManager.default
+            if fileManager.fileExists(atPath: storeURL.path) {
+                try persistentContainer.persistentStoreCoordinator.destroyPersistentStore(at: storeURL, ofType: NSSQLiteStoreType, options: nil)
+                try fileManager.removeItem(at: storeURL)
+            }
+            try fileManager.copyItem(at: sourceURL, to: storeURL)
+            persistentContainer = NSPersistentContainer(name: persistentContainer.name)
+            persistentContainer.loadPersistentStores { _, error in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(()))
+                }
+            }
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
     // MARK: Exercises
     
     func loadAllExercises(completion: @escaping (Result<[Exercise], Error>) -> Void) {

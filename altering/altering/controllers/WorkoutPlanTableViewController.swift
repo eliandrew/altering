@@ -44,6 +44,7 @@ class WorkoutPlanTableViewController: UITableViewController {
                     }
                     DispatchQueue.main.async {
                         self.tableView.tableHeaderView = self.setupHeaderView()
+                        (self.tableView.tableHeaderView as? WorkoutPlanHeaderView)?.setPlanProgress()
                         self.tableView.reloadData()
                     }
                 case .failure(let error):
@@ -54,10 +55,6 @@ class WorkoutPlanTableViewController: UITableViewController {
                 }
             }
         }
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        (self.tableView.tableHeaderView as? WorkoutPlanHeaderView)?.setPlanProgress()
     }
     
     @objc func addWorkout() {

@@ -39,7 +39,6 @@ let streakImageNames = [
     "figure.highintensity.intervaltraining",
     "figure.hiking",
     "figure.hockey",
-    "figure.hunting",
     "figure.indoor.cycle",
     "figure.jumprope",
     "figure.kickboxing",

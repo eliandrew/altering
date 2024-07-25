@@ -74,6 +74,7 @@
 		A6E734812C3DE87B006B1836 /* SelectWorkoutProgramTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E734802C3DE87B006B1836 /* SelectWorkoutProgramTableViewController.swift */; };
 		A6E734882C3EDF60006B1836 /* MultiIconTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E734862C3EDF60006B1836 /* MultiIconTableViewCell.swift */; };
 		A6E734892C3EDF60006B1836 /* MultiIconTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A6E734872C3EDF60006B1836 /* MultiIconTableViewCell.xib */; };
+		A6F9680E2C52104C0072691B /* NotificationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6F9680D2C52104C0072691B /* NotificationHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -180,6 +181,7 @@
 		A6E734802C3DE87B006B1836 /* SelectWorkoutProgramTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectWorkoutProgramTableViewController.swift; sourceTree = "<group>"; };
 		A6E734862C3EDF60006B1836 /* MultiIconTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiIconTableViewCell.swift; sourceTree = "<group>"; };
 		A6E734872C3EDF60006B1836 /* MultiIconTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MultiIconTableViewCell.xib; sourceTree = "<group>"; };
+		A6F9680D2C52104C0072691B /* NotificationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -232,6 +234,7 @@
 				A69F3AE92C46E72C009000C0 /* DateWriting.swift */,
 				A6AD917D2C4C33230074F182 /* DateHelper.swift */,
 				A6AD917F2C4C35EA0074F182 /* StreakHelper.swift */,
+				A6F9680D2C52104C0072691B /* NotificationHelper.swift */,
 			);
 			path = helpers;
 			sourceTree = "<group>";
@@ -578,6 +581,7 @@
 				A673E5C42C45836B00A40A91 /* WorkoutPlanTableViewController.swift in Sources */,
 				A60974BC2C3A257400857577 /* WorkoutPlan+CoreDataClass.swift in Sources */,
 				A673E5C62C46204900A40A91 /* WorkoutPlanHeaderView.swift in Sources */,
+				A6F9680E2C52104C0072691B /* NotificationHelper.swift in Sources */,
 				A6E734882C3EDF60006B1836 /* MultiIconTableViewCell.swift in Sources */,
 				A68FF2A52BBCD983007611D4 /* SelectGroupTableViewController.swift in Sources */,
 				A6BD324E2BBC8FC90017FBCF /* Workout+CoreDataClass.swift in Sources */,

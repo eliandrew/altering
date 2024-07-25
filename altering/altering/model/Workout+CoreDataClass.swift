@@ -9,12 +9,13 @@ public class Workout: NSManagedObject {
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let date = dateFormatter.string(from: self.date ?? Date.now as Date)
         
-        let exerciseName = "\"\(self.exercise?.name ?? "exercise")\""
-        let exerciseGroup = "\"\(self.exercise?.group?.name ?? "group")\""
+        let exerciseName = "\"\(self.exercise?.name ?? "none")\""
+        let exerciseGroup = "\"\(self.exercise?.group?.name ?? "none")\""
         
-        let notes = "\"\(self.notes ?? "notes")\""
+        let notes = "\"\(self.notes ?? "none")\""
+        let program = "\"\(self.program?.name ?? "none")\""
         
-        return [date, exerciseName, exerciseGroup, notes].joined(separator: ",")
+        return [date, exerciseName, exerciseGroup, notes, program].joined(separator: ",")
     }
     
     func programPlan() -> WorkoutPlan? {

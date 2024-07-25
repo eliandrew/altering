@@ -28,6 +28,8 @@ class WorkoutTableViewController: UITableViewController {
     let dataLoader = DataLoader.shared
     let dataWriter = DataWriter.shared
     
+    var updatedWorkout: Workout?
+    
     // MARK: Actions
     
     @objc func addWorkout() {
@@ -40,11 +42,12 @@ class WorkoutTableViewController: UITableViewController {
         let fileName = "workouts_\(dateFormatter.string(from: Date.now)).csv"
         let dataString = self.dataWriter.createWorkoutCSV(workouts: self.workoutDataSource.allWorkouts)
         let fileURL = self.dataWriter.writeCSV(data: dataString, to: fileName, headers: ["Date", "Name", "Group", "Notes"])
-         
+        
         if let file = fileURL {
             let activityViewController = UIActivityViewController(activityItems: [file], applicationActivities: nil)
            self.present(activityViewController, animated: true, completion: nil)
         }
+        
     }
     
     // MARK: View Lifecycle
@@ -122,6 +125,7 @@ class WorkoutTableViewController: UITableViewController {
     }
     
     func setupView() {
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addWorkout))
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(exportWorkouts))
         
@@ -159,10 +163,17 @@ class WorkoutTableViewController: UITableViewController {
                 }
             }
         }
+        
+        if let workout = updatedWorkout {
+            print("HANDLING UPDATED WORKOUT")
+            self.handleUpdatedWorkout(workout)
+            updatedWorkout = nil
+        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        NotificationCenter.default.addObserver(self, selector: #selector(workoutUpdated), name: .workoutUpdate, object: nil)
         setupView()
     }
     
@@ -311,7 +322,6 @@ class WorkoutTableViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == WORKOUT_SEGUE_IDENTIFIER {
             let vc = segue.destination as? EditWorkoutTableViewController
-            vc?.delegate = self
             if let workout = sender as? Workout {
                 vc?.workout = workout
                 vc?.originalWorkoutProgram = workout.program
@@ -355,11 +365,25 @@ class WorkoutTableViewController: UITableViewController {
             self.performSegue(withIdentifier: PROGRESS_SEGUE_IDENTIFIER, sender: streakInfo)
         }
     }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .workoutUpdate, object: nil)
+    }
+    
 }
 
-extension WorkoutTableViewController: EditWorkoutDelegate {
-    func didUpdateWorkoutProgram(_ workout: Workout) {
+extension WorkoutTableViewController {
+    
+    @objc func workoutUpdated(notification: Notification) {
+        if let userInfo = notification.userInfo, let workout = userInfo["workout"] as? Workout {
+            print("ADDED WORKOUT")
+            updatedWorkout = workout
+        }
+    }
+    
+    func handleUpdatedWorkout(_ workout: Workout) {
         if let progress = workout.progress(), let progressPointHit = workout.progressPointHit() {
+            print("UPDATING INSIDE")
             let isOver = progress > progressPointHit
             var attributedMessage = self.attributedProgressSubtitle("You're\(isOver ? " over" : "") \(Int(progressPointHit * 100))% done with \(workout.exercise?.name ?? "Exercise") in \(workout.program?.name ?? "Workout Program")", boldTexts: ["\(Int(progressPointHit * 100))%", "\(workout.exercise?.name ?? "Exercise")", "\(workout.program?.name ?? "Workout Program")"])
             var (title, message) = ("Congrats!", attributedMessage)
@@ -381,8 +405,6 @@ extension WorkoutTableViewController: EditWorkoutDelegate {
                 let progressInfo = ProgressInfo(title: title, subtitle: message, image: image, progress: progress)
                 self.performSegue(withIdentifier: PROGRESS_SEGUE_IDENTIFIER, sender: progressInfo)
             }
-                        
-            
         }
     }
 }

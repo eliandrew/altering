@@ -1,9 +1,5 @@
 import UIKit
 
-protocol EditWorkoutDelegate {
-    func didUpdateWorkoutProgram(_ workout: Workout)
-}
-
 class EditWorkoutTableViewController: UITableViewController {
     
     enum EditWorkoutTableViewSection: Int {
@@ -29,8 +25,6 @@ class EditWorkoutTableViewController: UITableViewController {
     // MARK: Outlets
     
     // MARK: Properties
-    
-    var delegate: EditWorkoutDelegate?
     
     var workoutDataSource = WorkoutTableViewDataSource()
     
@@ -129,7 +123,8 @@ class EditWorkoutTableViewController: UITableViewController {
             workout.program = self.program
             saveDataContext()
             if let newProgram = workout.program, originalWorkoutProgram != newProgram {
-                self.delegate?.didUpdateWorkoutProgram(workout)
+                print("CALLING NOTIFICATINO")
+                NotificationCenter.default.post(name: .workoutUpdate, object: nil, userInfo: ["workout" : workout])
             }
         } else {
             guard let exercise = self.exercise else {
@@ -143,7 +138,8 @@ class EditWorkoutTableViewController: UITableViewController {
             newWorkout.notes = self.currentNotes
             saveDataContext()
             if let _ = self.program {
-                self.delegate?.didUpdateWorkoutProgram(newWorkout)
+                print("CALLING NOTIFICATINO")
+                NotificationCenter.default.post(name: .workoutUpdate, object: nil, userInfo: ["workout" : newWorkout])
             }
         }
        
