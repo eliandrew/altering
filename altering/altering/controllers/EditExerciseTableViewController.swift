@@ -145,8 +145,6 @@ class EditExerciseTableViewController: UITableViewController {
     }
     
     @objc func addWorkoutPressed() {
-        let editWorkoutVC = EditWorkoutTableViewController()
-        editWorkoutVC.exercise = self.exercise
         if let tabBarController = self.tabBarController {
             if let secondTabNavController = tabBarController.viewControllers?[1] as? UINavigationController {
                    // Pop to the root view controller of the second tab
@@ -158,7 +156,11 @@ class EditExerciseTableViewController: UITableViewController {
             
             // Step 2: Push the new view controller after the tab change
                if let newNavController = tabBarController.selectedViewController as? UINavigationController {
-                   newNavController.pushViewController(editWorkoutVC, animated: true)
+                   let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                   if let editWorkoutVC = storyboard.instantiateViewController(withIdentifier: "EditWorkoutTableViewController") as? EditWorkoutTableViewController {
+                       editWorkoutVC.exercise = self.exercise
+                       newNavController.pushViewController(editWorkoutVC, animated: true)
+                   }
                }
         }
     }
@@ -169,9 +171,6 @@ class EditExerciseTableViewController: UITableViewController {
         if segue.identifier == SELECT_GROUP_SEGUE_IDENTIFIER {
             let vc = segue.destination as? SelectGroupTableViewController
             vc?.delegate = self
-        } else if segue.identifier == ADD_WORKOUT_SEGUE_IDENTIFIER {
-            let vc = segue.destination as? EditWorkoutTableViewController
-            vc?.exercise = self.exercise
         }
     }
 }
