@@ -3,6 +3,7 @@ import UIKit
 class WorkoutPlanTableViewController: UITableViewController {
     
     let ADD_WORKOUT_SEGUE = "addWorkoutSegue"
+    let EDIT_WORKOUT_SEGUE = "editWorkoutSegue"
     
     let WORKOUT_NOTES_CELL_IDENTIFIER = "workoutNotesCell"
     let WORKOUT_PROGRAM_CELL_IDENTIFIER = "workoutProgramCellIdentifier"
@@ -66,6 +67,9 @@ class WorkoutPlanTableViewController: UITableViewController {
             if let vc = segue.destination as? EditWorkoutTableViewController {
                 vc.exercise = self.workoutPlan?.exercise
                 vc.program = self.program
+                if let workout = sender as? Workout {
+                    vc.workout = workout
+                }
             }
         }
     }
@@ -101,6 +105,19 @@ class WorkoutPlanTableViewController: UITableViewController {
             return self.workouts?.count ?? 0
         default:
             return 0
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        switch WorkoutPlanSections(rawValue: indexPath.section) {
+        case .workouts:
+            if let workout = self.workouts?[indexPath.row] {
+                self.performSegue(withIdentifier: ADD_WORKOUT_SEGUE, sender: workout)
+            }
+            return
+        default:
+            return
         }
     }
     

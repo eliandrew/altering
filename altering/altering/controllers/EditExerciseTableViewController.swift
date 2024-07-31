@@ -10,12 +10,14 @@ class EditExerciseTableViewController: UITableViewController {
     
     
     let SELECT_GROUP_SEGUE_IDENTIFIER = "selectGroupSegue"
+    let ADD_WORKOUT_SEGUE_IDENTIFIER = "addExerciseWorkout"
     
     enum EditExerciseSection: Int {
         case name = 0
         case group = 1
-        case workouts = 2
-        case numSections = 3
+        case addWorkout = 2
+        case workouts = 3
+        case numSections = 4
     }
     
     // MARK: Properties
@@ -142,12 +144,34 @@ class EditExerciseTableViewController: UITableViewController {
         self.performSegue(withIdentifier: SELECT_GROUP_SEGUE_IDENTIFIER, sender: nil)
     }
     
+    @objc func addWorkoutPressed() {
+        let editWorkoutVC = EditWorkoutTableViewController()
+        editWorkoutVC.exercise = self.exercise
+        if let tabBarController = self.tabBarController {
+            if let secondTabNavController = tabBarController.viewControllers?[1] as? UINavigationController {
+                   // Pop to the root view controller of the second tab
+                   secondTabNavController.popToRootViewController(animated: false)
+               }
+            
+            // Change to the desired tab index (e.g., 1 for the second tab)
+            tabBarController.selectedIndex = 0
+            
+            // Step 2: Push the new view controller after the tab change
+               if let newNavController = tabBarController.selectedViewController as? UINavigationController {
+                   newNavController.pushViewController(editWorkoutVC, animated: true)
+               }
+        }
+    }
+    
     // MARK: Segues
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == SELECT_GROUP_SEGUE_IDENTIFIER {
             let vc = segue.destination as? SelectGroupTableViewController
             vc?.delegate = self
+        } else if segue.identifier == ADD_WORKOUT_SEGUE_IDENTIFIER {
+            let vc = segue.destination as? EditWorkoutTableViewController
+            vc?.exercise = self.exercise
         }
     }
 }
@@ -179,6 +203,8 @@ extension EditExerciseTableViewController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch EditExerciseSection(rawValue: section) {
+        case .addWorkout:
+            return 1
         case .name:
             return 1
         case .group:
@@ -192,6 +218,18 @@ extension EditExerciseTableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch EditExerciseSection(rawValue: indexPath.section) {
+        case .addWorkout:
+            let cell = tableView.dequeueReusableCell(withIdentifier: GROUP_CELL_IDENTIFIER, for: indexPath)
+            cell.selectionStyle = .none
+            if let groupCell = cell as? ButtonTableViewCell {
+                groupCell.button.setImage(UIImage(systemName: "plus.circle.fill"), for: .normal)
+                groupCell.button.setImage(UIImage(systemName: "plus.circle.fill"), for: .highlighted)
+                groupCell.button.setImage(UIImage(systemName: "plus.circle.fill"), for: .selected)
+                groupCell.button.setImage(UIImage(systemName: "plus.circle.fill"), for: .focused)
+                groupCell.button.addTarget(self, action: #selector(addWorkoutPressed), for: .touchUpInside)
+                return cell
+            }
+            return cell
         case .name:
             let cell = tableView.dequeueReusableCell(withIdentifier: NAME_CELL_IDENTIFIER, for: indexPath)
             if let textFieldCell = cell as? TextFieldTableViewCell {
@@ -237,6 +275,8 @@ extension EditExerciseTableViewController {
             return "Name"
         case .group:
             return "Group"
+        case .addWorkout:
+            return "Add Workout"
         case .workouts:
             let workoutCount = workouts?.count ?? 0
             let title = "\(workoutCount == 0 ? "No" : "\(workoutCount)") Workout\(workoutCount == 1 ? "" : "s")"

@@ -41,7 +41,7 @@ class WorkoutTableViewController: UITableViewController {
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let fileName = "workouts_\(dateFormatter.string(from: Date.now)).csv"
         let dataString = self.dataWriter.createWorkoutCSV(workouts: self.workoutDataSource.allWorkouts)
-        let fileURL = self.dataWriter.writeCSV(data: dataString, to: fileName, headers: ["Date", "Name", "Group", "Notes"])
+        let fileURL = self.dataWriter.writeCSV(data: dataString, to: fileName, headers: ["Date", "Name", "Group", "Notes", "Program"])
         
         if let file = fileURL {
             let activityViewController = UIActivityViewController(activityItems: [file], applicationActivities: nil)

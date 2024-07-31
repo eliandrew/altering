@@ -17,6 +17,7 @@ class EditWorkoutTableViewController: UITableViewController {
     let SELECT_EXERCISE_SEGUE = "selectExerciseSegue"
     let SELECT_WORKOUT_PROGRAM_SEGUE = "selectWorkoutProgramSegue"
     
+    
     let DATE_CELL_IDENTIFIER = "dateCell"
     let BUTTON_CELL_IDENTIFIER = "buttonCell"
     let BASIC_CELL_IDENTIFIER = "basicCell"
