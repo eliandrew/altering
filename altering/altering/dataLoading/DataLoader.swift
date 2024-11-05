@@ -240,6 +240,34 @@ class DataLoader {
         viewContext.delete(workoutProgram)
     }
     
+    // MARK: RestPeriods
+    
+    func loadAllRestPeriods(completion: @escaping (Result<[RestPeriod], Error>) -> Void) {
+        DispatchQueue.global().async {
+            let fetchRequest: NSFetchRequest<RestPeriod> = RestPeriod.fetchRequest()
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "startDate", ascending: true)]
+            
+            do {
+                let fetchResults = try self.viewContext.fetch(fetchRequest)
+                DispatchQueue.main.async {
+                    completion(.success(fetchResults))
+                }
+            } catch {
+                print("Error Fetching All RestPeriods: \(error)")
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
+    func createNewRestPeriod() -> RestPeriod {
+        return RestPeriod(context: viewContext)
+    }
+    
+    func deleteRestPeriod(_ restPeriod: RestPeriod) {
+        viewContext.delete(restPeriod)
+    }
     
     // MARK: - Saving
     
@@ -257,5 +285,7 @@ class DataLoader {
             }
         }
     }
+    
+    
 }
 

@@ -2,7 +2,7 @@
 //  Workout+CoreDataProperties.swift
 //  Altered
 //
-//  Created by Andrew, Elias on 7/9/24.
+//  Created by Andrew, Elias on 11/4/24.
 //
 //
 
@@ -18,6 +18,7 @@ extension Workout {
 
     @NSManaged public var date: Date?
     @NSManaged public var notes: String?
+    @NSManaged public var completed: Bool
     @NSManaged public var exercise: Exercise?
     @NSManaged public var program: WorkoutProgram?
 

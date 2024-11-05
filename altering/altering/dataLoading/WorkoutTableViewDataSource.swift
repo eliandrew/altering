@@ -12,13 +12,36 @@ class WorkoutTableViewDataSource {
     let EXPAND_WORKOUT_CELL_IDENTIFIER = "expandWorkoutCell"
     let MAX_WORKOUTS = 3
     var allWorkouts: [Workout] = []
-    var workoutsByDate: [String : WorkoutSection] = [:]
-    var workoutDateKeys = [String]()
+    
     var firstWorkout: [String : Workout] = [:]
     
     var sectionTitles: [String]?
     
     var isPreview = false
+    
+    private var searchText: String?
+    private var searchWorkoutsByDate: [String : WorkoutSection] = [:]
+    private var searchWorkoutDateKeys = [String]()
+    
+    var workoutsByDate: [String : WorkoutSection] = [:]
+    var workoutDateKeys = [String]()
+    
+    func setSearchText(_ text: String?) {
+        self.searchText = text
+        self.searchWorkoutsByDate = [:]
+        self.searchWorkoutDateKeys = [String]()
+        if let searchText = self.searchText?.lowercased(), !searchText.isEmpty {
+            self.searchWorkoutsByDate = self.workoutsByDate.filter({ (date, workoutSection) in
+                workoutSection.workouts.contains { workout in
+                    workout.exercise?.name?.lowercased().contains(searchText) ?? false
+                }
+            })
+            self.searchWorkoutDateKeys = self.searchWorkoutsByDate.map{ $0.key }
+        } else {
+            self.searchWorkoutDateKeys = self.workoutDateKeys
+            self.searchWorkoutsByDate = self.workoutsByDate
+        }
+    }
     
     
     // MARK: Helpers
@@ -36,6 +59,8 @@ class WorkoutTableViewDataSource {
                 self.workoutsByDate[key]?.workouts.remove(at: indexPath.row)
             }
         }
+        self.searchWorkoutDateKeys = self.workoutDateKeys
+        self.searchWorkoutsByDate = self.workoutsByDate
     }
     
     func setWorkouts(_ workouts: [Workout]) {
@@ -77,17 +102,19 @@ class WorkoutTableViewDataSource {
             }
         }
         self.workoutsByDate = newWorkoutsByDateKey
+        self.searchWorkoutDateKeys = self.workoutDateKeys
+        self.searchWorkoutsByDate = self.workoutsByDate
     }
     
     func toggleExpandSection(_ section: Int) {
-        let isExpanded = self.workoutsByDate[self.workoutDateKeys[section]]?.isExpanded ?? false
-        self.workoutsByDate[self.workoutDateKeys[section]]?.isExpanded = !isExpanded
+        let isExpanded = self.searchWorkoutsByDate[self.searchWorkoutDateKeys[section]]?.isExpanded ?? false
+        self.searchWorkoutsByDate[self.searchWorkoutDateKeys[section]]?.isExpanded = !isExpanded
     }
     
     func workoutSection(_ section: Int) -> WorkoutSection? {
-        if section < self.workoutDateKeys.count {
-            let dateKey = self.workoutDateKeys[section]
-            return self.workoutsByDate[dateKey]
+        if section < self.searchWorkoutDateKeys.count {
+            let dateKey = self.searchWorkoutDateKeys[section]
+            return self.searchWorkoutsByDate[dateKey]
         } else {
             return nil
         }
@@ -122,13 +149,13 @@ class WorkoutTableViewDataSource {
     }
     
     func sectionForSectionIndexTitle(_ title: String, at index: Int) -> Int {
-        return self.workoutDateKeys.firstIndex { dateKey in
+        return self.searchWorkoutDateKeys.firstIndex { dateKey in
             title == convertDateStringToTitle(dateKey)
         } ?? 0
     }
     
     func numberOfSections(_ tableView: UITableView) -> Int {
-        return self.workoutDateKeys.count
+        return self.searchWorkoutDateKeys.count
     }
     
     func numberOfRowsInSection(_ tableView: UITableView, section: Int) -> Int {
@@ -161,6 +188,9 @@ class WorkoutTableViewDataSource {
             if firstWorkout == workout && !isPreview {
                 cell.iconImageView.image = UIImage(systemName: "figure.wave")
             }
+            if !workout.completed {
+                cell.iconImageView.image = UIImage(systemName: "pencil.and.list.clipboard")
+            }
             cell.titleLabel.text = exerciseName
             cell.titleLabel.tintColor = .label
             cell.iconImageView.tintColor = .systemBlue
@@ -174,8 +204,11 @@ class WorkoutTableViewDataSource {
             cell.subIconImageView.image = UIImage(systemName: "doc.text.fill")
         }
         
+        
+        cell.backgroundColor = workout.completed ? .systemBackground : .secondarySystemBackground
         cell.accessoryType = isPreview ? .none : .disclosureIndicator
         cell.selectionStyle = isPreview ? .none : .default
+        
         
         return cell
     }
@@ -205,8 +238,8 @@ class WorkoutTableViewDataSource {
     }
     
     func titleForSection(_ section: Int) -> String? {
-        if section < self.workoutDateKeys.count {
-            return self.workoutDateKeys[section]
+        if section < self.searchWorkoutDateKeys.count {
+            return self.searchWorkoutDateKeys[section]
         } else {
             return nil
         }
@@ -232,6 +265,72 @@ class WorkoutTableViewDataSource {
         let components = calendar.dateComponents([.day], from: startDate, to: endDate)
         if let days = components.day {
             return days
+        } else {
+            return nil
+        }
+    }
+    
+    func restDaysBetween(start: WorkoutSection, end: WorkoutSection) -> Int? {
+        if let nextWorkoutDate = end.workouts.first?.date,
+           let currentWorkoutDate = start.workouts.first?.date {
+                if let daysBetween = daysBetween(start: nextWorkoutDate, end: currentWorkoutDate) {
+                    let restDays = daysBetween - 1
+                    return restDays
+                } else {
+                    return nil
+                }
+            } else {
+                return nil
+            }
+    }
+    
+    func streakLength(maxRestDays: Int) -> Int {
+        let sectionsWithCompletedWorkouts = self.workoutsByDate.filter { (dateString: String, section: WorkoutSection) in
+            section.workouts.contains { w in
+                w.completed
+            }
+        }.map { (key: String, value: WorkoutSection) in
+            value
+        }.sorted { ws1, ws2 in
+            ws1.workouts.first?.date ?? Date() > ws2.workouts.first?.date ?? Date()
+        }
+        
+        guard let firstWorkout = sectionsWithCompletedWorkouts[0].workouts.first?.date, let currentRestDays = self.daysBetween(start: firstWorkout, end: Date()) else {
+            return 0
+        }
+        
+        if currentRestDays > maxRestDays {
+            return 0
+        }
+        
+        var streakLength = 1
+        
+        let nSections = sectionsWithCompletedWorkouts.count
+        if nSections == 0 {
+            return 0
+        }
+        for i in 0..<nSections {
+            guard let restDays = restDaysBetween(start: sectionsWithCompletedWorkouts[i], end: sectionsWithCompletedWorkouts[i + 1]) else {
+                return streakLength
+            }
+            if restDays <= maxRestDays {
+                streakLength += 1
+            } else {
+                return streakLength
+            }
+        }
+        return streakLength
+        
+    }
+    
+    func restDaysDatesForSection(_ tableView: UITableView, section: Int) -> (Date, Date)? {
+        if self.numberOfSections(tableView) > section {
+            if let nextWorkoutDate = self.workoutsForSection(section + 1)?.first?.date,
+               let currentWorkoutDate = self.workoutsForSection(section)?.first?.date {
+                return (currentWorkoutDate, nextWorkoutDate)
+            } else {
+                return nil
+            }
         } else {
             return nil
         }

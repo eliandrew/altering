@@ -3,12 +3,13 @@ import UIKit
 class EditWorkoutTableViewController: UITableViewController {
     
     enum EditWorkoutTableViewSection: Int {
-        case date = 0
-        case exercise = 1
-        case program = 2
-        case notes = 3
-        case workouts = 4
-        case numSections = 5
+        case completed = 0
+        case date = 1
+        case exercise = 2
+        case program = 3
+        case notes = 4
+        case workouts = 5
+        case numSections = 6
     }
 
     // MARK: Constants
@@ -22,6 +23,7 @@ class EditWorkoutTableViewController: UITableViewController {
     let BUTTON_CELL_IDENTIFIER = "buttonCell"
     let BASIC_CELL_IDENTIFIER = "basicCell"
     let WORKOUT_CELL_IDENTIFIER = "workoutCell"
+    let COMPLETED_CELL_IDENTIFIER = "completeCell"
     
     // MARK: Outlets
     
@@ -34,6 +36,7 @@ class EditWorkoutTableViewController: UITableViewController {
     var program: WorkoutProgram?
     var previousWorkouts: [Workout]?
     var currentNotes: String?
+    var workoutCompleted: Bool?
     
     var selectedDate: Date?
     var originalWorkoutProgram: WorkoutProgram?
@@ -41,6 +44,12 @@ class EditWorkoutTableViewController: UITableViewController {
     let dataLoader = DataLoader.shared
     
     // MARK: Actions
+    
+    @objc func workoutTypeChanged(_ sender: Any?) {
+        if let segmentedControl = sender as? UISegmentedControl {
+            self.workoutCompleted = segmentedControl.selectedSegmentIndex == 0
+        }
+    }
     
     @objc func dateChanged(_ sender: Any?) {
         if let datePicker = sender as? UIDatePicker {
@@ -88,6 +97,7 @@ class EditWorkoutTableViewController: UITableViewController {
         self.tableView.register(UINib(nibName: "ButtonTableViewCell", bundle: nil), forCellReuseIdentifier: BUTTON_CELL_IDENTIFIER)
         self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: BASIC_CELL_IDENTIFIER)
         self.tableView.register(UINib(nibName: "WorkoutNotesTableViewCell", bundle: nil), forCellReuseIdentifier: WORKOUT_CELL_IDENTIFIER)
+        self.tableView.register(UINib(nibName: "SegmentedControlTableViewCell", bundle: nil), forCellReuseIdentifier: COMPLETED_CELL_IDENTIFIER)
         
         self.tableView.separatorStyle = .none
         
@@ -101,6 +111,7 @@ class EditWorkoutTableViewController: UITableViewController {
             self.program = program ?? workout.program
             self.selectedDate = workout.date
             self.currentNotes = workout.notes
+            self.workoutCompleted = workout.completed
             
             // Set the title for the large title
             title = "Edit Workout"
@@ -122,9 +133,9 @@ class EditWorkoutTableViewController: UITableViewController {
             workout.notes = self.currentNotes
             workout.exercise = self.exercise
             workout.program = self.program
+            workout.completed = self.workoutCompleted ?? true
             saveDataContext()
             if let newProgram = workout.program, originalWorkoutProgram != newProgram {
-                print("CALLING NOTIFICATINO")
                 NotificationCenter.default.post(name: .workoutUpdate, object: nil, userInfo: ["workout" : workout])
             }
         } else {
@@ -137,9 +148,9 @@ class EditWorkoutTableViewController: UITableViewController {
             newWorkout.exercise = exercise
             newWorkout.program = self.program
             newWorkout.notes = self.currentNotes
+            newWorkout.completed = self.workoutCompleted ?? true
             saveDataContext()
             if let _ = self.program {
-                print("CALLING NOTIFICATINO")
                 NotificationCenter.default.post(name: .workoutUpdate, object: nil, userInfo: ["workout" : newWorkout])
             }
         }
@@ -158,6 +169,8 @@ class EditWorkoutTableViewController: UITableViewController {
         super.viewWillAppear(animated)
         setupView()
     }
+    
+    
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch EditWorkoutTableViewSection(rawValue: indexPath.section) {
@@ -202,6 +215,13 @@ class EditWorkoutTableViewController: UITableViewController {
                 notesViewCell.notesTextView.isScrollEnabled = true
             }
             return cell
+        case .completed:
+            let cell = tableView.dequeueReusableCell(withIdentifier: COMPLETED_CELL_IDENTIFIER, for: indexPath)
+            if let completedCell = cell as? SegmentedControlTableViewCell {
+                completedCell.segmentedControl.selectedSegmentIndex = self.workoutCompleted ?? true ? 0 : 1
+                completedCell.segmentedControl.addTarget(self, action: #selector(workoutTypeChanged), for: .valueChanged)
+            }
+            return cell
         case .workouts:
             let cell = tableView.dequeueReusableCell(withIdentifier: WORKOUT_CELL_IDENTIFIER, for: indexPath)
             if let notesViewCell = cell as? WorkoutNotesTableViewCell {
@@ -232,6 +252,8 @@ class EditWorkoutTableViewController: UITableViewController {
             return 2
         case .notes:
             return 1
+        case .completed:
+            return 1
         case .workouts:
             return self.previousWorkouts?.count ?? 0
         default:
@@ -249,6 +271,8 @@ class EditWorkoutTableViewController: UITableViewController {
             return "Program"
         case .notes:
             return "Notes"
+        case .completed:
+            return "Workout Type"
         case .workouts:
             if let prevWorkouts = self.previousWorkouts, prevWorkouts.count > 0 {
                 return "\(prevWorkouts.count) Previous Workout\(prevWorkouts.count == 1 ? "" : "s")"
@@ -271,6 +295,8 @@ class EditWorkoutTableViewController: UITableViewController {
             return UITableView.automaticDimension
         case .notes:
             return 350.0
+        case .completed:
+            return UITableView.automaticDimension
         case .workouts:
             return UITableView.automaticDimension
         default:
@@ -295,6 +321,8 @@ class EditWorkoutTableViewController: UITableViewController {
             }
             return
         case .notes:
+            return
+        case .completed:
             return
         case .workouts:
             return

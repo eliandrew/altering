@@ -24,11 +24,15 @@ class WorkoutTableViewController: UITableViewController {
     
     // MARK: Properties
     
+    let searchController = UISearchController(searchResultsController: nil)
+    
     var workoutDataSource = WorkoutTableViewDataSource()
     let dataLoader = DataLoader.shared
     let dataWriter = DataWriter.shared
     
     var updatedWorkout: Workout?
+    
+    var restPeriods: [RestPeriod]?
     
     // MARK: Actions
     
@@ -60,26 +64,7 @@ class WorkoutTableViewController: UITableViewController {
     }
     
     func streakLength() -> Int {
-        
-        if self.currentRestDays() > STREAK_REST_MAX {
-            return 0
-        }
-        var streakLength = 1
-        let nSections = self.workoutDataSource.numberOfSections(self.tableView)
-        if nSections == 0 {
-            return 0
-        }
-        for i in 0..<nSections {
-            guard let restDays = self.workoutDataSource.restDaysNumberForSection(self.tableView, section: i) else {
-                return streakLength
-            }
-            if restDays <= STREAK_REST_MAX {
-                streakLength += 1
-            } else {
-                return streakLength
-            }
-        }
-        return streakLength
+        return self.workoutDataSource.streakLength(maxRestDays: STREAK_REST_MAX)
     }
     
     func setupWorkoutStreakView() -> UIView? {
@@ -134,6 +119,12 @@ class WorkoutTableViewController: UITableViewController {
         tableView.register(UINib(nibName: "ExpandWorkoutsTableViewCell", bundle: nil), forCellReuseIdentifier: EXPAND_WORKOUT_CELL_IDENTIFIER)
         self.tableView.register(UINib(nibName: "MultiIconTableViewCell", bundle: nil), forCellReuseIdentifier: WORKOUT_CELL_IDENTIFIER)
         
+//        searchController.searchResultsUpdater = self
+//        searchController.obscuresBackgroundDuringPresentation = false
+//        searchController.searchBar.placeholder = "Search"
+//        navigationItem.searchController = searchController
+//        definesPresentationContext = true
+        
         
         // Set the title for the large title
         title = "Workouts"
@@ -148,12 +139,27 @@ class WorkoutTableViewController: UITableViewController {
             switch result {
             case .success(let fetchedWorkouts):
                 self.workoutDataSource.setWorkouts(fetchedWorkouts)
-                DispatchQueue.main.async {
-                    self.longestStreakNotification()
-                    self.tableView.tableHeaderView = self.setupWorkoutStreakView()
-                    self.updateBackgroundView()
-                    self.tableView.reloadData()
+                self.dataLoader.loadAllRestPeriods { result in
+                    switch result {
+                    case .success(let fetchedRestPeriods):
+                        self.restPeriods = fetchedRestPeriods
+                        DispatchQueue.main.async {
+                            self.longestStreakNotification()
+                            self.tableView.tableHeaderView = self.setupWorkoutStreakView()
+                            self.updateBackgroundView()
+                            self.tableView.reloadData()
+                        }
+                    case .failure(let error):
+                        print("Error fetching rest periods: \(error)")
+                        DispatchQueue.main.async {
+                            self.longestStreakNotification()
+                            self.tableView.tableHeaderView = self.setupWorkoutStreakView()
+                            self.updateBackgroundView()
+                            self.tableView.reloadData()
+                        }
+                    }
                 }
+                
             case .failure(let error):
                 print("Error fetching exercises: \(error)")
                 self.workoutDataSource.setWorkouts([])
@@ -209,15 +215,69 @@ class WorkoutTableViewController: UITableViewController {
         return self.workoutDataSource.titleForSection(section)
     }
     
+    func restPeriodForSection(_ section: Int) -> RestPeriod? {
+//        if let (startDate, endDate) = self.workoutDataSource.restDaysDatesForSection(self.tableView, section: section) {
+//            return self.restPeriods?.first(where: { rp in
+//                rp.startDate == startDate && rp.endDate == endDate
+//            })
+//        } else {
+//            return nil
+//        }
+        return nil
+    }
+    
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         if let restDays = self.workoutDataSource.restDaysForSection(tableView, section: section) {
             let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: WORKOUT_FOOTER_VIEW_IDENTIFIER) as? WorkoutFooterView
-            footerView?.restDaysLabel?.font = UIFont.systemFont(ofSize: 25.0)
-            footerView?.restDaysLabel.text = restDays
+            footerView?.restDaysLabel?.font = UIFont.systemFont(ofSize: 20.0)
+            
+            if let restPeriod = self.restPeriodForSection(section) {
+                footerView?.restDaysLabel.text = "\(restPeriod.explanation ?? "") (\(restDays))"
+            } else {
+                footerView?.restDaysLabel.text = restDays
+            }
+            
+            // Add long press gesture recognizer to the footer view
+            let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleFooterLongPress(_:)))
+//            footerView?.addGestureRecognizer(longPressGesture)
+            footerView?.tag = section
             return footerView
         } else {
             return nil
         }
+    }
+    
+    @objc func handleFooterLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
+        if gestureRecognizer.state == .began {
+            if let footerView = gestureRecognizer.view as? WorkoutFooterView, let (startDate, endDate) = self.workoutDataSource.restDaysDatesForSection(self.tableView, section: footerView.tag) {
+                if let alertController = addRestPeriodViewController(startDate: startDate, endDate: endDate, restPeriod: self.restPeriodForSection(footerView.tag)) {
+                    self.present(alertController, animated: true)
+                }
+            }
+        }
+    }
+    
+    func addRestPeriodViewController(startDate: Date, endDate: Date, restPeriod: RestPeriod?) -> UIAlertController? {
+        let alertController = UIAlertController(title: "Rest Period Explanation", message: nil, preferredStyle: .alert)
+        alertController.addTextField()
+        alertController.textFields![0].text = restPeriod?.explanation
+        let submitAction = UIAlertAction(title: "Add", style: .default) { [unowned alertController] _ in
+            let newExplanation = alertController.textFields![0].text
+            if let restPeriod {
+                restPeriod.explanation = newExplanation
+            } else {
+                let newRestPeriod = self.dataLoader.createNewRestPeriod()
+                newRestPeriod.explanation = newExplanation
+                newRestPeriod.startDate = startDate
+                newRestPeriod.endDate = endDate
+            }
+            self.dataLoader.saveContext()
+            self.dismiss(animated: true)
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        alertController.addAction(cancelAction)
+        alertController.addAction(submitAction)
+        return alertController
     }
     
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -376,7 +436,6 @@ extension WorkoutTableViewController {
     
     @objc func workoutUpdated(notification: Notification) {
         if let userInfo = notification.userInfo, let workout = userInfo["workout"] as? Workout {
-            print("ADDED WORKOUT")
             updatedWorkout = workout
         }
     }
@@ -406,5 +465,16 @@ extension WorkoutTableViewController {
                 self.performSegue(withIdentifier: PROGRESS_SEGUE_IDENTIFIER, sender: progressInfo)
             }
         }
+    }
+}
+
+extension WorkoutTableViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        if let searchText = searchController.searchBar.text, !searchText.isEmpty {
+            self.workoutDataSource.setSearchText(searchText)
+        } else {
+            self.workoutDataSource.setSearchText(nil)
+        }
+        self.tableView.reloadData()
     }
 }
