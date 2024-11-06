@@ -238,7 +238,7 @@ class WorkoutTableViewController: UITableViewController {
             }
             
             // Add long press gesture recognizer to the footer view
-            let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleFooterLongPress(_:)))
+//            let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleFooterLongPress(_:)))
 //            footerView?.addGestureRecognizer(longPressGesture)
             footerView?.tag = section
             return footerView
@@ -394,7 +394,9 @@ class WorkoutTableViewController: UITableViewController {
             vc?.progress = progressInfo.progress
         } else if segue.identifier == STREAK_CALENDAR_SEGUE_IDENTIFIER {
             let vc = segue.destination as? StreakViewController
-            vc?.workouts = workoutDataSource.workoutsByDate.mapValues({$0.workouts})
+            vc?.workouts = workoutDataSource.workoutsByDate.mapValues({$0.workouts.filter { w in
+                w.completed
+            }})
         }
     }
     

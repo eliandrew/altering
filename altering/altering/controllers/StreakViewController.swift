@@ -68,7 +68,9 @@ class StreakViewController: UIViewController {
     
     func setupWorkoutDates() -> Set<DateComponents> {
         let calendar = Calendar.current
-        return Set(workouts.keys.compactMap({dateFromTitle($0)}).map({calendar.dateComponents([.month, .day, .year], from: $0)}))
+        return Set(workouts.filter({ (date: String, w: [Workout]) in
+            !w.isEmpty
+        }).keys.compactMap({dateFromTitle($0)}).map({calendar.dateComponents([.month, .day, .year], from: $0)}))
     }
     
     func configureCalendarView() {
@@ -128,7 +130,7 @@ extension StreakViewController: UICalendarViewDelegate {
 
 extension StreakViewController: UICalendarSelectionSingleDateDelegate {
     func dateSelection(_ selection: UICalendarSelectionSingleDate, didSelectDate dateComponents: DateComponents?) {
-        if let title = dateTitleFrom(dateComponents?.date), let workouts = workouts[title] {
+        if let title = dateTitleFrom(dateComponents?.date), let workouts = workouts[title], workouts.count > 0 {
             self.performSegue(withIdentifier: WORKOUT_DAY_VIEW_SEGUE, sender: workouts)
         }
         selection.setSelected(nil, animated: true)
