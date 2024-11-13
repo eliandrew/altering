@@ -286,42 +286,41 @@ class WorkoutTableViewDataSource {
     }
     
     func streakLength(maxRestDays: Int) -> Int {
-//        let sectionsWithCompletedWorkouts = self.workoutsByDate.filter { (dateString: String, section: WorkoutSection) in
-//            section.workouts.contains { w in
-//                w.completed
-//            }
-//        }.map { (key: String, value: WorkoutSection) in
-//            value
-//        }.sorted { ws1, ws2 in
-//            ws1.workouts.first?.date ?? Date() > ws2.workouts.first?.date ?? Date()
-//        }
-//        
-//        guard let firstWorkout = sectionsWithCompletedWorkouts[0].workouts.first?.date, let currentRestDays = self.daysBetween(start: firstWorkout, end: Date()) else {
-//            return 0
-//        }
-//        
-//        if currentRestDays > maxRestDays {
-//            return 0
-//        }
-//        
-//        var streakLength = 1
-//        
-//        let nSections = sectionsWithCompletedWorkouts.count
-//        if nSections == 0 {
-//            return 0
-//        }
-//        for i in 0..<nSections {
-//            guard let restDays = restDaysBetween(start: sectionsWithCompletedWorkouts[i], end: sectionsWithCompletedWorkouts[i + 1]) else {
-//                return streakLength
-//            }
-//            if restDays <= maxRestDays {
-//                streakLength += 1
-//            } else {
-//                return streakLength
-//            }
-//        }
-//        return streakLength
-        return 0
+        let sectionsWithCompletedWorkouts = self.workoutsByDate.filter { (dateString: String, section: WorkoutSection) in
+            section.workouts.contains { w in
+                w.completed
+            }
+        }.map { (key: String, value: WorkoutSection) in
+            value
+        }.sorted { ws1, ws2 in
+            ws1.workouts.first?.date ?? Date() > ws2.workouts.first?.date ?? Date()
+        }
+        
+        guard let firstWorkout = sectionsWithCompletedWorkouts[0].workouts.first?.date, let currentRestDays = self.daysBetween(start: firstWorkout, end: Date()) else {
+            return 0
+        }
+        
+        if currentRestDays > maxRestDays {
+            return 0
+        }
+        
+        var streakLength = 1
+        
+        let nSections = sectionsWithCompletedWorkouts.count
+        if nSections == 0 {
+            return 0
+        }
+        for i in 0..<nSections {
+            guard let restDays = restDaysBetween(start: sectionsWithCompletedWorkouts[i], end: sectionsWithCompletedWorkouts[i + 1]) else {
+                return streakLength
+            }
+            if restDays <= maxRestDays {
+                streakLength += 1
+            } else {
+                return streakLength
+            }
+        }
+        return streakLength
         
     }
     
