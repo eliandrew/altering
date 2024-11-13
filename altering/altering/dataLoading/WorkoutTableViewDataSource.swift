@@ -239,7 +239,8 @@ class WorkoutTableViewDataSource {
     
     func titleForSection(_ section: Int) -> String? {
         if section < self.searchWorkoutDateKeys.count {
-            return self.searchWorkoutDateKeys[section]
+            let isDateInToday = self.searchWorkoutDateKeys[section] == dateTitleFrom(Date())
+            return self.searchWorkoutDateKeys[section] + " \(isDateInToday ? "(Today)" : "")"
         } else {
             return nil
         }
