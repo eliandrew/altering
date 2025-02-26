@@ -13,7 +13,7 @@ class WorkoutPlanHeaderView: UIView {
     @IBOutlet weak var detailImageView: UIImageView?
     
     func setPlanProgress() {
-        self.progressBar.setProgress(self.progress ?? 0, animated: true)
+        self.progressBar.setProgress(self.progress ?? 0, animated: false)
     }
     
     func setupView(workoutPlan: WorkoutPlan, workouts: [Workout]) {

@@ -171,7 +171,6 @@ class WorkoutTableViewController: UITableViewController {
         }
         
         if let workout = updatedWorkout {
-            print("HANDLING UPDATED WORKOUT")
             self.handleUpdatedWorkout(workout)
             updatedWorkout = nil
         }
@@ -444,7 +443,6 @@ extension WorkoutTableViewController {
     
     func handleUpdatedWorkout(_ workout: Workout) {
         if let progress = workout.progress(), let progressPointHit = workout.progressPointHit() {
-            print("UPDATING INSIDE")
             let isOver = progress > progressPointHit
             var attributedMessage = self.attributedProgressSubtitle("You're\(isOver ? " over" : "") \(Int(progressPointHit * 100))% done with \(workout.exercise?.name ?? "Exercise") in \(workout.program?.name ?? "Workout Program")", boldTexts: ["\(Int(progressPointHit * 100))%", "\(workout.exercise?.name ?? "Exercise")", "\(workout.program?.name ?? "Workout Program")"])
             var (title, message) = ("Congrats!", attributedMessage)

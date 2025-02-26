@@ -119,6 +119,7 @@ class EditWorkoutTableViewController: UITableViewController {
             title = "Create Workout"
             
             self.selectedDate = self.selectedDate ?? Date.now
+            self.workoutCompleted = false
         }
         
         if let exercise {
@@ -135,7 +136,7 @@ class EditWorkoutTableViewController: UITableViewController {
             workout.program = self.program
             workout.completed = self.workoutCompleted ?? true
             saveDataContext()
-            if let newProgram = workout.program, originalWorkoutProgram != newProgram {
+            if let newProgram = workout.program, originalWorkoutProgram != newProgram, workout.completed {
                 NotificationCenter.default.post(name: .workoutUpdate, object: nil, userInfo: ["workout" : workout])
             }
         } else {

@@ -81,7 +81,7 @@ class WorkoutProgramTableViewDataSource {
                 cell.progressBar.tintColor = .systemGreen
                 cell.remainingWorkoutCountLabel.text = "0"
                 cell.remainingSubtitleLabel.text = "remaining"
-                cell.progressBar.setProgress(Float(progress), animated: true)
+                cell.progressBar.setProgress(Float(progress), animated: false)
                 cell.dateImageView.image = UIImage(systemName: "checkmark.circle.fill")
                 cell.dateImageView.tintColor = .systemGreen
                 cell.dateLabel.text = "Completed!"

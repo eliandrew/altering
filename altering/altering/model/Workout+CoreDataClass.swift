@@ -42,7 +42,7 @@ public class Workout: NSManagedObject {
     }
     
     func progress() -> Float? {
-        if let _ = self.program {
+        if self.completed, let _ = self.program  {
             return self.progress(for: self.workoutsCompleted() ?? 0)
         } else {
             return nil
