@@ -31,6 +31,11 @@
 		A628F39F2BBEF05400DF5E09 /* WorkoutFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A628F39E2BBEF05400DF5E09 /* WorkoutFooterView.swift */; };
 		A628F3A12BBEF64300DF5E09 /* WorkoutFooterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A628F3A02BBEF64300DF5E09 /* WorkoutFooterView.xib */; };
 		A638587D2C33214F00B075E7 /* DataWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A638587C2C33214F00B075E7 /* DataWriter.swift */; };
+		A64792F92D6FCB830063E504 /* TimerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64792F82D6FCB830063E504 /* TimerViewController.swift */; };
+		A64792FB2D6FD5C90063E504 /* digital-7.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A64792FA2D6FD5C90063E504 /* digital-7.ttf */; };
+		A64793002D6FD6F20063E504 /* digital-7 (italic).ttf in Resources */ = {isa = PBXBuildFile; fileRef = A64792FD2D6FD6F20063E504 /* digital-7 (italic).ttf */; };
+		A64793012D6FD6F20063E504 /* digital-7 (mono).ttf in Resources */ = {isa = PBXBuildFile; fileRef = A64792FF2D6FD6F20063E504 /* digital-7 (mono).ttf */; };
+		A64793022D6FD6F20063E504 /* digital-7 (mono italic).ttf in Resources */ = {isa = PBXBuildFile; fileRef = A64792FE2D6FD6F20063E504 /* digital-7 (mono italic).ttf */; };
 		A673E5C42C45836B00A40A91 /* WorkoutPlanTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A673E5C32C45836B00A40A91 /* WorkoutPlanTableViewController.swift */; };
 		A673E5C62C46204900A40A91 /* WorkoutPlanHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A673E5C52C46204900A40A91 /* WorkoutPlanHeaderView.swift */; };
 		A673E5C82C46206900A40A91 /* WorkoutPlanHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A673E5C72C46206900A40A91 /* WorkoutPlanHeaderView.xib */; };
@@ -137,6 +142,11 @@
 		A638587C2C33214F00B075E7 /* DataWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataWriter.swift; sourceTree = "<group>"; };
 		A63DDB352BC0891300A50E01 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		A63DDB372BC0891300A50E01 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		A64792F82D6FCB830063E504 /* TimerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerViewController.swift; sourceTree = "<group>"; };
+		A64792FA2D6FD5C90063E504 /* digital-7.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "digital-7.ttf"; path = "altering/fonts/digital-7.ttf"; sourceTree = SOURCE_ROOT; };
+		A64792FD2D6FD6F20063E504 /* digital-7 (italic).ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "digital-7 (italic).ttf"; sourceTree = "<group>"; };
+		A64792FE2D6FD6F20063E504 /* digital-7 (mono italic).ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "digital-7 (mono italic).ttf"; sourceTree = "<group>"; };
+		A64792FF2D6FD6F20063E504 /* digital-7 (mono).ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "digital-7 (mono).ttf"; sourceTree = "<group>"; };
 		A673E5C32C45836B00A40A91 /* WorkoutPlanTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutPlanTableViewController.swift; sourceTree = "<group>"; };
 		A673E5C52C46204900A40A91 /* WorkoutPlanHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutPlanHeaderView.swift; sourceTree = "<group>"; };
 		A673E5C72C46206900A40A91 /* WorkoutPlanHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkoutPlanHeaderView.xib; sourceTree = "<group>"; };
@@ -232,6 +242,17 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		A64792FC2D6FD6E10063E504 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				A64792FA2D6FD5C90063E504 /* digital-7.ttf */,
+				A64792FD2D6FD6F20063E504 /* digital-7 (italic).ttf */,
+				A64792FE2D6FD6F20063E504 /* digital-7 (mono italic).ttf */,
+				A64792FF2D6FD6F20063E504 /* digital-7 (mono).ttf */,
+			);
+			path = fonts;
+			sourceTree = "<group>";
+		};
 		A682BA362BBDC68100F3DD91 /* helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -269,6 +290,7 @@
 		A6BD32042BBC6CD00017FBCF /* altering */ = {
 			isa = PBXGroup;
 			children = (
+				A64792FC2D6FD6E10063E504 /* fonts */,
 				A638587B2C33213700B075E7 /* dataWriting */,
 				A682BA362BBDC68100F3DD91 /* helpers */,
 				A6BD32452BBC711A0017FBCF /* dataLoading */,
@@ -315,6 +337,7 @@
 				A673E5C32C45836B00A40A91 /* WorkoutPlanTableViewController.swift */,
 				A6AD917B2C4B20900074F182 /* StreakViewController.swift */,
 				A61C7A042C4D6856000B99A2 /* WorkoutDayViewTableViewController.swift */,
+				A64792F82D6FCB830063E504 /* TimerViewController.swift */,
 			);
 			path = controllers;
 			sourceTree = "<group>";
@@ -511,6 +534,9 @@
 				A6115A2F2BBF410A00CC04B3 /* WorkoutNotesTableViewCell.xib in Resources */,
 				A6BD32122BBC6CD30017FBCF /* Assets.xcassets in Resources */,
 				A60974C72C3B305400857577 /* TextFieldTableViewCell.xib in Resources */,
+				A64793002D6FD6F20063E504 /* digital-7 (italic).ttf in Resources */,
+				A64793012D6FD6F20063E504 /* digital-7 (mono).ttf in Resources */,
+				A64793022D6FD6F20063E504 /* digital-7 (mono italic).ttf in Resources */,
 				A6AADD1F2C3C678F004E305A /* WorkoutProgramTableViewCell.xib in Resources */,
 				A6A860B22BC34E2F00A1DF74 /* WorkoutRestDayView.xib in Resources */,
 				A61760F62BC7607700381C91 /* AddWorkoutTableViewCell.xib in Resources */,
@@ -520,6 +546,7 @@
 				A6CFE1382C3476F800FBC4FC /* ExpandWorkoutsTableViewCell.xib in Resources */,
 				A673E5C82C46206900A40A91 /* WorkoutPlanHeaderView.xib in Resources */,
 				A60974CB2C3B319700857577 /* DatePickerTableViewCell.xib in Resources */,
+				A64792FB2D6FD5C90063E504 /* digital-7.ttf in Resources */,
 				A6BD32152BBC6CD30017FBCF /* Base in Resources */,
 				A6BD320D2BBC6CD00017FBCF /* Base in Resources */,
 				A6A53A3C2CDA836700025C91 /* SegmentedControlTableViewCell.xib in Resources */,
@@ -595,6 +622,7 @@
 				A673E5C62C46204900A40A91 /* WorkoutPlanHeaderView.swift in Sources */,
 				A6F9680E2C52104C0072691B /* NotificationHelper.swift in Sources */,
 				A6E734882C3EDF60006B1836 /* MultiIconTableViewCell.swift in Sources */,
+				A64792F92D6FCB830063E504 /* TimerViewController.swift in Sources */,
 				A68FF2A52BBCD983007611D4 /* SelectGroupTableViewController.swift in Sources */,
 				A6BD324E2BBC8FC90017FBCF /* Workout+CoreDataClass.swift in Sources */,
 				A6A860AE2BC3372900A1DF74 /* WorkoutCalendarView.swift in Sources */,

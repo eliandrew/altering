@@ -301,8 +301,10 @@ class WorkoutTableViewController: UITableViewController {
             
             if workoutsInSection.count == 1 {
                 tableView.deleteSections(IndexSet(integer: indexPath.section), with: .automatic)
-            } else {
+            } else if workoutsInSection.count < self.workoutDataSource.MAX_WORKOUTS ||  self.workoutDataSource.workoutSection(indexPath.section)?.isExpanded ?? false {
                 tableView.deleteRows(at: [indexPath], with: .automatic)
+            } else {
+                tableView.reloadSections(IndexSet(integer: indexPath.section), with: .automatic)
             }
         }
     }
@@ -383,6 +385,7 @@ class WorkoutTableViewController: UITableViewController {
             let vc = segue.destination as? EditWorkoutTableViewController
             if let workout = sender as? Workout {
                 vc?.workout = workout
+                vc?.originalCompletion = workout.completed
                 vc?.originalWorkoutProgram = workout.program
             }
         } else if segue.identifier == PROGRESS_SEGUE_IDENTIFIER , let progressInfo = sender as? ProgressInfo {

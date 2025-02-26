@@ -52,7 +52,7 @@ public class Workout: NSManagedObject {
     func workoutsCompleted() -> Int? {
         if let workoutsCompleted = self.program?.workouts?.filter({ w in
             let w = w as! Workout
-            return w.exercise == self.exercise
+            return w.exercise == self.exercise && w.completed
         }) {
             return workoutsCompleted.count
         } else {

@@ -40,6 +40,7 @@ class EditWorkoutTableViewController: UITableViewController {
     
     var selectedDate: Date?
     var originalWorkoutProgram: WorkoutProgram?
+    var originalCompletion: Bool?
     
     let dataLoader = DataLoader.shared
     
@@ -119,7 +120,7 @@ class EditWorkoutTableViewController: UITableViewController {
             title = "Create Workout"
             
             self.selectedDate = self.selectedDate ?? Date.now
-            self.workoutCompleted = false
+            self.workoutCompleted = self.workoutCompleted ?? false
         }
         
         if let exercise {
@@ -136,7 +137,7 @@ class EditWorkoutTableViewController: UITableViewController {
             workout.program = self.program
             workout.completed = self.workoutCompleted ?? true
             saveDataContext()
-            if let newProgram = workout.program, originalWorkoutProgram != newProgram, workout.completed {
+            if let newProgram = workout.program, originalWorkoutProgram != newProgram || originalCompletion != workoutCompleted, workout.completed {
                 NotificationCenter.default.post(name: .workoutUpdate, object: nil, userInfo: ["workout" : workout])
             }
         } else {
@@ -150,6 +151,7 @@ class EditWorkoutTableViewController: UITableViewController {
             newWorkout.program = self.program
             newWorkout.notes = self.currentNotes
             newWorkout.completed = self.workoutCompleted ?? true
+            print("NEW WORKOUT COMPLETED: \(newWorkout.completed)")
             saveDataContext()
             if let _ = self.program {
                 NotificationCenter.default.post(name: .workoutUpdate, object: nil, userInfo: ["workout" : newWorkout])

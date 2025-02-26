@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3I0-AI-dLK">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3I0-AI-dLK">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -200,6 +200,90 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eGZ-jd-Ya6" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1775" y="2173"/>
+        </scene>
+        <!--Timer-->
+        <scene sceneID="V7W-A3-yjY">
+            <objects>
+                <navigationController id="PsV-6F-ayu" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Timer" image="timer" catalog="system" id="YMN-a3-jyq"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="IWr-pB-t61">
+                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="q22-e8-eZr" kind="relationship" relationship="rootViewController" id="Rdt-gY-5UV"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="joe-0C-w13" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="885" y="2946"/>
+        </scene>
+        <!--Timer View Controller-->
+        <scene sceneID="gM8-gc-P89">
+            <objects>
+                <viewController id="q22-e8-eZr" customClass="TimerViewController" customModule="Altered" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ScN-70-zNt">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" spacing="-20" translatesAutoresizingMaskIntoConstraints="NO" id="CV6-9Z-ntq">
+                                <rect key="frame" x="10" y="113" width="373" height="646"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yno-lz-P4R">
+                                        <rect key="frame" x="0.0" y="0.0" width="373" height="176.33333333333334"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="50"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ilY-29-fdR">
+                                        <rect key="frame" x="0.0" y="156.33333333333331" width="373" height="176"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="50"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=":" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bv1-zb-jPH">
+                                        <rect key="frame" x="0.0" y="312.33333333333331" width="373" height="176.33333333333331"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="50"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nCY-8z-fRn">
+                                        <rect key="frame" x="0.0" y="468.66666666666663" width="373" height="176"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="50"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Rv-29-GXK">
+                                        <rect key="frame" x="0.0" y="624.66666666666663" width="373" height="21.333333333333371"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="50"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="92c-K6-GAn"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="92c-K6-GAn" firstAttribute="bottom" secondItem="CV6-9Z-ntq" secondAttribute="bottom" constant="10" id="Hqd-O9-Phx"/>
+                            <constraint firstItem="CV6-9Z-ntq" firstAttribute="top" secondItem="92c-K6-GAn" secondAttribute="top" constant="10" id="Yff-LS-0Lg"/>
+                            <constraint firstItem="CV6-9Z-ntq" firstAttribute="leading" secondItem="92c-K6-GAn" secondAttribute="leading" constant="10" id="Zsd-5s-d3K"/>
+                            <constraint firstItem="92c-K6-GAn" firstAttribute="trailing" secondItem="CV6-9Z-ntq" secondAttribute="trailing" constant="10" id="yCc-eA-jvn"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="QSF-Vj-8jv"/>
+                    <connections>
+                        <outlet property="colonLabel" destination="bv1-zb-jPH" id="jqI-bY-4qf"/>
+                        <outlet property="stackView" destination="CV6-9Z-ntq" id="WMg-j9-zC0"/>
+                        <outlet property="timerMinutesOnesLabel" destination="ilY-29-fdR" id="H0E-Km-dKq"/>
+                        <outlet property="timerMinutesTensLabel" destination="Yno-lz-P4R" id="CFj-g9-9iA"/>
+                        <outlet property="timerSecondsOnesLabel" destination="5Rv-29-GXK" id="rSS-ok-H41"/>
+                        <outlet property="timerSecondsTensLabel" destination="nCY-8z-fRn" id="Fdh-7H-wYM"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="GVM-Pd-ffw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1774.8091603053435" y="2945.7746478873241"/>
         </scene>
         <!--Edit Workout Program Table View Controller-->
         <scene sceneID="EvV-UE-1UM">
@@ -484,6 +568,7 @@
                         <segue destination="bjJ-iD-B7F" kind="relationship" relationship="viewControllers" id="Psm-Ec-WyJ"/>
                         <segue destination="xId-Ct-QlW" kind="relationship" relationship="viewControllers" id="rX7-z8-E2K"/>
                         <segue destination="tFC-x6-Qhu" kind="relationship" relationship="viewControllers" id="Phr-f1-8sy"/>
+                        <segue destination="PsV-6F-ayu" kind="relationship" relationship="viewControllers" id="zO5-xa-4Ia"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hI2-ZW-mnr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -520,6 +605,7 @@
         <image name="dumbbell.fill" catalog="system" width="128" height="72"/>
         <image name="figure.strengthtraining.traditional" catalog="system" width="128" height="119"/>
         <image name="plus" width="128" height="128"/>
+        <image name="timer" catalog="system" width="128" height="123"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

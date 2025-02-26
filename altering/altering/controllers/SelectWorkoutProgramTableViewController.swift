@@ -51,7 +51,7 @@ class SelectWorkoutProgramTableViewController: UITableViewController {
                         let nonCompletedPlans = availablePlans?.filter({ p in
                             let workoutsForPlan = program.workouts?.filter({ w in
                                 let workout = w as? Workout
-                                return workout?.exercise == exercise
+                                return workout?.exercise == exercise && workout?.completed ?? false
                             })
                             return p.numWorkouts > (workoutsForPlan?.count ?? 0)
                         })
