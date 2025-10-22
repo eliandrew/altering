@@ -211,7 +211,83 @@ class WorkoutTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return self.workoutDataSource.titleForSection(section)
+        return nil // We're using viewForHeaderInSection instead
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        // Create a container view for the header
+        let headerView = UIView()
+        headerView.backgroundColor = .systemGroupedBackground
+        
+        // Create the date label
+        let titleLabel = UILabel()
+        titleLabel.text = self.workoutDataSource.titleForSection(section)
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 20)
+        titleLabel.textColor = .label
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Create the button
+        let moveButton = UIButton(type: .system)
+        moveButton.setImage(UIImage(systemName: "arrow.forward.circle.fill"), for: .normal)
+        moveButton.tag = section
+        moveButton.addTarget(self, action: #selector(moveWorkoutsOneDayLater(_:)), for: .touchUpInside)
+        moveButton.translatesAutoresizingMaskIntoConstraints = false
+        moveButton.tintColor = .systemBlue
+        
+        // Add subviews
+        headerView.addSubview(titleLabel)
+        headerView.addSubview(moveButton)
+        
+        // Setup constraints
+        NSLayoutConstraint.activate([
+            titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
+            titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            
+            moveButton.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -45),
+            moveButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+            moveButton.widthAnchor.constraint(equalToConstant: 24),
+            moveButton.heightAnchor.constraint(equalToConstant: 24),
+            moveButton.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor, constant: 8)
+        ])
+        
+        return headerView
+    }
+    
+    @objc func moveWorkoutsOneDayLater(_ sender: UIButton) {
+        let section = sender.tag
+        
+        // Get all workouts in this section
+        guard let workouts = self.workoutDataSource.workoutsForSection(section) else {
+            return
+        }
+        
+        // Move each workout one day later
+        for workout in workouts {
+            if let currentDate = workout.date {
+                workout.date = Calendar.current.date(byAdding: .day, value: 1, to: currentDate)
+            }
+        }
+        
+        // Save the context
+        dataLoader.saveContext { result in
+            switch result {
+            case .success:
+                // Reload all workouts to refresh the data source
+                self.dataLoader.loadAllWorkouts { result in
+                    switch result {
+                    case .success(let fetchedWorkouts):
+                        self.workoutDataSource.setWorkouts(fetchedWorkouts)
+                        DispatchQueue.main.async {
+                            self.tableView.reloadData()
+                        }
+                    case .failure(let error):
+                        print("Error reloading workouts: \(error)")
+                    }
+                }
+            case .failure(let error):
+                print("Error saving workouts: \(error)")
+            }
+        }
     }
     
     func restPeriodForSection(_ section: Int) -> RestPeriod? {

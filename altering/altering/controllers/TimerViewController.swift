@@ -28,6 +28,18 @@ class TimerViewController: UIViewController {
         stackView.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(resetTimer)))
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // Prevent screen from dimming or sleeping
+        UIApplication.shared.isIdleTimerDisabled = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // Allow screen to sleep again when leaving this view
+        UIApplication.shared.isIdleTimerDisabled = false
+    }
+    
     func setLabelColors(_ color: UIColor) {
         let textLabels = [timerMinutesOnesLabel, timerMinutesTensLabel, colonLabel, timerSecondsOnesLabel, timerSecondsTensLabel]
         

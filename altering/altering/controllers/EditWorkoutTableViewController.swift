@@ -44,7 +44,23 @@ class EditWorkoutTableViewController: UITableViewController {
     
     let dataLoader = DataLoader.shared
     
+    var allExercises: [Exercise]?
+    
     // MARK: Actions
+    
+    // Helper method to determine the appropriate date for a new workout
+    func getDefaultWorkoutDate() -> Date {
+        let now = Date()
+        let calendar = Calendar.current
+        let hour = calendar.component(.hour, from: now)
+        
+        // If it's after 9pm (21:00), set the date to the next day
+        if hour >= 21 {
+            return calendar.date(byAdding: .day, value: 1, to: now) ?? now
+        }
+        
+        return now
+    }
     
     @objc func workoutTypeChanged(_ sender: Any?) {
         if let segmentedControl = sender as? UISegmentedControl {
@@ -85,6 +101,18 @@ class EditWorkoutTableViewController: UITableViewController {
         })
     }
     
+    func loadAllExercises() {
+        print("loading all exercises")
+        dataLoader.loadAllExercises { result in
+            switch result {
+            case .success(let exercises):
+                self.allExercises = Array(exercises.prefix(10))
+            case .failure(let error):
+                print("Error fetching all exercises: \(error)")
+            }
+        }
+    }
+    
     func saveDataContext() {
         dataLoader.saveContext()
         navigationController?.popViewController(animated: true)
@@ -119,13 +147,14 @@ class EditWorkoutTableViewController: UITableViewController {
         } else {
             title = "Create Workout"
             
-            self.selectedDate = self.selectedDate ?? Date.now
+            self.selectedDate = self.selectedDate ?? getDefaultWorkoutDate()
             self.workoutCompleted = self.workoutCompleted ?? false
         }
         
         if let exercise {
             self.loadPreviousWorkouts(exercise, date: self.selectedDate ?? Date.now)
         }
+        self.loadAllExercises()
     }
     
     @objc func saveWorkout() {
@@ -370,7 +399,42 @@ extension EditWorkoutTableViewController: SelectWorkoutProgramDelegate {
 }
 
 extension EditWorkoutTableViewController: UITextViewDelegate {
+//    // Function to filter emojis from a string
+//    func filterEmojis(from input: String) -> String {
+//        let emojiPattern = "[\\p{So}\\p{C}]"
+//        let regex = try! NSRegularExpression(pattern: emojiPattern, options: [])
+//        let range = NSRange(location: 0, length: input.utf16.count)
+//        return regex.stringByReplacingMatches(in: input, options: [], range: range, withTemplate: "")
+//    }
+//
+//    func findMatchingExerciseNames(from textInput: String, exerciseNames: [String]) -> [String] {
+//        // Strip trailing whitespace from the input text
+//        let trimmedInput = textInput.trimmingCharacters(in: .whitespacesAndNewlines)
+//        
+//        // Filter out emojis from the exerciseNames and trim whitespace
+//        let filteredExerciseNames = exerciseNames.map { filterEmojis(from: $0).trimmingCharacters(in: .whitespacesAndNewlines) }
+//        
+//        // Split the input text into words
+//        let words = trimmedInput.split(separator: " ").map { String($0) }
+//        var matchedNames = [String]()
+//
+//        // Check consecutive tokens
+//        for length in 1...words.count {
+//            for i in 0...(words.count - length) {
+//                let token = words[i...(i + length - 1)].joined(separator: " ")
+//                if filteredExerciseNames.contains(token) {
+//                    matchedNames.append(token)
+//                }
+//            }
+//        }
+//        
+//        return matchedNames
+//    }
     func textViewDidChange(_ textView: UITextView) {
         self.currentNotes = textView.text
+        // Search the textView text to see if it contains any of the exercise names from allExercises
+//        if let exerciseNames = allExercises?.compactMap({ $0.name }) {
+//            print("\(findMatchingExerciseNames(from: textView.text, exerciseNames: exerciseNames))")
+//        }
     }
 }
