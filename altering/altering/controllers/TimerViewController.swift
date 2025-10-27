@@ -9,9 +9,7 @@ class TimerViewController: UIViewController {
     @IBOutlet weak var timerSecondsOnesLabel: UILabel!
     @IBOutlet weak var colonLabel: UILabel!
 
-    var timer: Timer?
-    var elapsedMilliseconds: Int = 0
-    var isTimerRunning = false
+    let timerService = TimerService.shared
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +24,25 @@ class TimerViewController: UIViewController {
         stackView.isUserInteractionEnabled = true
         stackView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(toggleTimer)))
         stackView.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(resetTimer)))
+        
+        // Setup notifications to listen to timer updates
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(timerDidUpdate(_:)),
+            name: TimerService.timerDidUpdateNotification,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(timerStateDidChange(_:)),
+            name: TimerService.timerStateDidChangeNotification,
+            object: nil
+        )
+        
+        // Update UI with current timer state
+        updateLabels()
+        updateLabelColors()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -47,40 +64,32 @@ class TimerViewController: UIViewController {
             textLabel?.textColor = color
         }
     }
-    
-    // Function to start the timer
-    func startTimer() {
-        if timer == nil {
-            timer = Timer.scheduledTimer(timeInterval: 0.001, target: self, selector: #selector(timerDidFire), userInfo: nil, repeats: true)
-            isTimerRunning = true
-            setLabelColors(.systemGreen)
-        }
-    }
 
     @objc func resetTimer(_ sender: UILongPressGestureRecognizer) {
         if sender.state == .began { // Ensure it only triggers once per press
-            stopTimer()
-            elapsedMilliseconds = 0
+            timerService.resetTimer()
             updateLabels()
         }
     }
     
     @objc func toggleTimer(_ sender: UITapGestureRecognizer) {
-        if isTimerRunning {
-            stopTimer()
-        } else {
-            startTimer()
+        timerService.toggleTimer()
+    }
+    
+    @objc func timerDidUpdate(_ notification: Notification) {
+        DispatchQueue.main.async {
+            self.updateLabels()
         }
     }
-
-    @objc func timerDidFire() {
-        elapsedMilliseconds += 1
-        updateLabels()
+    
+    @objc func timerStateDidChange(_ notification: Notification) {
+        DispatchQueue.main.async {
+            self.updateLabelColors()
+        }
     }
     
     func updateLabels() {
-        let minutes = (elapsedMilliseconds % 3600000) / 60000
-        let seconds = (elapsedMilliseconds % 60000) / 1000
+        let (minutes, seconds) = timerService.getFormattedTime()
         colonLabel.text = ":"
 
         timerMinutesTensLabel.text = "\(minutes / 10)"
@@ -88,15 +97,13 @@ class TimerViewController: UIViewController {
         timerSecondsTensLabel.text = "\(seconds / 10)"
         timerSecondsOnesLabel.text = "\(seconds % 10)"
     }
-
-    func stopTimer() {
-        timer?.invalidate()
-        timer = nil
-        isTimerRunning = false
-        setLabelColors(.systemRed)
+    
+    func updateLabelColors() {
+        let color: UIColor = timerService.isTimerRunning ? .systemGreen : .systemRed
+        setLabelColors(color)
     }
 
     deinit {
-        stopTimer()
+        NotificationCenter.default.removeObserver(self)
     }
 }
