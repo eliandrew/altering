@@ -40,10 +40,10 @@
                     </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="aic-oz-tuf" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="2.3333333333333321" id="2KN-7I-s9H"/>
+                    <constraint firstItem="aic-oz-tuf" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="12" id="2KN-7I-s9H"/>
                     <constraint firstItem="aic-oz-tuf" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="6SH-U9-szw"/>
                     <constraint firstItem="aic-oz-tuf" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="plU-Zo-7XC"/>
-                    <constraint firstAttribute="bottom" secondItem="aic-oz-tuf" secondAttribute="bottom" constant="2.3333333333333286" id="slk-KD-BvB"/>
+                    <constraint firstAttribute="bottom" secondItem="aic-oz-tuf" secondAttribute="bottom" constant="12" id="slk-KD-BvB"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

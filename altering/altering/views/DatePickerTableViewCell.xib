@@ -31,11 +31,11 @@
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="trailing" secondItem="Kfx-lo-isC" secondAttribute="trailing" constant="20" id="04p-Cs-68q"/>
-                    <constraint firstItem="Kfx-lo-isC" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="2pY-aH-mz0"/>
+                    <constraint firstItem="Kfx-lo-isC" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="12" id="2pY-aH-mz0"/>
                     <constraint firstItem="Sgk-P7-M38" firstAttribute="centerY" secondItem="Kfx-lo-isC" secondAttribute="centerY" id="BZU-jx-Jig"/>
                     <constraint firstItem="Kfx-lo-isC" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="Nsa-H6-jfV"/>
                     <constraint firstItem="Sgk-P7-M38" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" symbolic="YES" id="huj-E6-nXd"/>
-                    <constraint firstAttribute="bottom" secondItem="Kfx-lo-isC" secondAttribute="bottom" id="wo6-c0-RK3"/>
+                    <constraint firstAttribute="bottom" secondItem="Kfx-lo-isC" secondAttribute="bottom" constant="12" id="wo6-c0-RK3"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

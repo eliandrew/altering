@@ -88,10 +88,10 @@
                     </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="0bb-PP-I0N" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="HHS-LC-4iC"/>
+                    <constraint firstItem="0bb-PP-I0N" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="HHS-LC-4iC"/>
                     <constraint firstItem="0bb-PP-I0N" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="L4s-Io-QOJ"/>
                     <constraint firstAttribute="trailing" secondItem="0bb-PP-I0N" secondAttribute="trailing" constant="20.000000000000057" id="Q2a-kW-qJy"/>
-                    <constraint firstAttribute="bottom" secondItem="0bb-PP-I0N" secondAttribute="bottom" constant="10" id="f4k-37-1rT"/>
+                    <constraint firstAttribute="bottom" secondItem="0bb-PP-I0N" secondAttribute="bottom" constant="16" id="f4k-37-1rT"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

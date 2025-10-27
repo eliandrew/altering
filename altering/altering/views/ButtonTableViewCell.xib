@@ -26,11 +26,11 @@
                     </button>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="bottom" secondItem="lC2-7e-dXa" secondAttribute="bottom" constant="5" id="8pn-H6-cqC"/>
-                    <constraint firstItem="lC2-7e-dXa" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="5" id="W4o-sY-wdh"/>
+                    <constraint firstAttribute="bottom" secondItem="lC2-7e-dXa" secondAttribute="bottom" constant="12" id="8pn-H6-cqC"/>
+                    <constraint firstItem="lC2-7e-dXa" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="12" id="W4o-sY-wdh"/>
                     <constraint firstItem="lC2-7e-dXa" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="aTc-hE-kid"/>
-                    <constraint firstAttribute="trailing" secondItem="lC2-7e-dXa" secondAttribute="trailing" constant="50" id="dZy-PE-geP"/>
-                    <constraint firstItem="lC2-7e-dXa" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="50" id="phN-er-VR4"/>
+                    <constraint firstAttribute="trailing" secondItem="lC2-7e-dXa" secondAttribute="trailing" constant="20" id="dZy-PE-geP"/>
+                    <constraint firstItem="lC2-7e-dXa" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="phN-er-VR4"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

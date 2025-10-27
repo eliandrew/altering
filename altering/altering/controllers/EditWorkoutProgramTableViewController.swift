@@ -2,7 +2,7 @@ import UIKit
 
 class EditWorkoutProgramTableViewController: UITableViewController {
     
-    // MARK: Constants
+    // MARK: - Constants
     let NUM_SECTIONS = 5
     
     let NAME_SECTION = 0
@@ -18,7 +18,7 @@ class EditWorkoutProgramTableViewController: UITableViewController {
     let WORKOUT_PLAN_CELL_IDENTIFIER = "workoutPlanCell"
     let ADD_WORKOUT_CELL_IDENTIFIER = "addWorkoutCell"
     
-    // MARK: Properties
+    // MARK: - Properties
     
     var workoutPlans = [WorkoutPlan]()
     var programName: String?
@@ -31,8 +31,10 @@ class EditWorkoutProgramTableViewController: UITableViewController {
     var workoutProgram: WorkoutProgram?
     
     let dataLoader = DataLoader.shared
+    
+    private var hasAnimatedCells = false
 
-    // MARK: View Lifecycle
+    // MARK: - View Lifecycle
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == ADD_PROGRAM_EXERCISE_SEGUE {
@@ -42,11 +44,19 @@ class EditWorkoutProgramTableViewController: UITableViewController {
     }
     
     func saveDataContext() {
+        // Success haptic
+        let notificationFeedback = UINotificationFeedbackGenerator()
+        notificationFeedback.notificationOccurred(.success)
+        
         dataLoader.saveContext()
         navigationController?.popViewController(animated: true)
     }
     
     @objc func saveProgram() {
+        // Haptic feedback
+        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+        impactFeedback.impactOccurred()
+        
         if let program = workoutProgram {
             program.name = programName
             program.start = programStartDateActive ? programStartDate : nil
@@ -54,11 +64,16 @@ class EditWorkoutProgramTableViewController: UITableViewController {
             program.plans = NSSet(array: workoutPlans)
             saveDataContext()
         } else {
-            let newProgram = dataLoader.createNewWorkoutProgram()
-            guard let name = self.programName, name.isEmpty == false else {
-                present(basicAlertController(title: "Missing Program Name", message: "Program must have a name"), animated: true)
+            guard let name = self.programName, !name.isEmpty else {
+                // Error haptic
+                let notificationFeedback = UINotificationFeedbackGenerator()
+                notificationFeedback.notificationOccurred(.error)
+                
+                present(createModernAlert(title: "Missing Program Name", message: "Program must have a name"), animated: true)
                 return
             }
+            
+            let newProgram = dataLoader.createNewWorkoutProgram()
             newProgram.name = self.programName
             newProgram.start = self.programStartDateActive ? self.programStartDate : nil
             newProgram.end = self.programEndDateActive ? self.programEndDate : nil
@@ -68,20 +83,66 @@ class EditWorkoutProgramTableViewController: UITableViewController {
     }
     
     @objc func exit() {
+        // Haptic feedback
+        let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+        impactFeedback.impactOccurred()
+        
         navigationController?.popViewController(animated: true)
     }
     
     func setupView() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveProgram))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(exit))
+        setupNavigationBar()
+        setupTableViewStyle()
+        loadProgramData()
+        registerCells()
+    }
+    
+    private func setupNavigationBar() {
+        // Modern navigation buttons with SF Symbols
+        let saveButton = UIBarButtonItem(
+            image: UIImage(systemName: "checkmark.circle.fill"),
+            style: .done,
+            target: self,
+            action: #selector(saveProgram)
+        )
+        saveButton.tintColor = .systemGreen
+        navigationItem.rightBarButtonItem = saveButton
+        
+        let closeButton = UIBarButtonItem(
+            image: UIImage(systemName: "xmark.circle.fill"),
+            style: .plain,
+            target: self,
+            action: #selector(exit)
+        )
+        closeButton.tintColor = .systemGray
+        navigationItem.leftBarButtonItem = closeButton
         
         // Enable large titles
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
         
+        // Set title based on mode
+        title = workoutProgram != nil ? "Edit Program" : "Create Program"
+    }
+    
+    private func setupTableViewStyle() {
+        // Modern grouped style
+        if #available(iOS 13.0, *) {
+            tableView.backgroundColor = .systemGroupedBackground
+        }
+        
+        // Remove separators for modern card look
+        tableView.separatorStyle = .none
+        
+        // Better spacing
+        tableView.sectionHeaderTopPadding = 12
+        
+        // Keyboard handling
+        tableView.keyboardDismissMode = .interactive
+    }
+    
+    private func loadProgramData() {
         if let program = self.workoutProgram {
-            title = "Edit Program"
-            
             programName = program.name
             programStartDate = program.start
             programStartDateActive = program.start != nil
@@ -91,20 +152,21 @@ class EditWorkoutProgramTableViewController: UITableViewController {
             if let plans = program.plans?.allObjects as? [WorkoutPlan] {
                 workoutPlans = plans
             }
-            
-        } else {
-            title = "Create Program"
         }
-        
-        self.tableView.register(UINib(nibName: "TextFieldTableViewCell", bundle: nil), forCellReuseIdentifier: NAME_CELL_IDENTIFIER)
-        self.tableView.register(UINib(nibName: "DatePickerTableViewCell", bundle: nil), forCellReuseIdentifier: DATE_CELL_IDENTIFIER)
-        self.tableView.register(UINib(nibName: "WorkoutPlanTableViewCell", bundle: nil), forCellReuseIdentifier: WORKOUT_PLAN_CELL_IDENTIFIER)
-        self.tableView.register(UINib(nibName: "ButtonTableViewCell", bundle: nil), forCellReuseIdentifier: ADD_WORKOUT_CELL_IDENTIFIER)
-        
-        self.tableView.separatorStyle = .none
+    }
+    
+    private func registerCells() {
+        tableView.register(UINib(nibName: "TextFieldTableViewCell", bundle: nil), forCellReuseIdentifier: NAME_CELL_IDENTIFIER)
+        tableView.register(UINib(nibName: "DatePickerTableViewCell", bundle: nil), forCellReuseIdentifier: DATE_CELL_IDENTIFIER)
+        tableView.register(UINib(nibName: "WorkoutPlanTableViewCell", bundle: nil), forCellReuseIdentifier: WORKOUT_PLAN_CELL_IDENTIFIER)
+        tableView.register(UINib(nibName: "ButtonTableViewCell", bundle: nil), forCellReuseIdentifier: ADD_WORKOUT_CELL_IDENTIFIER)
     }
     
     @objc func addExercisePressed() {
+        // Haptic feedback
+        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+        impactFeedback.impactOccurred()
+        
         performSegue(withIdentifier: ADD_PROGRAM_EXERCISE_SEGUE, sender: nil)
     }
     
@@ -113,7 +175,18 @@ class EditWorkoutProgramTableViewController: UITableViewController {
         self.setupView()
     }
     
-    // MARK: Tableview
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Animate cells on first appearance
+        if !hasAnimatedCells {
+            animateCellsEntrance()
+            hasAnimatedCells = true
+        }
+    }
+    
+    // MARK: - Table View Data Source
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         return NUM_SECTIONS
     }
@@ -138,15 +211,23 @@ class EditWorkoutProgramTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
         case NAME_SECTION:
-            return "Program Name"
+            return "PROGRAM NAME"
         case START_DATE_SECTION:
-            return "Start Date"
+            return "START DATE"
         case END_DATE_SECTION:
-            return "End Date"
+            return "END DATE"
         case ADD_WORKOUT_SECTION:
-            return "Workout Plan"
+            return "WORKOUT PLANS"
         default:
             return nil
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        // Modern header styling
+        if let headerView = view as? UITableViewHeaderFooterView {
+            headerView.textLabel?.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
+            headerView.textLabel?.textColor = .secondaryLabel
         }
     }
     
@@ -156,7 +237,9 @@ class EditWorkoutProgramTableViewController: UITableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: NAME_CELL_IDENTIFIER, for: indexPath) as! TextFieldTableViewCell
             cell.textField.delegate = self
             cell.textField.text = programName
+            cell.applyModernStyling()
             return cell
+            
         case START_DATE_SECTION:
             let cell = tableView.dequeueReusableCell(withIdentifier: DATE_CELL_IDENTIFIER, for: indexPath) as! DatePickerTableViewCell
             cell.datePicker.tag = START_DATE_SECTION
@@ -165,7 +248,9 @@ class EditWorkoutProgramTableViewController: UITableViewController {
             cell.dateSwitch.addTarget(self, action: #selector(switchChanged), for: .valueChanged)
             cell.datePicker.date = self.programStartDate ?? Date.now
             cell.dateSwitch.isOn = self.programStartDateActive
+            cell.applyModernStyling()
             return cell
+            
         case END_DATE_SECTION:
             let cell = tableView.dequeueReusableCell(withIdentifier: DATE_CELL_IDENTIFIER, for: indexPath) as! DatePickerTableViewCell
             cell.datePicker.tag = END_DATE_SECTION
@@ -174,7 +259,9 @@ class EditWorkoutProgramTableViewController: UITableViewController {
             cell.dateSwitch.addTarget(self, action: #selector(switchChanged), for: .valueChanged)
             cell.datePicker.date = self.programEndDate ?? Date.now
             cell.dateSwitch.isOn = self.programEndDateActive
+            cell.applyModernStyling()
             return cell
+            
         case ADD_WORKOUT_SECTION:
             let cell = tableView.dequeueReusableCell(withIdentifier: ADD_WORKOUT_CELL_IDENTIFIER, for: indexPath) as! ButtonTableViewCell
             cell.button.addTarget(self, action: #selector(addExercisePressed), for: .touchUpInside)
@@ -182,7 +269,9 @@ class EditWorkoutProgramTableViewController: UITableViewController {
             cell.button.setImage(UIImage(systemName: "plus.circle.fill"), for: .focused)
             cell.button.setImage(UIImage(systemName: "plus.circle.fill"), for: .selected)
             cell.button.setImage(UIImage(systemName: "plus.circle.fill"), for: .highlighted)
+            cell.applyModernStyling()
             return cell
+            
         default:
             let cell = tableView.dequeueReusableCell(withIdentifier: WORKOUT_PLAN_CELL_IDENTIFIER, for: indexPath) as! WorkoutPlanTableViewCell
             let plan = workoutPlans[indexPath.row]
@@ -190,12 +279,19 @@ class EditWorkoutProgramTableViewController: UITableViewController {
             cell.setWorkoutCount(plan.numWorkouts)
             cell.workoutCountSlider.tag = indexPath.row
             cell.workoutCountSlider.addTarget(self, action: #selector(sliderChanged), for: .valueChanged)
+            cell.applyModernStyling()
             return cell
         }
     }
     
+    // MARK: - Table View Delegate
+    
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
+            // Haptic feedback
+            let notificationFeedback = UINotificationFeedbackGenerator()
+            notificationFeedback.notificationOccurred(.success)
+            
             let plan = self.workoutPlans[indexPath.row]
             dataLoader.deleteWorkoutPlan(plan)
             dataLoader.saveContext()
@@ -205,24 +301,93 @@ class EditWorkoutProgramTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
-            return "Delete Workout"
+        return "Delete"
     }
     
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        if indexPath.section == WORKOUT_PLAN_SECTION {
-            return true
-        }
-        return false
+        return indexPath.section == WORKOUT_PLAN_SECTION
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
         if indexPath.section == WORKOUT_PLAN_SECTION {
+            // Haptic feedback
+            let selectionFeedback = UISelectionFeedbackGenerator()
+            selectionFeedback.selectionChanged()
+            
+            // Animate cell selection
+            if let cell = tableView.cellForRow(at: indexPath) {
+                UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseOut, animations: {
+                    cell.transform = CGAffineTransform(scaleX: 0.97, y: 0.97)
+                }) { _ in
+                    UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.8, options: .curveEaseOut) {
+                        cell.transform = .identity
+                    }
+                }
+            }
+            
             self.selectedIndexPath = indexPath
             self.performSegue(withIdentifier: ADD_PROGRAM_EXERCISE_SEGUE, sender: nil)
         }
     }
     
-    // MARK: Utilities
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // Add subtle entrance animation for cells
+        if !hasAnimatedCells {
+            cell.alpha = 0
+            cell.transform = CGAffineTransform(translationX: 0, y: 20)
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        guard indexPath.section == WORKOUT_PLAN_SECTION else { return nil }
+        
+        let deleteAction = UIContextualAction(style: .destructive, title: nil) { [weak self] (_, _, completionHandler) in
+            self?.deleteWorkoutPlan(at: indexPath)
+            completionHandler(true)
+        }
+        deleteAction.image = UIImage(systemName: "trash.fill")
+        deleteAction.backgroundColor = .systemRed
+        
+        return UISwipeActionsConfiguration(actions: [deleteAction])
+    }
+    
+    private func deleteWorkoutPlan(at indexPath: IndexPath) {
+        // Haptic feedback
+        let notificationFeedback = UINotificationFeedbackGenerator()
+        notificationFeedback.notificationOccurred(.success)
+        
+        let plan = self.workoutPlans[indexPath.row]
+        dataLoader.deleteWorkoutPlan(plan)
+        dataLoader.saveContext()
+        self.workoutPlans.remove(at: indexPath.row)
+        tableView.deleteRows(at: [indexPath], with: .fade)
+    }
+    
+    // MARK: - Animations
+    
+    private func animateCellsEntrance() {
+        let cells = tableView.visibleCells
+        
+        for (index, cell) in cells.enumerated() {
+            cell.alpha = 0
+            cell.transform = CGAffineTransform(translationX: 0, y: 30)
+            
+            UIView.animate(
+                withDuration: 0.5,
+                delay: Double(index) * 0.05,
+                usingSpringWithDamping: 0.8,
+                initialSpringVelocity: 0.5,
+                options: .curveEaseOut
+            ) {
+                cell.alpha = 1.0
+                cell.transform = .identity
+            }
+        }
+    }
+    
+    // MARK: - Utilities
     
     func basicAlertController(title: String, message: String) -> UIAlertController {
         let ac = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -230,7 +395,21 @@ class EditWorkoutProgramTableViewController: UITableViewController {
         return ac
     }
     
-    // MARK: Actions
+    private func createModernAlert(title: String, message: String) -> UIAlertController {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        
+        let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+            // Focus on the name text field if it's empty
+            if let nameCell = self.tableView.cellForRow(at: IndexPath(row: 0, section: self.NAME_SECTION)) as? TextFieldTableViewCell {
+                nameCell.textField.becomeFirstResponder()
+            }
+        }
+        
+        alertController.addAction(okAction)
+        return alertController
+    }
+    
+    // MARK: - Actions
     
     @objc func datePickerChanged(_ sender: Any?) {
         if let sender = sender as? UIDatePicker {

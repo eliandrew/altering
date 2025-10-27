@@ -12,12 +12,11 @@ class EditWorkoutTableViewController: UITableViewController {
         case numSections = 6
     }
 
-    // MARK: Constants
+    // MARK: - Constants
     
     let PREVIOUS_NOTES_SECTION = 3
     let SELECT_EXERCISE_SEGUE = "selectExerciseSegue"
     let SELECT_WORKOUT_PROGRAM_SEGUE = "selectWorkoutProgramSegue"
-    
     
     let DATE_CELL_IDENTIFIER = "dateCell"
     let BUTTON_CELL_IDENTIFIER = "buttonCell"
@@ -25,9 +24,7 @@ class EditWorkoutTableViewController: UITableViewController {
     let WORKOUT_CELL_IDENTIFIER = "workoutCell"
     let COMPLETED_CELL_IDENTIFIER = "completeCell"
     
-    // MARK: Outlets
-    
-    // MARK: Properties
+    // MARK: - Properties
     
     var workoutDataSource = WorkoutTableViewDataSource()
     
@@ -43,10 +40,17 @@ class EditWorkoutTableViewController: UITableViewController {
     var originalCompletion: Bool?
     
     let dataLoader = DataLoader.shared
-    
     var allExercises: [Exercise]?
     
-    // MARK: Actions
+    private var hasAnimatedCells = false
+    
+    // MARK: - Modern UI Constants
+    private let cardCornerRadius: CGFloat = 16
+    private let cardShadowRadius: CGFloat = 8
+    private let cardShadowOpacity: Float = 0.1
+    private let sectionSpacing: CGFloat = 20
+    
+    // MARK: - Actions
     
     // Helper method to determine the appropriate date for a new workout
     func getDefaultWorkoutDate() -> Date {
@@ -64,12 +68,20 @@ class EditWorkoutTableViewController: UITableViewController {
     
     @objc func workoutTypeChanged(_ sender: Any?) {
         if let segmentedControl = sender as? UISegmentedControl {
+            // Haptic feedback
+            let selectionFeedback = UISelectionFeedbackGenerator()
+            selectionFeedback.selectionChanged()
+            
             self.workoutCompleted = segmentedControl.selectedSegmentIndex == 0
         }
     }
     
     @objc func dateChanged(_ sender: Any?) {
         if let datePicker = sender as? UIDatePicker {
+            // Haptic feedback
+            let selectionFeedback = UISelectionFeedbackGenerator()
+            selectionFeedback.selectionChanged()
+            
             self.selectedDate = datePicker.date
             if let exercise = self.exercise {
                 self.loadPreviousWorkouts(exercise, date: datePicker.date)
@@ -114,27 +126,114 @@ class EditWorkoutTableViewController: UITableViewController {
     }
     
     func saveDataContext() {
+        // Success haptic
+        let notificationFeedback = UINotificationFeedbackGenerator()
+        notificationFeedback.notificationOccurred(.success)
+        
         dataLoader.saveContext()
         navigationController?.popViewController(animated: true)
     }
     
     func setupView() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveWorkout))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(exit))
-
-        self.tableView.register(UINib(nibName: "DatePickerTableViewCell", bundle: nil), forCellReuseIdentifier: DATE_CELL_IDENTIFIER)
-        self.tableView.register(UINib(nibName: "ButtonTableViewCell", bundle: nil), forCellReuseIdentifier: BUTTON_CELL_IDENTIFIER)
-        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: BASIC_CELL_IDENTIFIER)
-        self.tableView.register(UINib(nibName: "WorkoutNotesTableViewCell", bundle: nil), forCellReuseIdentifier: WORKOUT_CELL_IDENTIFIER)
-        self.tableView.register(UINib(nibName: "SegmentedControlTableViewCell", bundle: nil), forCellReuseIdentifier: COMPLETED_CELL_IDENTIFIER)
+        setupNavigationBar()
+        setupTableViewStyle()
+        registerCells()
+        loadData()
+    }
+    
+    private func setupNavigationBar() {
+        // Modern save button
+        let saveButton = UIBarButtonItem(
+            image: UIImage(systemName: "checkmark.circle.fill"),
+            style: .done,
+            target: self,
+            action: #selector(saveWorkout)
+        )
+        saveButton.tintColor = .systemGreen
+        navigationItem.rightBarButtonItem = saveButton
         
-        self.tableView.separatorStyle = .none
+        // Modern close button
+        let closeButton = UIBarButtonItem(
+            image: UIImage(systemName: "xmark.circle.fill"),
+            style: .plain,
+            target: self,
+            action: #selector(exit)
+        )
+        closeButton.tintColor = .systemGray
+        navigationItem.leftBarButtonItem = closeButton
         
         // Enable large titles
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
+    }
+    
+    private func setupTableViewStyle() {
+        // Modern grouped style
+        if #available(iOS 13.0, *) {
+            tableView.backgroundColor = .systemGroupedBackground
+        }
+        
+        // Remove separators for card-style design
+        tableView.separatorStyle = .none
+        
+        // Better spacing
+        tableView.sectionHeaderTopPadding = 16
+        
+        // Use automatic dimensions for dynamic sizing
+        tableView.estimatedRowHeight = 70
+        tableView.rowHeight = UITableView.automaticDimension
+        
         tableView.tableFooterView = nil
         
+        // Keyboard handling
+        tableView.keyboardDismissMode = .interactive
+        
+        // Enable selection for card design
+        tableView.allowsSelection = true
+    }
+    
+    // MARK: - Modern Cell Styling
+    
+    private func styleCardCell(_ cell: UITableViewCell) {
+        // Apply corner radius and background to content view
+        cell.contentView.layer.cornerRadius = cardCornerRadius
+        cell.contentView.layer.masksToBounds = true
+        
+        // Add subtle background for card effect
+        if #available(iOS 13.0, *) {
+            cell.contentView.backgroundColor = .secondarySystemGroupedBackground
+            cell.backgroundColor = .clear
+        } else {
+            cell.contentView.backgroundColor = .white
+            cell.backgroundColor = .clear
+        }
+        
+        // Remove default selection style for better card appearance
+        cell.selectionStyle = .none
+        
+        // Add shadow to the cell layer (not content view to avoid clipping)
+        cell.layer.shadowColor = UIColor.black.cgColor
+        cell.layer.shadowOffset = CGSize(width: 0, height: 2)
+        cell.layer.shadowRadius = cardShadowRadius
+        cell.layer.shadowOpacity = cardShadowOpacity
+        cell.layer.masksToBounds = false
+        
+        // Performance optimization for shadows
+        cell.layer.shadowPath = UIBezierPath(
+            roundedRect: cell.bounds.insetBy(dx: 16, dy: 4),
+            cornerRadius: cardCornerRadius
+        ).cgPath
+    }
+    
+    private func registerCells() {
+        tableView.register(UINib(nibName: "DatePickerTableViewCell", bundle: nil), forCellReuseIdentifier: DATE_CELL_IDENTIFIER)
+        tableView.register(UINib(nibName: "ButtonTableViewCell", bundle: nil), forCellReuseIdentifier: BUTTON_CELL_IDENTIFIER)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: BASIC_CELL_IDENTIFIER)
+        tableView.register(UINib(nibName: "WorkoutNotesTableViewCell", bundle: nil), forCellReuseIdentifier: WORKOUT_CELL_IDENTIFIER)
+        tableView.register(UINib(nibName: "SegmentedControlTableViewCell", bundle: nil), forCellReuseIdentifier: COMPLETED_CELL_IDENTIFIER)
+    }
+    
+    private func loadData() {
         if let workout = workout {
             self.exercise = exercise ?? workout.exercise
             self.program = program ?? workout.program
@@ -142,7 +241,6 @@ class EditWorkoutTableViewController: UITableViewController {
             self.currentNotes = workout.notes
             self.workoutCompleted = workout.completed
             
-            // Set the title for the large title
             title = "Edit Workout"
         } else {
             title = "Create Workout"
@@ -158,6 +256,9 @@ class EditWorkoutTableViewController: UITableViewController {
     }
     
     @objc func saveWorkout() {
+        // Haptic feedback
+        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+        impactFeedback.impactOccurred()
         
         if let workout = workout {
             workout.date = self.selectedDate
@@ -190,6 +291,10 @@ class EditWorkoutTableViewController: UITableViewController {
     }
     
     @objc func exit() {
+        // Haptic feedback
+        let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+        impactFeedback.impactOccurred()
+        
         self.navigationController?.popViewController(animated: true)
     }
     
@@ -202,69 +307,149 @@ class EditWorkoutTableViewController: UITableViewController {
         setupView()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Animate cells on first appearance
+        if !hasAnimatedCells {
+            animateCellsEntrance()
+            hasAnimatedCells = true
+        }
+    }
+    
+    // MARK: - Animations
+    
+    private func animateCellsEntrance() {
+        let cells = tableView.visibleCells
+        
+        for (index, cell) in cells.enumerated() {
+            cell.alpha = 0
+            cell.transform = CGAffineTransform(translationX: 0, y: 30)
+            
+            UIView.animate(
+                withDuration: 0.5,
+                delay: Double(index) * 0.05,
+                usingSpringWithDamping: 0.8,
+                initialSpringVelocity: 0.5,
+                options: .curveEaseOut
+            ) {
+                cell.alpha = 1.0
+                cell.transform = .identity
+            }
+        }
+    }
+    
+    // MARK: - Table View Data Source
+    
     
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        var cell: UITableViewCell
+        
         switch EditWorkoutTableViewSection(rawValue: indexPath.section) {
         case .date:
-            let cell = tableView.dequeueReusableCell(withIdentifier: DATE_CELL_IDENTIFIER, for: indexPath)
+            cell = tableView.dequeueReusableCell(withIdentifier: DATE_CELL_IDENTIFIER, for: indexPath)
             if let dateCell = cell as? DatePickerTableViewCell {
                 dateCell.dateSwitch.isHidden = true
                 dateCell.datePicker.setDate(self.selectedDate ?? Date.now, animated: false)
                 dateCell.datePicker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
+                styleCardCell(dateCell)
             }
             return cell
+            
         case .exercise:
-            let cell = tableView.dequeueReusableCell(withIdentifier: BASIC_CELL_IDENTIFIER, for: indexPath)
-            cell.imageView?.image = UIImage(systemName: "dumbbell.fill")
-            cell.textLabel?.text = exercise?.name ?? "None"
+            cell = tableView.dequeueReusableCell(withIdentifier: BASIC_CELL_IDENTIFIER, for: indexPath)
+            styleCardCell(cell)
+            
+            // Modern icon with tint
+            let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .semibold)
+            cell.imageView?.image = UIImage(systemName: "dumbbell.fill", withConfiguration: config)
+            cell.imageView?.tintColor = .systemBlue
+            
+            cell.textLabel?.text = exercise?.name ?? "Select Exercise"
             cell.textLabel?.numberOfLines = 0
+            cell.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .medium)
+            
+            // Modern disclosure indicator
             cell.accessoryType = .disclosureIndicator
+            cell.tintColor = .systemGray3
             return cell
+            
         case .program:
-            let cell = tableView.dequeueReusableCell(withIdentifier: BASIC_CELL_IDENTIFIER, for: indexPath)
+            cell = tableView.dequeueReusableCell(withIdentifier: BASIC_CELL_IDENTIFIER, for: indexPath)
+            styleCardCell(cell)
+            
             if indexPath.row == 0 {
-                cell.imageView?.image = UIImage(systemName: "doc.text.fill")
-                cell.textLabel?.text = self.program?.name ?? "None"
+                let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .semibold)
+                cell.imageView?.image = UIImage(systemName: "doc.text.fill", withConfiguration: config)
+                cell.imageView?.tintColor = .systemPurple
+                
+                cell.textLabel?.text = self.program?.name ?? "Select Program"
                 cell.textLabel?.numberOfLines = 0
+                cell.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .medium)
+                cell.textLabel?.textColor = .label
+                
                 cell.accessoryType = .disclosureIndicator
+                cell.tintColor = .systemGray3
             } else {
-                cell.imageView?.image = UIImage(systemName: "minus.circle")
+                let config = UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold)
+                cell.imageView?.image = UIImage(systemName: "minus.circle.fill", withConfiguration: config)
                 cell.imageView?.tintColor = .systemRed
-                cell.textLabel?.text = "Remove Plan"
+                
+                cell.textLabel?.text = "Remove Program"
+                cell.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .medium)
                 cell.textLabel?.textColor = .systemRed
                 cell.accessoryType = .none
             }
             return cell
+            
         case .notes:
-            let cell = tableView.dequeueReusableCell(withIdentifier: WORKOUT_CELL_IDENTIFIER, for: indexPath)
+            cell = tableView.dequeueReusableCell(withIdentifier: WORKOUT_CELL_IDENTIFIER, for: indexPath)
+            styleCardCell(cell)
+            
             if let notesViewCell = cell as? WorkoutNotesTableViewCell {
                 notesViewCell.dateLabel.text = "Current Workout"
+                notesViewCell.dateLabel.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+                notesViewCell.dateLabel.textColor = .systemGreen
+                
                 notesViewCell.notesTextView.text = self.currentNotes
                 notesViewCell.notesTextView.delegate = self
-                notesViewCell.notesTextView.backgroundColor = .secondarySystemBackground
+                notesViewCell.notesTextView.backgroundColor = .tertiarySystemGroupedBackground
                 notesViewCell.notesTextView.isEditable = true
                 notesViewCell.notesTextView.isScrollEnabled = true
+                notesViewCell.notesTextView.font = UIFont.systemFont(ofSize: 16)
+                notesViewCell.notesTextView.layer.cornerRadius = 12
             }
             return cell
+            
         case .completed:
-            let cell = tableView.dequeueReusableCell(withIdentifier: COMPLETED_CELL_IDENTIFIER, for: indexPath)
+            cell = tableView.dequeueReusableCell(withIdentifier: COMPLETED_CELL_IDENTIFIER, for: indexPath)
+            styleCardCell(cell)
+            
             if let completedCell = cell as? SegmentedControlTableViewCell {
                 completedCell.segmentedControl.selectedSegmentIndex = self.workoutCompleted ?? true ? 0 : 1
                 completedCell.segmentedControl.addTarget(self, action: #selector(workoutTypeChanged), for: .valueChanged)
             }
             return cell
+            
         case .workouts:
-            let cell = tableView.dequeueReusableCell(withIdentifier: WORKOUT_CELL_IDENTIFIER, for: indexPath)
+            cell = tableView.dequeueReusableCell(withIdentifier: WORKOUT_CELL_IDENTIFIER, for: indexPath)
+            styleCardCell(cell)
+            
             if let notesViewCell = cell as? WorkoutNotesTableViewCell {
                 let workout = previousWorkouts?[indexPath.row]
                 notesViewCell.dateLabel.text = standardDateTitle(workout?.date, referenceDate: self.workout?.date ?? Date.now, reference: .before)
+                notesViewCell.dateLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+                notesViewCell.dateLabel.textColor = .secondaryLabel
+                
                 notesViewCell.notesTextView.text = workout?.notes
                 notesViewCell.notesTextView.isEditable = false
                 notesViewCell.notesTextView.isScrollEnabled = false
-                notesViewCell.notesTextView.backgroundColor = .systemBackground
+                notesViewCell.notesTextView.backgroundColor = .clear
+                notesViewCell.notesTextView.font = UIFont.systemFont(ofSize: 15)
             }
             return cell
+            
         default:
             return tableView.dequeueReusableCell(withIdentifier: BASIC_CELL_IDENTIFIER, for: indexPath)
         }
@@ -314,7 +499,39 @@ class EditWorkoutTableViewController: UITableViewController {
         default:
             return ""
         }
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        guard let header = view as? UITableViewHeaderFooterView else { return }
         
+        // Modern header styling
+        header.textLabel?.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        header.textLabel?.textColor = .secondaryLabel
+        header.textLabel?.text = header.textLabel?.text?.uppercased()
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // Update shadow path when cell is about to be displayed (after layout)
+        DispatchQueue.main.async {
+            if cell.layer.shadowOpacity > 0 {
+                cell.layer.shadowPath = UIBezierPath(
+                    roundedRect: cell.bounds.insetBy(dx: 16, dy: 4),
+                    cornerRadius: self.cardCornerRadius
+                ).cgPath
+            }
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        // Add spacing between sections for card layout
+        return 8
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        // Return clear view for spacing
+        let footer = UIView()
+        footer.backgroundColor = .clear
+        return footer
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -337,7 +554,23 @@ class EditWorkoutTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // Haptic feedback for selection
+        let selectionFeedback = UISelectionFeedbackGenerator()
+        selectionFeedback.selectionChanged()
+        
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        // Add subtle animation on selection
+        if let cell = tableView.cellForRow(at: indexPath) {
+            UIView.animate(withDuration: 0.1, animations: {
+                cell.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+            }) { _ in
+                UIView.animate(withDuration: 0.1) {
+                    cell.transform = .identity
+                }
+            }
+        }
+        
         switch EditWorkoutTableViewSection(rawValue: indexPath.section) {
         case .date:
             return
@@ -348,6 +581,10 @@ class EditWorkoutTableViewController: UITableViewController {
             if indexPath.row == 0 {
                 self.performSegue(withIdentifier: SELECT_WORKOUT_PROGRAM_SEGUE, sender: self)
             } else {
+                // Haptic for destructive action
+                let impactFeedback = UINotificationFeedbackGenerator()
+                impactFeedback.notificationOccurred(.warning)
+                
                 self.program = nil
                 tableView.reloadRows(at: [IndexPath(row: 0, section: EditWorkoutTableViewSection.program.rawValue)], with: .automatic)
             }

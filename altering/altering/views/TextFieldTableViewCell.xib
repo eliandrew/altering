@@ -17,9 +17,9 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="e.g. BPP Light" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fnl-kz-yeh">
-                        <rect key="frame" x="20" y="0.0" width="288" height="60"/>
+                        <rect key="frame" x="20" y="12" width="288" height="50"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="60" id="hFS-dV-BAD"/>
+                            <constraint firstAttribute="height" constant="50" id="hFS-dV-BAD"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
                         <textInputTraits key="textInputTraits" returnKeyType="done"/>
@@ -28,8 +28,8 @@
                 <constraints>
                     <constraint firstAttribute="trailing" secondItem="fnl-kz-yeh" secondAttribute="trailing" constant="20" id="Hx3-vg-FSR"/>
                     <constraint firstItem="fnl-kz-yeh" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="ISr-u4-SGk"/>
-                    <constraint firstAttribute="bottom" secondItem="fnl-kz-yeh" secondAttribute="bottom" constant="6" id="ZHU-rV-zOv"/>
-                    <constraint firstItem="fnl-kz-yeh" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="iOT-B4-G2x"/>
+                    <constraint firstAttribute="bottom" secondItem="fnl-kz-yeh" secondAttribute="bottom" constant="12" id="ZHU-rV-zOv"/>
+                    <constraint firstItem="fnl-kz-yeh" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="12" id="iOT-B4-G2x"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

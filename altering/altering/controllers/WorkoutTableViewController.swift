@@ -9,7 +9,7 @@ struct ProgressInfo {
 
 class WorkoutTableViewController: UITableViewController {
 
-    // MARK: Constants
+    // MARK: - Constants
     
     let STREAK_REST_MAX = 3
     
@@ -22,7 +22,7 @@ class WorkoutTableViewController: UITableViewController {
     let PROGRESS_SEGUE_IDENTIFIER = "progressSegue"
     let STREAK_CALENDAR_SEGUE_IDENTIFIER = "streakCalendarSegue"
     
-    // MARK: Properties
+    // MARK: - Properties
     
     let searchController = UISearchController(searchResultsController: nil)
     
@@ -31,16 +31,25 @@ class WorkoutTableViewController: UITableViewController {
     let dataWriter = DataWriter.shared
     
     var updatedWorkout: Workout?
-    
     var restPeriods: [RestPeriod]?
     
-    // MARK: Actions
+    private var hasAnimatedCells = false
+    
+    // MARK: - Actions
     
     @objc func addWorkout() {
+        // Haptic feedback
+        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+        impactFeedback.impactOccurred()
+        
         performSegue(withIdentifier: WORKOUT_SEGUE_IDENTIFIER, sender: nil)
     }
     
     @objc func exportWorkouts() {
+        // Haptic feedback
+        let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+        impactFeedback.impactOccurred()
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let fileName = "workouts_\(dateFormatter.string(from: Date.now)).csv"
@@ -49,12 +58,15 @@ class WorkoutTableViewController: UITableViewController {
         
         if let file = fileURL {
             let activityViewController = UIActivityViewController(activityItems: [file], applicationActivities: nil)
-           self.present(activityViewController, animated: true, completion: nil)
+            // For iPad
+            if let popoverController = activityViewController.popoverPresentationController {
+                popoverController.barButtonItem = navigationItem.leftBarButtonItem
+            }
+            self.present(activityViewController, animated: true, completion: nil)
         }
-        
     }
     
-    // MARK: View Lifecycle
+    // MARK: - View Lifecycle
     
     func currentRestDays() -> Int {
         guard let firstWorkout = self.workoutDataSource.workoutForIndexPath(IndexPath(row: 0, section: 0))?.date, let daysBetween = self.workoutDataSource.daysBetween(start: firstWorkout, end: Date()) else {
@@ -68,7 +80,6 @@ class WorkoutTableViewController: UITableViewController {
     }
     
     func setupWorkoutStreakView() -> UIView? {
-       
         let longestStreakLength = UserDefaults.standard.integer(forKey: "maxStreakLength")
         let streakLength = self.streakLength()
         let streakView: WorkoutStreakView = WorkoutStreakView.fromNib()
@@ -76,12 +87,12 @@ class WorkoutTableViewController: UITableViewController {
         if streakLength > 1 {
             streakView.streakImageView?.image = streakImage(streakLength)
             streakView.streakLabel?.text = "\(streakLength) workout streak!"
-    
         } else {
             streakView.streakImageView?.image = UIImage(systemName: "star.circle.fill")
             streakView.streakLabel?.text = "Start a new streak!"
         }
         
+        // Modern color states based on rest days
         switch STREAK_REST_MAX - self.currentRestDays() {
         case 0:
             streakView.streakImageView.tintColor = .systemRed
@@ -102,6 +113,9 @@ class WorkoutTableViewController: UITableViewController {
             UserDefaults.standard.set(streakLength, forKey: "maxStreakLength")
         }
         
+        // Modern styling
+        streakView.applyModernStyling()
+        
         // Create and add the tap gesture recognizer
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(streakViewTapped))
         streakView.addGestureRecognizer(tapGestureRecognizer)
@@ -110,29 +124,63 @@ class WorkoutTableViewController: UITableViewController {
     }
     
     func setupView() {
+        setupNavigationBar()
+        setupTableViewStyle()
+        registerCells()
+        loadData()
+    }
+    
+    private func setupNavigationBar() {
+        // Modern navigation buttons
+        let addButton = UIBarButtonItem(
+            image: UIImage(systemName: "plus.circle.fill"),
+            style: .plain,
+            target: self,
+            action: #selector(addWorkout)
+        )
+        addButton.tintColor = .systemBlue
+        navigationItem.rightBarButtonItem = addButton
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addWorkout))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(exportWorkouts))
+        let exportButton = UIBarButtonItem(
+            image: UIImage(systemName: "square.and.arrow.up.circle.fill"),
+            style: .plain,
+            target: self,
+            action: #selector(exportWorkouts)
+        )
+        exportButton.tintColor = .systemBlue
+        navigationItem.leftBarButtonItem = exportButton
         
-        tableView.register(UINib(nibName: "WorkoutFooterView", bundle: nil), forHeaderFooterViewReuseIdentifier: WORKOUT_FOOTER_VIEW_IDENTIFIER)
-        tableView.register(UINib(nibName: "WorkoutRestDayView", bundle: nil), forHeaderFooterViewReuseIdentifier: WORKOUT_REST_DAY_FOOTER_VIEW_IDENTIFIER)
-        tableView.register(UINib(nibName: "ExpandWorkoutsTableViewCell", bundle: nil), forCellReuseIdentifier: EXPAND_WORKOUT_CELL_IDENTIFIER)
-        self.tableView.register(UINib(nibName: "MultiIconTableViewCell", bundle: nil), forCellReuseIdentifier: WORKOUT_CELL_IDENTIFIER)
-        
-//        searchController.searchResultsUpdater = self
-//        searchController.obscuresBackgroundDuringPresentation = false
-//        searchController.searchBar.placeholder = "Search"
-//        navigationItem.searchController = searchController
-//        definesPresentationContext = true
-        
-        
-        // Set the title for the large title
+        // Set title
         title = "Workouts"
-
+        
         // Enable large titles
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .automatic
+    }
+    
+    private func setupTableViewStyle() {
+        // Modern grouped style
+        if #available(iOS 13.0, *) {
+            tableView.backgroundColor = .systemGroupedBackground
+        }
+        
+        // Remove separators for modern card look
+        tableView.separatorStyle = .none
+        
+        // Better spacing
+        tableView.sectionHeaderTopPadding = 10
+        
         tableView.tableFooterView = nil
+    }
+    
+    private func registerCells() {
+        tableView.register(UINib(nibName: "WorkoutFooterView", bundle: nil), forHeaderFooterViewReuseIdentifier: WORKOUT_FOOTER_VIEW_IDENTIFIER)
+        tableView.register(UINib(nibName: "WorkoutRestDayView", bundle: nil), forHeaderFooterViewReuseIdentifier: WORKOUT_REST_DAY_FOOTER_VIEW_IDENTIFIER)
+        tableView.register(UINib(nibName: "ExpandWorkoutsTableViewCell", bundle: nil), forCellReuseIdentifier: EXPAND_WORKOUT_CELL_IDENTIFIER)
+        tableView.register(UINib(nibName: "MultiIconTableViewCell", bundle: nil), forCellReuseIdentifier: WORKOUT_CELL_IDENTIFIER)
+    }
+    
+    private func loadData() {
         
         
         dataLoader.loadAllWorkouts { result in
@@ -186,8 +234,18 @@ class WorkoutTableViewController: UITableViewController {
         super.viewWillAppear(animated)
         setupView()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Animate cells on first appearance
+        if !hasAnimatedCells && workoutDataSource.allWorkouts.count > 0 {
+            animateCellsEntrance()
+            hasAnimatedCells = true
+        }
+    }
 
-    // MARK: Table View
+    // MARK: - Table View Data Source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         return self.workoutDataSource.numberOfSections(tableView)
@@ -197,16 +255,54 @@ class WorkoutTableViewController: UITableViewController {
         return self.workoutDataSource.numberOfRowsInSection(tableView, section: section)
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return self.workoutDataSource.cellForRowAtIndexPath(tableView, indexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) ->UITableViewCell {
+        let cell = self.workoutDataSource.cellForRowAtIndexPath(tableView, indexPath: indexPath)
+        
+        // Apply modern styling to custom cells
+        if let multiIconCell = cell as? MultiIconTableViewCell {
+            multiIconCell.applyModernStyling()
+        }
+        
+        return cell
     }
     
+    // MARK: - Table View Delegate
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
         if let workout = self.workoutDataSource.workoutForIndexPath(indexPath) {
+            // Haptic feedback
+            let selectionFeedback = UISelectionFeedbackGenerator()
+            selectionFeedback.selectionChanged()
+            
+            // Animate cell selection
+            if let cell = tableView.cellForRow(at: indexPath) {
+                UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseOut, animations: {
+                    cell.transform = CGAffineTransform(scaleX: 0.97, y: 0.97)
+                }) { _ in
+                    UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.8, options: .curveEaseOut) {
+                        cell.transform = .identity
+                    }
+                }
+            }
+            
             performSegue(withIdentifier: WORKOUT_SEGUE_IDENTIFIER, sender: workout)
         } else {
+            // Haptic feedback
+            let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+            impactFeedback.impactOccurred()
+            
             self.workoutDataSource.toggleExpandSection(indexPath.section)
             self.tableView.reloadSections(IndexSet(integer: indexPath.section), with: .automatic)
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // Add subtle entrance animation for cells
+        if !hasAnimatedCells {
+            cell.alpha = 0
+            cell.transform = CGAffineTransform(translationX: 0, y: 20)
         }
     }
     
@@ -217,12 +313,12 @@ class WorkoutTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         // Create a container view for the header
         let headerView = UIView()
-        headerView.backgroundColor = .systemGroupedBackground
+        headerView.backgroundColor = .clear
         
-        // Create the date label
+        // Create the date label with modern styling
         let titleLabel = UILabel()
         titleLabel.text = self.workoutDataSource.titleForSection(section)
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 20)
+        titleLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         titleLabel.textColor = .label
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
@@ -234,13 +330,18 @@ class WorkoutTableViewController: UITableViewController {
         
         // Only create and add the button if there are uncompleted workouts
         if hasUncompletedWorkouts {
-            // Create the button
+            // Create modern button
             let moveButton = UIButton(type: .system)
-            moveButton.setImage(UIImage(systemName: "arrow.forward.circle.fill"), for: .normal)
+            let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .semibold)
+            moveButton.setImage(UIImage(systemName: "arrow.forward.circle.fill", withConfiguration: config), for: .normal)
             moveButton.tag = section
             moveButton.addTarget(self, action: #selector(moveWorkoutsOneDayLater(_:)), for: .touchUpInside)
             moveButton.translatesAutoresizingMaskIntoConstraints = false
             moveButton.tintColor = .systemBlue
+            
+            // Add touch animations
+            moveButton.addTarget(self, action: #selector(buttonTouchDown(_:)), for: .touchDown)
+            moveButton.addTarget(self, action: #selector(buttonTouchUp(_:)), for: [.touchUpInside, .touchUpOutside, .touchCancel])
             
             // Add the button
             headerView.addSubview(moveButton)
@@ -252,8 +353,8 @@ class WorkoutTableViewController: UITableViewController {
                 
                 moveButton.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -45),
                 moveButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
-                moveButton.widthAnchor.constraint(equalToConstant: 24),
-                moveButton.heightAnchor.constraint(equalToConstant: 24),
+                moveButton.widthAnchor.constraint(equalToConstant: 28),
+                moveButton.heightAnchor.constraint(equalToConstant: 28),
                 moveButton.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor, constant: 8)
             ])
         } else {
@@ -269,6 +370,9 @@ class WorkoutTableViewController: UITableViewController {
     }
     
     @objc func moveWorkoutsOneDayLater(_ sender: UIButton) {
+        // Haptic feedback
+        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+        impactFeedback.impactOccurred()
         let section = sender.tag
         
         // Get all workouts in this section
@@ -320,7 +424,7 @@ class WorkoutTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         if let restDays = self.workoutDataSource.restDaysForSection(tableView, section: section) {
             let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: WORKOUT_FOOTER_VIEW_IDENTIFIER) as? WorkoutFooterView
-            footerView?.restDaysLabel?.font = UIFont.systemFont(ofSize: 20.0)
+            footerView?.restDaysLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
             
             if let restPeriod = self.restPeriodForSection(section) {
                 footerView?.restDaysLabel.text = "\(restPeriod.explanation ?? "") (\(restDays))"
@@ -328,10 +432,8 @@ class WorkoutTableViewController: UITableViewController {
                 footerView?.restDaysLabel.text = restDays
             }
             
-            // Add long press gesture recognizer to the footer view
-//            let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleFooterLongPress(_:)))
-//            footerView?.addGestureRecognizer(longPressGesture)
             footerView?.tag = section
+            footerView?.applyModernStyling()
             return footerView
         } else {
             return nil
@@ -409,64 +511,174 @@ class WorkoutTableViewController: UITableViewController {
         return self.workoutDataSource.sectionForSectionIndexTitle(title, at: index)
     }
     
+    // MARK: - Animations
+    
+    private func animateCellsEntrance() {
+        let cells = tableView.visibleCells
+        
+        for (index, cell) in cells.enumerated() {
+            cell.alpha = 0
+            cell.transform = CGAffineTransform(translationX: 0, y: 30)
+            
+            UIView.animate(
+                withDuration: 0.5,
+                delay: Double(index) * 0.05,
+                usingSpringWithDamping: 0.8,
+                initialSpringVelocity: 0.5,
+                options: .curveEaseOut
+            ) {
+                cell.alpha = 1.0
+                cell.transform = .identity
+            }
+        }
+    }
+    
+    @objc private func buttonTouchDown(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseOut) {
+            sender.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+        }
+    }
+    
+    @objc private func buttonTouchUp(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.8, options: .curveEaseOut) {
+            sender.transform = .identity
+        }
+    }
+    
+    // MARK: - Empty State
+    
     @objc func streakViewTapped() {
+        // Haptic feedback
+        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+        impactFeedback.impactOccurred()
+        
         self.performSegue(withIdentifier: STREAK_CALENDAR_SEGUE_IDENTIFIER, sender: nil)
     }
     
     @objc func backgroundTapped() {
+        // Haptic feedback
+        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+        impactFeedback.impactOccurred()
+        
         self.performSegue(withIdentifier: WORKOUT_SEGUE_IDENTIFIER, sender: nil)
     }
     
     func createBackgroundView() -> UIView {
         let backgroundView = UIView(frame: UIScreen.main.bounds)
+        backgroundView.backgroundColor = .clear
+
+        // Container for better layout
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        backgroundView.addSubview(containerView)
+
+        // Icon container with circular background
+        let iconContainer = UIView()
+        iconContainer.translatesAutoresizingMaskIntoConstraints = false
+        iconContainer.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.1)
+        iconContainer.layer.cornerRadius = 60
+        containerView.addSubview(iconContainer)
 
         // Create the image view
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(systemName: "figure.strengthtraining.traditional")
         imageView.contentMode = .scaleAspectFit
-        imageView.isUserInteractionEnabled = true
+        imageView.tintColor = .systemBlue
+        iconContainer.addSubview(imageView)
 
-        // Create and add the tap gesture recognizer
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(backgroundTapped))
-        backgroundView.addGestureRecognizer(tapGestureRecognizer)
+        // Create the main label
+        let titleLabel = UILabel()
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.text = "No Workouts Yet"
+        titleLabel.textColor = .label
+        titleLabel.textAlignment = .center
+        titleLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        containerView.addSubview(titleLabel)
 
-        // Create the label
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Tap for your first Workout!"
-        label.textColor = .systemBlue
-        label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+        // Create the subtitle
+        let subtitleLabel = UILabel()
+        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        subtitleLabel.text = "Track your first workout\nto start your fitness journey"
+        subtitleLabel.textColor = .secondaryLabel
+        subtitleLabel.textAlignment = .center
+        subtitleLabel.numberOfLines = 0
+        subtitleLabel.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        containerView.addSubview(subtitleLabel)
 
-        // Add the image view and label to the background view
-        backgroundView.addSubview(imageView)
-        backgroundView.addSubview(label)
+        // Create action button
+        let actionButton = UIButton(type: .system)
+        actionButton.translatesAutoresizingMaskIntoConstraints = false
+        var buttonConfig = UIButton.Configuration.filled()
+        buttonConfig.title = "Add Workout"
+        buttonConfig.image = UIImage(systemName: "plus.circle.fill")
+        buttonConfig.imagePlacement = .leading
+        buttonConfig.imagePadding = 8
+        buttonConfig.cornerStyle = .large
+        buttonConfig.baseBackgroundColor = .systemBlue
+        buttonConfig.baseForegroundColor = .white
+        buttonConfig.contentInsets = NSDirectionalEdgeInsets(top: 14, leading: 24, bottom: 14, trailing: 24)
+        actionButton.configuration = buttonConfig
+        actionButton.addTarget(self, action: #selector(backgroundTapped), for: .touchUpInside)
+        containerView.addSubview(actionButton)
 
-        // Center the image view and set its size
+        // Layout constraints
         NSLayoutConstraint.activate([
-            imageView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
-            imageView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor, constant: -20),
-            imageView.widthAnchor.constraint(equalToConstant: 100), // Adjust the width
-            imageView.heightAnchor.constraint(equalToConstant: 100) // Adjust the height
+            // Container
+            containerView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+            containerView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor, constant: -50),
+            containerView.leadingAnchor.constraint(greaterThanOrEqualTo: backgroundView.leadingAnchor, constant: 40),
+            containerView.trailingAnchor.constraint(lessThanOrEqualTo: backgroundView.trailingAnchor, constant: -40),
+            
+            // Icon container
+            iconContainer.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            iconContainer.topAnchor.constraint(equalTo: containerView.topAnchor),
+            iconContainer.widthAnchor.constraint(equalToConstant: 120),
+            iconContainer.heightAnchor.constraint(equalToConstant: 120),
+            
+            // Image view
+            imageView.centerXAnchor.constraint(equalTo: iconContainer.centerXAnchor),
+            imageView.centerYAnchor.constraint(equalTo: iconContainer.centerYAnchor),
+            imageView.widthAnchor.constraint(equalToConstant: 60),
+            imageView.heightAnchor.constraint(equalToConstant: 60),
+            
+            // Title
+            titleLabel.topAnchor.constraint(equalTo: iconContainer.bottomAnchor, constant: 24),
+            titleLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            
+            // Subtitle
+            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
+            subtitleLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            subtitleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            subtitleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            
+            // Action button
+            actionButton.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 28),
+            actionButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            actionButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
         ])
 
-        // Center the label below the image view
-        NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
-            label.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 10)
-        ])
+        // Add subtle entrance animation
+        containerView.alpha = 0
+        containerView.transform = CGAffineTransform(translationX: 0, y: 30)
+        
+        UIView.animate(withDuration: 0.8, delay: 0.1, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.5, options: .curveEaseOut) {
+            containerView.alpha = 1.0
+            containerView.transform = .identity
+        }
 
         return backgroundView
     }
     
     func updateBackgroundView() {
         if self.workoutDataSource.allWorkouts.count == 0 {
-                tableView.backgroundView = createBackgroundView()
-            } else {
-                tableView.backgroundView = nil
-            }
+            tableView.backgroundView = createBackgroundView()
+        } else {
+            tableView.backgroundView = nil
         }
+    }
     
     // MARK: Segues
     

@@ -29,6 +29,13 @@ class EditExerciseTableViewController: UITableViewController {
     var workouts: [Workout]?
     
     let dataLoader = DataLoader.shared
+    private var hasAnimatedCells = false
+    
+    // MARK: - Modern UI Constants
+    private let cardCornerRadius: CGFloat = 16
+    private let cardShadowRadius: CGFloat = 8
+    private let cardShadowOpacity: Float = 0.1
+    private let sectionSpacing: CGFloat = 20
     
     // MARK: Actions
     
@@ -58,17 +65,33 @@ class EditExerciseTableViewController: UITableViewController {
     }
     
     func saveDataContext() {
+        // Success haptic
+        let notificationFeedback = UINotificationFeedbackGenerator()
+        notificationFeedback.notificationOccurred(.success)
+        
         dataLoader.saveContext()
         navigationController?.popViewController(animated: true)
     }
     
     @objc func saveExercise() {
+        // Haptic feedback
+        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+        impactFeedback.impactOccurred()
+        
         if isExistingName(name: exerciseName) {
+            // Error haptic
+            let notificationFeedback = UINotificationFeedbackGenerator()
+            notificationFeedback.notificationOccurred(.error)
+            
             present(basicAlertController(title: "Duplicate Exercise Name", message: "Exercise must have unique name"), animated: true)
             return
         }
         if let exercise = exercise {
             guard let name = exerciseName, name != "" else {
+                // Error haptic
+                let notificationFeedback = UINotificationFeedbackGenerator()
+                notificationFeedback.notificationOccurred(.error)
+                
                 present(basicAlertController(title: "Missing Exercise Name", message: "Exercise must have a name"), animated: true)
                 return
             }
@@ -77,6 +100,10 @@ class EditExerciseTableViewController: UITableViewController {
             saveDataContext()
         } else {
             guard let name = exerciseName else {
+                // Error haptic
+                let notificationFeedback = UINotificationFeedbackGenerator()
+                notificationFeedback.notificationOccurred(.error)
+                
                 present(basicAlertController(title: "Missing Exercise Name", message: "Exercise must have a name"), animated: true)
                 return
             }
@@ -88,26 +115,78 @@ class EditExerciseTableViewController: UITableViewController {
     }
     
     @objc func exit() {
+        // Haptic feedback
+        let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+        impactFeedback.impactOccurred()
+        
         navigationController?.popViewController(animated: true)
     }
     
     // MARK: View Lifecycle
     
     func setupView() {
+        setupNavigationBar()
+        setupTableViewStyle()
+        registerCells()
+        loadData()
+    }
+    
+    private func setupNavigationBar() {
+        // Modern save button
+        let saveButton = UIBarButtonItem(
+            image: UIImage(systemName: "checkmark.circle.fill"),
+            style: .done,
+            target: self,
+            action: #selector(saveExercise)
+        )
+        saveButton.tintColor = .systemGreen
+        navigationItem.rightBarButtonItem = saveButton
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveExercise))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(exit))
+        // Modern close button
+        let closeButton = UIBarButtonItem(
+            image: UIImage(systemName: "xmark.circle.fill"),
+            style: .plain,
+            target: self,
+            action: #selector(exit)
+        )
+        closeButton.tintColor = .systemGray
+        navigationItem.leftBarButtonItem = closeButton
         
         // Enable large titles
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
-        self.tableView.separatorStyle = .none
+    }
+    
+    private func setupTableViewStyle() {
+        // Modern grouped style
+        if #available(iOS 13.0, *) {
+            tableView.backgroundColor = .systemGroupedBackground
+        }
         
-        self.tableView.register(UINib(nibName: "WorkoutNotesTableViewCell", bundle: nil), forCellReuseIdentifier: WORKOUT_CELL_IDENTIFIER)
-        self.tableView.register(UINib(nibName: "TextFieldTableViewCell", bundle: nil), forCellReuseIdentifier: NAME_CELL_IDENTIFIER)
-        self.tableView.register(UINib(nibName: "DatePickerTableViewCell", bundle: nil), forCellReuseIdentifier: DATE_CELL_IDENTIFIER)
-        self.tableView.register(UINib(nibName: "ButtonTableViewCell", bundle: nil), forCellReuseIdentifier: GROUP_CELL_IDENTIFIER)
+        // Remove separators for card-style design
+        tableView.separatorStyle = .none
         
+        // Better spacing
+        tableView.sectionHeaderTopPadding = 16
+        
+        // Use automatic dimensions for dynamic sizing
+        tableView.estimatedRowHeight = 70
+        tableView.rowHeight = UITableView.automaticDimension
+        
+        tableView.tableFooterView = nil
+        
+        // Keyboard handling
+        tableView.keyboardDismissMode = .interactive
+    }
+    
+    private func registerCells() {
+        tableView.register(UINib(nibName: "WorkoutNotesTableViewCell", bundle: nil), forCellReuseIdentifier: WORKOUT_CELL_IDENTIFIER)
+        tableView.register(UINib(nibName: "TextFieldTableViewCell", bundle: nil), forCellReuseIdentifier: NAME_CELL_IDENTIFIER)
+        tableView.register(UINib(nibName: "DatePickerTableViewCell", bundle: nil), forCellReuseIdentifier: DATE_CELL_IDENTIFIER)
+        tableView.register(UINib(nibName: "ButtonTableViewCell", bundle: nil), forCellReuseIdentifier: GROUP_CELL_IDENTIFIER)
+    }
+    
+    private func loadData() {
         if let exercise = self.exercise {
             dataLoader.loadWorkouts(for: exercise) { result in
                 switch result {
@@ -122,13 +201,44 @@ class EditExerciseTableViewController: UITableViewController {
         } else {
             self.workouts = nil
             self.tableView.reloadData()
-            
             title = "Create Exercise"
         }
         
         exerciseName = self.exercise?.name
         self.exerciseGroup = self.exercise?.group
-//        self.setGroupTitle(self.exercise?.group?.name ?? "None")
+    }
+    
+    // MARK: - Modern Cell Styling
+    
+    private func styleCardCell(_ cell: UITableViewCell) {
+        // Apply corner radius and background to content view
+        cell.contentView.layer.cornerRadius = cardCornerRadius
+        cell.contentView.layer.masksToBounds = true
+        
+        // Add subtle background for card effect
+        if #available(iOS 13.0, *) {
+            cell.contentView.backgroundColor = .secondarySystemGroupedBackground
+            cell.backgroundColor = .clear
+        } else {
+            cell.contentView.backgroundColor = .white
+            cell.backgroundColor = .clear
+        }
+        
+        // Remove default selection style for better card appearance
+        cell.selectionStyle = .none
+        
+        // Add shadow to the cell layer (not content view to avoid clipping)
+        cell.layer.shadowColor = UIColor.black.cgColor
+        cell.layer.shadowOffset = CGSize(width: 0, height: 2)
+        cell.layer.shadowRadius = cardShadowRadius
+        cell.layer.shadowOpacity = cardShadowOpacity
+        cell.layer.masksToBounds = false
+        
+        // Performance optimization for shadows
+        cell.layer.shadowPath = UIBezierPath(
+            roundedRect: cell.bounds.insetBy(dx: 16, dy: 4),
+            cornerRadius: cardCornerRadius
+        ).cgPath
     }
     
     override func viewDidLoad() {
@@ -140,11 +250,51 @@ class EditExerciseTableViewController: UITableViewController {
         super.viewWillAppear(animated)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Animate cells on first appearance
+        if !hasAnimatedCells {
+            animateCellsEntrance()
+            hasAnimatedCells = true
+        }
+    }
+    
+    // MARK: - Animations
+    
+    private func animateCellsEntrance() {
+        let cells = tableView.visibleCells
+        
+        for (index, cell) in cells.enumerated() {
+            cell.alpha = 0
+            cell.transform = CGAffineTransform(translationX: 0, y: 30)
+            
+            UIView.animate(
+                withDuration: 0.5,
+                delay: Double(index) * 0.05,
+                usingSpringWithDamping: 0.8,
+                initialSpringVelocity: 0.5,
+                options: .curveEaseOut
+            ) {
+                cell.alpha = 1.0
+                cell.transform = .identity
+            }
+        }
+    }
+    
     @objc func groupButtonPressed() {
+        // Haptic feedback
+        let selectionFeedback = UISelectionFeedbackGenerator()
+        selectionFeedback.selectionChanged()
+        
         self.performSegue(withIdentifier: SELECT_GROUP_SEGUE_IDENTIFIER, sender: nil)
     }
     
     @objc func addWorkoutPressed() {
+        // Haptic feedback
+        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+        impactFeedback.impactOccurred()
+        
         if let tabBarController = self.tabBarController {
             if let secondTabNavController = tabBarController.viewControllers?[1] as? UINavigationController {
                    // Pop to the root view controller of the second tab
@@ -216,32 +366,50 @@ extension EditExerciseTableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        var cell: UITableViewCell
+        
         switch EditExerciseSection(rawValue: indexPath.section) {
         case .addWorkout:
-            let cell = tableView.dequeueReusableCell(withIdentifier: GROUP_CELL_IDENTIFIER, for: indexPath)
+            cell = tableView.dequeueReusableCell(withIdentifier: GROUP_CELL_IDENTIFIER, for: indexPath)
+            styleCardCell(cell)
             cell.selectionStyle = .none
+            
             if let groupCell = cell as? ButtonTableViewCell {
-                groupCell.button.setImage(UIImage(systemName: "plus.circle.fill"), for: .normal)
-                groupCell.button.setImage(UIImage(systemName: "plus.circle.fill"), for: .highlighted)
-                groupCell.button.setImage(UIImage(systemName: "plus.circle.fill"), for: .selected)
-                groupCell.button.setImage(UIImage(systemName: "plus.circle.fill"), for: .focused)
+                // Modern icon configuration
+                let config = UIImage.SymbolConfiguration(pointSize: 24, weight: .semibold)
+                let plusImage = UIImage(systemName: "plus.circle.fill", withConfiguration: config)
+                
+                groupCell.button.setImage(plusImage, for: .normal)
+                groupCell.button.setImage(plusImage, for: .highlighted)
+                groupCell.button.setImage(plusImage, for: .selected)
+                groupCell.button.setImage(plusImage, for: .focused)
+                groupCell.button.tintColor = .systemBlue
                 groupCell.button.addTarget(self, action: #selector(addWorkoutPressed), for: .touchUpInside)
-                return cell
             }
             return cell
+            
         case .name:
-            let cell = tableView.dequeueReusableCell(withIdentifier: NAME_CELL_IDENTIFIER, for: indexPath)
+            cell = tableView.dequeueReusableCell(withIdentifier: NAME_CELL_IDENTIFIER, for: indexPath)
+            styleCardCell(cell)
+            
             if let textFieldCell = cell as? TextFieldTableViewCell {
                 textFieldCell.textField.placeholder = "e.g. DB Bench Press"
                 textFieldCell.textField.text = exerciseName
                 textFieldCell.textField.delegate = self
+                textFieldCell.textField.font = UIFont.systemFont(ofSize: 17, weight: .medium)
+                textFieldCell.textField.backgroundColor = .tertiarySystemGroupedBackground
+                textFieldCell.textField.layer.cornerRadius = 12
             }
             return cell
+            
         case .group:
-            let cell = tableView.dequeueReusableCell(withIdentifier: GROUP_CELL_IDENTIFIER, for: indexPath)
+            cell = tableView.dequeueReusableCell(withIdentifier: GROUP_CELL_IDENTIFIER, for: indexPath)
+            styleCardCell(cell)
             cell.selectionStyle = .none
+            
             if let groupCell = cell as? ButtonTableViewCell {
-                let title = self.exerciseGroup?.name ?? (self.exercise?.group?.name ?? "None")
+                let title = self.exerciseGroup?.name ?? (self.exercise?.group?.name ?? "Select Group")
+                
                 groupCell.button.setImage(nil, for: .normal)
                 groupCell.button.setTitle(title, for: .normal)
                 groupCell.button.setImage(nil, for: .highlighted)
@@ -250,19 +418,34 @@ extension EditExerciseTableViewController {
                 groupCell.button.setTitle(title, for: .selected)
                 groupCell.button.setImage(nil, for: .focused)
                 groupCell.button.setTitle(title, for: .focused)
+                
+                // Modern button styling
+                groupCell.button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .medium)
+                groupCell.button.setTitleColor(.systemPurple, for: .normal)
+                groupCell.button.backgroundColor = .tertiarySystemGroupedBackground
+                groupCell.button.layer.cornerRadius = 12
+                
                 groupCell.button.addTarget(self, action: #selector(groupButtonPressed), for: .touchUpInside)
-                return cell
             }
             return cell
+            
         case .workouts:
-            let cell = tableView.dequeueReusableCell(withIdentifier: WORKOUT_CELL_IDENTIFIER, for: indexPath)
+            cell = tableView.dequeueReusableCell(withIdentifier: WORKOUT_CELL_IDENTIFIER, for: indexPath)
+            styleCardCell(cell)
+            
             if let notesViewCell = cell as? WorkoutNotesTableViewCell, let workout = workouts?[indexPath.row] {
                 notesViewCell.dateLabel.text = standardDateTitle(workout.date, referenceDate: Date.now, reference: .ago)
+                notesViewCell.dateLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+                notesViewCell.dateLabel.textColor = .secondaryLabel
+                
                 notesViewCell.notesTextView.text = workout.notes
                 notesViewCell.notesTextView.isEditable = false
                 notesViewCell.notesTextView.isScrollEnabled = false
+                notesViewCell.notesTextView.backgroundColor = .clear
+                notesViewCell.notesTextView.font = UIFont.systemFont(ofSize: 15)
             }
             return cell
+            
         default:
             return tableView.dequeueReusableCell(withIdentifier: NAME_CELL_IDENTIFIER, for: indexPath)
         }
@@ -283,5 +466,38 @@ extension EditExerciseTableViewController {
         default:
             return nil
         }
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        guard let header = view as? UITableViewHeaderFooterView else { return }
+        
+        // Modern header styling
+        header.textLabel?.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        header.textLabel?.textColor = .secondaryLabel
+        header.textLabel?.text = header.textLabel?.text?.uppercased()
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // Update shadow path when cell is about to be displayed (after layout)
+        DispatchQueue.main.async {
+            if cell.layer.shadowOpacity > 0 {
+                cell.layer.shadowPath = UIBezierPath(
+                    roundedRect: cell.bounds.insetBy(dx: 16, dy: 4),
+                    cornerRadius: self.cardCornerRadius
+                ).cgPath
+            }
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        // Add spacing between sections for card layout
+        return 8
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        // Return clear view for spacing
+        let footer = UIView()
+        footer.backgroundColor = .clear
+        return footer
     }
 }

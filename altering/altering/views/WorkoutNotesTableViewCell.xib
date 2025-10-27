@@ -53,8 +53,8 @@
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="trailing" secondItem="ckm-IV-dhY" secondAttribute="trailing" constant="20" id="6Ln-9D-C4L"/>
-                    <constraint firstAttribute="bottom" secondItem="ckm-IV-dhY" secondAttribute="bottom" constant="10" id="7le-mu-dUE"/>
-                    <constraint firstItem="ckm-IV-dhY" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="JBf-6l-Cyc"/>
+                    <constraint firstAttribute="bottom" secondItem="ckm-IV-dhY" secondAttribute="bottom" constant="16" id="7le-mu-dUE"/>
+                    <constraint firstItem="ckm-IV-dhY" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="JBf-6l-Cyc"/>
                     <constraint firstItem="ckm-IV-dhY" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="pmI-M4-nn0"/>
                 </constraints>
             </tableViewCellContentView>
