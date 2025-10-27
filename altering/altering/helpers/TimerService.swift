@@ -11,6 +11,10 @@ class TimerService {
     private(set) var elapsedMilliseconds: Int = 0
     private(set) var isTimerRunning = false
     
+    // Background timing properties
+    private var startTimestamp: Date?
+    private var backgroundTimestamp: Date?
+    
     // MARK: - Notifications
     
     static let timerDidUpdateNotification = Notification.Name("TimerDidUpdate")
@@ -18,12 +22,61 @@ class TimerService {
     
     // MARK: - Init
     
-    private init() {}
+    private init() {
+        setupAppLifecycleNotifications()
+    }
+    
+    // MARK: - Lifecycle
+    
+    private func setupAppLifecycleNotifications() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(appWillResignActive),
+            name: UIApplication.willResignActiveNotification,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(appDidBecomeActive),
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
+    }
+    
+    @objc private func appWillResignActive() {
+        if isTimerRunning {
+            // Store the timestamp when going to background
+            backgroundTimestamp = Date()
+        }
+    }
+    
+    @objc private func appDidBecomeActive() {
+        // If timer was running in background, calculate elapsed time
+        if isTimerRunning, let backgroundTime = backgroundTimestamp, let startTime = startTimestamp {
+            let now = Date()
+            let backgroundDuration = now.timeIntervalSince(backgroundTime)
+            
+            // Add the background time to elapsed milliseconds
+            elapsedMilliseconds += Int(backgroundDuration * 1000)
+            
+            // Reset the start timestamp to account for the elapsed time
+            startTimestamp = now
+            backgroundTimestamp = nil
+            
+            // Update UI
+            postUpdateNotification()
+        }
+    }
     
     // MARK: - Public Methods
     
     func startTimer() {
         guard timer == nil else { return }
+        
+        // Store the start timestamp for background tracking
+        startTimestamp = Date()
+        backgroundTimestamp = nil
         
         timer = Timer.scheduledTimer(timeInterval: 0.001, target: self, selector: #selector(timerDidFire), userInfo: nil, repeats: true)
         isTimerRunning = true
@@ -34,6 +87,11 @@ class TimerService {
         timer?.invalidate()
         timer = nil
         isTimerRunning = false
+        
+        // Clear timestamps when stopped
+        startTimestamp = nil
+        backgroundTimestamp = nil
+        
         postStateChangeNotification()
     }
     

@@ -49,12 +49,26 @@ class TimerViewController: UIViewController {
         super.viewWillAppear(animated)
         // Prevent screen from dimming or sleeping
         UIApplication.shared.isIdleTimerDisabled = true
+        
+        // Notify overlay manager that timer view is visible
+        NotificationCenter.default.post(
+            name: TimerOverlayManager.timerViewControllerVisibilityDidChange,
+            object: nil,
+            userInfo: ["isVisible": true]
+        )
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         // Allow screen to sleep again when leaving this view
         UIApplication.shared.isIdleTimerDisabled = false
+        
+        // Notify overlay manager that timer view is no longer visible
+        NotificationCenter.default.post(
+            name: TimerOverlayManager.timerViewControllerVisibilityDidChange,
+            object: nil,
+            userInfo: ["isVisible": false]
+        )
     }
     
     func setLabelColors(_ color: UIColor) {

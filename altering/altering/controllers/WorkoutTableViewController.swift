@@ -226,29 +226,44 @@ class WorkoutTableViewController: UITableViewController {
         titleLabel.textColor = .label
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        // Create the button
-        let moveButton = UIButton(type: .system)
-        moveButton.setImage(UIImage(systemName: "arrow.forward.circle.fill"), for: .normal)
-        moveButton.tag = section
-        moveButton.addTarget(self, action: #selector(moveWorkoutsOneDayLater(_:)), for: .touchUpInside)
-        moveButton.translatesAutoresizingMaskIntoConstraints = false
-        moveButton.tintColor = .systemBlue
-        
-        // Add subviews
+        // Add the label
         headerView.addSubview(titleLabel)
-        headerView.addSubview(moveButton)
         
-        // Setup constraints
-        NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
-            titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+        // Check if there are any uncompleted workouts in this section
+        let hasUncompletedWorkouts = self.workoutDataSource.workoutsForSection(section)?.contains { !$0.completed } ?? false
+        
+        // Only create and add the button if there are uncompleted workouts
+        if hasUncompletedWorkouts {
+            // Create the button
+            let moveButton = UIButton(type: .system)
+            moveButton.setImage(UIImage(systemName: "arrow.forward.circle.fill"), for: .normal)
+            moveButton.tag = section
+            moveButton.addTarget(self, action: #selector(moveWorkoutsOneDayLater(_:)), for: .touchUpInside)
+            moveButton.translatesAutoresizingMaskIntoConstraints = false
+            moveButton.tintColor = .systemBlue
             
-            moveButton.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -45),
-            moveButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
-            moveButton.widthAnchor.constraint(equalToConstant: 24),
-            moveButton.heightAnchor.constraint(equalToConstant: 24),
-            moveButton.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor, constant: 8)
-        ])
+            // Add the button
+            headerView.addSubview(moveButton)
+            
+            // Setup constraints with button
+            NSLayoutConstraint.activate([
+                titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
+                titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+                
+                moveButton.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -45),
+                moveButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+                moveButton.widthAnchor.constraint(equalToConstant: 24),
+                moveButton.heightAnchor.constraint(equalToConstant: 24),
+                moveButton.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor, constant: 8)
+            ])
+        } else {
+            // Setup constraints without button
+            NSLayoutConstraint.activate([
+                titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
+                titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+                titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: headerView.trailingAnchor, constant: -16)
+            ])
+        }
         
         return headerView
     }
@@ -261,9 +276,10 @@ class WorkoutTableViewController: UITableViewController {
             return
         }
         
-        // Move each workout one day later
+        // Move only workouts that have a program (workout plan) one day later
         for workout in workouts {
-            if let currentDate = workout.date {
+            // Only move workouts that are part of a program
+            if workout.program != nil, let currentDate = workout.date {
                 workout.date = Calendar.current.date(byAdding: .day, value: 1, to: currentDate)
             }
         }
