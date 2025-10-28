@@ -204,10 +204,12 @@ class WorkoutTableViewDataSource {
             cell.subIconImageView.image = UIImage(systemName: "doc.text.fill")
         }
         
-        
-        cell.backgroundColor = workout.completed ? .systemBackground : .secondarySystemBackground
         cell.accessoryType = isPreview ? .none : .disclosureIndicator
         cell.selectionStyle = isPreview ? .none : .default
+        
+        // Store whether this is an uncompleted program workout for later styling
+        // tag=1 means uncompleted program workout, tag=0 means other
+        cell.tag = (workout.program != nil && !workout.completed) ? 1 : 0
         
         
         return cell

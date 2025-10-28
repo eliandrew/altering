@@ -119,9 +119,9 @@ class ExerciseTableViewDataSource {
         
         var content = UIListContentConfiguration.cell()
         content.text = exercise.name ?? "Missing Name"
-        content.textProperties.font = UIFont.systemFont(ofSize: 20)
+        content.textProperties.font = UIFont.systemFont(ofSize: 23)
         content.secondaryText = lastPerformed(exercise: exercise) ?? "No Workouts"
-        content.secondaryTextProperties.font = UIFont.systemFont(ofSize: 15)
+        content.secondaryTextProperties.font = UIFont.systemFont(ofSize: 18)
         cell.contentConfiguration = content
         
         return cell

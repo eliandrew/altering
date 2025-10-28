@@ -226,7 +226,7 @@ class EditWorkoutProgramTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         // Modern header styling
         if let headerView = view as? UITableViewHeaderFooterView {
-            headerView.textLabel?.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
+            headerView.textLabel?.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
             headerView.textLabel?.textColor = .secondaryLabel
         }
     }

@@ -35,11 +35,11 @@ class GroupTableViewDataSource {
         var content = UIListContentConfiguration.cell()
         if let exerciseGroup = exerciseGroupForIndexPath(indexPath) {
             content.text = exerciseGroup.name ?? "Missing Name"
-            content.textProperties.font = UIFont.systemFont(ofSize: 20)
+            content.textProperties.font = UIFont.systemFont(ofSize: 23)
             cell.contentConfiguration = content
         } else {
             content.text = "Add New Group"
-            content.textProperties.font = UIFont.systemFont(ofSize: 20)
+            content.textProperties.font = UIFont.systemFont(ofSize: 23)
             cell.contentConfiguration = content
         }
        

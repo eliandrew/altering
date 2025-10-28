@@ -77,27 +77,109 @@ class WorkoutProgramTableViewDataSource {
             cell.exerciseLabel.text = plan.exercise?.name ?? "Exercise Missing"
             let planWorkouts = workoutProgram.workoutsForPlan(plan) ?? []
             let progress = Float(planWorkouts.count) / Float(plan.numWorkouts)
+            
+            // Determine if this is the most recently completed workout in this program
+            let isLastCompletedInProgram = self.isLastCompletedWorkoutInProgram(plan: plan, program: workoutProgram)
+            
+            // Determine if this program hasn't been done the longest across all programs (only show on first row)
+            let isOldestProgram = indexPath.row == 0 && self.isProgramOldest(program: workoutProgram)
+            
+            // Debug logging
+            print("Cell [\(indexPath.section), \(indexPath.row)]: \(plan.exercise?.name ?? "unknown")")
+            print("  - isLastCompleted: \(isLastCompletedInProgram), isOldest: \(isOldestProgram), workoutCount: \(planWorkouts.count)")
+            
+            // Configure progress bar
+            cell.progressBar.setProgress(Float(progress), animated: false)
+            cell.progressBar.tintColor = progress == 1.0 ? .systemGreen : .systemBlue
+            
+            // Configure status icon - show special icons or nothing
             if progress == 1.0 {
-                cell.progressBar.tintColor = .systemGreen
-                cell.remainingWorkoutCountLabel.text = "0"
-                cell.remainingSubtitleLabel.text = "remaining"
-                cell.progressBar.setProgress(Float(progress), animated: false)
+                // Completed - show checkmark
                 cell.dateImageView.image = UIImage(systemName: "checkmark.circle.fill")
                 cell.dateImageView.tintColor = .systemGreen
                 cell.dateLabel.text = "Completed!"
+            } else if isLastCompletedInProgram && planWorkouts.count > 0 {
+                // This was the last workout done in this program - show clock icon
+                cell.dateImageView.image = UIImage(systemName: "clock.arrow.circlepath")
+                cell.dateImageView.tintColor = .systemOrange
+                let (dateText, _) = self.getDateLabelAndTint(progress: progress, program: workoutProgram, workouts: planWorkouts)
+                cell.dateLabel.text = dateText
+            } else if isOldestProgram {
+                // This program hasn't been done the longest - show warning icon
+                cell.dateImageView.image = UIImage(systemName: "exclamationmark.triangle.fill")
+                cell.dateImageView.tintColor = .systemRed
+                let (dateText, _) = self.getDateLabelAndTint(progress: progress, program: workoutProgram, workouts: planWorkouts)
+                cell.dateLabel.text = dateText
             } else {
-                cell.progressBar.tintColor = .systemBlue
-                cell.remainingWorkoutCountLabel.text = "\(plan.numWorkouts - Int64(planWorkouts.count))"
-                cell.remainingSubtitleLabel.text = "remaining"
-                cell.progressBar.setProgress(Float(progress), animated: false)
-                cell.dateImageView.image = UIImage(systemName: "calendar")
-                let (dateText, tintColor) = self.getDateLabelAndTint(progress: progress, program: workoutProgram, workouts: planWorkouts)
-                cell.dateImageView.tintColor = tintColor
+                // Regular cell - no special icon
+                cell.dateImageView.image = nil
+                let (dateText, _) = self.getDateLabelAndTint(progress: progress, program: workoutProgram, workouts: planWorkouts)
                 cell.dateLabel.text = dateText
             }
         }
         
         return cell
+    }
+    
+    // Helper to find the most recently completed workout in a program
+    private func isLastCompletedWorkoutInProgram(plan: WorkoutPlan, program: WorkoutProgram) -> Bool {
+        guard let allPlans = program.plans?.allObjects as? [WorkoutPlan] else { return false }
+        
+        var mostRecentDate: Date? = nil
+        var mostRecentPlan: WorkoutPlan? = nil
+        
+        for p in allPlans {
+            let workouts = program.workoutsForPlan(p) ?? []
+            if let lastWorkout = workouts.sorted(by: { $0.date ?? Date.distantPast < $1.date ?? Date.distantPast }).last,
+               let workoutDate = lastWorkout.date {
+                if mostRecentDate == nil || workoutDate > mostRecentDate! {
+                    mostRecentDate = workoutDate
+                    mostRecentPlan = p
+                }
+            }
+        }
+        
+        // Compare Core Data objects using objectID
+        return mostRecentPlan?.objectID == plan.objectID
+    }
+    
+    // Helper to determine if this program hasn't been done the longest (most days since last workout)
+    private func isProgramOldest(program: WorkoutProgram) -> Bool {
+        guard programs.count > 1 else { return false }
+        
+        var oldestDate: Date = Date.distantFuture // Start with future, looking for the oldest (furthest in past)
+        var oldestProgram: WorkoutProgram? = nil
+        var hasAnyWorkouts = false
+        
+        for p in programs {
+            guard let allPlans = p.plans?.allObjects as? [WorkoutPlan] else { continue }
+            
+            // Find the most recent workout date for this program
+            var programMostRecentDate: Date? = nil
+            for plan in allPlans {
+                let workouts = p.workoutsForPlan(plan) ?? []
+                for workout in workouts {
+                    if let workoutDate = workout.date {
+                        if programMostRecentDate == nil || workoutDate > programMostRecentDate! {
+                            programMostRecentDate = workoutDate
+                        }
+                    }
+                }
+            }
+            
+            // If this program has workouts, check if it's the oldest
+            if let programDate = programMostRecentDate {
+                hasAnyWorkouts = true
+                // We want the OLDEST date (furthest in the past)
+                if programDate < oldestDate {
+                    oldestDate = programDate
+                    oldestProgram = p
+                }
+            }
+        }
+        
+        // Only mark as oldest if we found workouts and this is the program with the oldest recent workout
+        return hasAnyWorkouts && oldestProgram?.objectID == program.objectID
     }
     
     func getDateLabelAndTint(progress: Float, program: WorkoutProgram, workouts: [Workout]) -> (String, UIColor) {

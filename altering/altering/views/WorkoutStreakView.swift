@@ -46,7 +46,7 @@ class WorkoutStreakView: UIView {
         }
         
         // Modern typography
-        streakLabel.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        streakLabel.font = UIFont.systemFont(ofSize: 23, weight: .bold)
         streakLabel.adjustsFontForContentSizeCategory = true
         
         // Style icons

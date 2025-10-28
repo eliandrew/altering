@@ -85,23 +85,23 @@ class WorkoutPlanHeaderView: UIView {
         }
         
         // Modern typography
-        exerciseLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        exerciseLabel.font = UIFont.systemFont(ofSize: 27, weight: .bold)
         exerciseLabel.textColor = .label
         exerciseLabel.adjustsFontForContentSizeCategory = true
         
-        remainingWorkoutCountLabel.font = UIFont.systemFont(ofSize: 28, weight: .bold)
+        remainingWorkoutCountLabel.font = UIFont.systemFont(ofSize: 31, weight: .bold)
         remainingWorkoutCountLabel.textColor = .label
         remainingWorkoutCountLabel.adjustsFontForContentSizeCategory = true
         
-        remainingSubtitleLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        remainingSubtitleLabel.font = UIFont.systemFont(ofSize: 17, weight: .medium)
         remainingSubtitleLabel.textColor = .secondaryLabel
         remainingSubtitleLabel.adjustsFontForContentSizeCategory = true
         
-        completedWorkoutCountLabel.font = UIFont.systemFont(ofSize: 28, weight: .bold)
+        completedWorkoutCountLabel.font = UIFont.systemFont(ofSize: 31, weight: .bold)
         completedWorkoutCountLabel.textColor = .label
         completedWorkoutCountLabel.adjustsFontForContentSizeCategory = true
         
-        completedSubtitleLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        completedSubtitleLabel.font = UIFont.systemFont(ofSize: 17, weight: .medium)
         completedSubtitleLabel.textColor = .secondaryLabel
         completedSubtitleLabel.adjustsFontForContentSizeCategory = true
         

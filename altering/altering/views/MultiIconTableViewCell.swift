@@ -15,6 +15,12 @@ class MultiIconTableViewCell: UITableViewCell {
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
+        // Skip selection highlight for uncompleted plan workouts (tag=1)
+        if self.tag == 1 {
+            // Don't call super or change anything - no visual feedback
+            return
+        }
+        
         super.setSelected(selected, animated: animated)
         
         // Modern selection style
@@ -30,6 +36,12 @@ class MultiIconTableViewCell: UITableViewCell {
     }
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        // Skip highlight for uncompleted plan workouts (tag=1)
+        if self.tag == 1 {
+            // Don't call super or change anything - no visual feedback
+            return
+        }
+        
         super.setHighlighted(highlighted, animated: animated)
         
         // Modern highlight style
@@ -54,34 +66,16 @@ class MultiIconTableViewCell: UITableViewCell {
         guard !hasAppliedModernStyling else { return }
         hasAppliedModernStyling = true
         
-        // Card-like appearance - apply to contentView for proper clipping
-        contentView.layer.cornerRadius = 12
-        contentView.layer.cornerCurve = .continuous
-        contentView.layer.masksToBounds = true
+        // Standard appearance - no cards
         contentView.backgroundColor = .systemBackground
-        
-        // Shadow on cell layer (not contentView to avoid clipping)
         backgroundColor = .clear
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOpacity = 0.08
-        layer.shadowOffset = CGSize(width: 0, height: 2)
-        layer.shadowRadius = 6
-        layer.masksToBounds = false
-        
-        // Create shadow path for better performance
-        DispatchQueue.main.async {
-            self.layer.shadowPath = UIBezierPath(
-                roundedRect: self.bounds.insetBy(dx: 4, dy: 2),
-                cornerRadius: 12
-            ).cgPath
-        }
         
         // Modern typography
-        titleLabel.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+        titleLabel.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
         titleLabel.textColor = .label
         titleLabel.adjustsFontForContentSizeCategory = true
         
-        subtitleLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        subtitleLabel.font = UIFont.systemFont(ofSize: 18, weight: .regular)
         subtitleLabel.textColor = .secondaryLabel
         subtitleLabel.adjustsFontForContentSizeCategory = true
         
@@ -91,13 +85,6 @@ class MultiIconTableViewCell: UITableViewCell {
         
         subIconImageView.tintColor = .systemGreen
         subIconImageView.contentMode = .scaleAspectFit
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        // Add padding around cell
-        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 6, left: 16, bottom: 6, right: 16))
     }
     
     override func prepareForReuse() {

@@ -269,7 +269,7 @@ class WorkoutProgramTableViewController: UITableViewController {
         titleLabel.text = "No Programs Yet"
         titleLabel.textColor = .label
         titleLabel.textAlignment = .center
-        titleLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        titleLabel.font = UIFont.systemFont(ofSize: 27, weight: .bold)
         containerView.addSubview(titleLabel)
 
         // Create the subtitle
@@ -279,7 +279,7 @@ class WorkoutProgramTableViewController: UITableViewController {
         subtitleLabel.textColor = .secondaryLabel
         subtitleLabel.textAlignment = .center
         subtitleLabel.numberOfLines = 0
-        subtitleLabel.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        subtitleLabel.font = UIFont.systemFont(ofSize: 20, weight: .regular)
         containerView.addSubview(subtitleLabel)
 
         // Create action button

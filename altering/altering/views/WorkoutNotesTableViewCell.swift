@@ -80,25 +80,16 @@ class WorkoutNotesTableViewCell: UITableViewCell {
         guard !hasAppliedModernStyling else { return }
         hasAppliedModernStyling = true
         
-        // Card-like appearance
+        // Standard appearance - no cards
         contentView.backgroundColor = .systemBackground
-        contentView.layer.cornerRadius = 12
-        contentView.layer.cornerCurve = .continuous
-        
-        // Subtle shadow
-        contentView.layer.shadowColor = UIColor.black.cgColor
-        contentView.layer.shadowOpacity = 0.08
-        contentView.layer.shadowOffset = CGSize(width: 0, height: 2)
-        contentView.layer.shadowRadius = 6
-        contentView.layer.masksToBounds = false
         
         // Modern typography for date
-        dateLabel.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+        dateLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         dateLabel.textColor = .label
         dateLabel.adjustsFontForContentSizeCategory = true
         
         // Modern notes text view
-        notesTextView.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        notesTextView.font = UIFont.systemFont(ofSize: 18, weight: .regular)
         notesTextView.textColor = .secondaryLabel
         notesTextView.backgroundColor = .clear
         notesTextView.textContainerInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
@@ -107,13 +98,6 @@ class WorkoutNotesTableViewCell: UITableViewCell {
         // Style calendar icon
         calendarImageView.tintColor = .systemBlue
         calendarImageView.contentMode = .scaleAspectFit
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        // Add padding around cell
-        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 6, left: 16, bottom: 6, right: 16))
     }
     
     override func prepareForReuse() {

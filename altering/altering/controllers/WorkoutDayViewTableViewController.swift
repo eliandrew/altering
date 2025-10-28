@@ -34,7 +34,7 @@ class WorkoutDayViewTableViewController: UITableViewController {
 //        button.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
         button.addTarget(target, action: #selector(closeDayView), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 23, weight: .semibold)
         
         // Step 2: Create a container view for the footer and add the button to it
         let footerView = UIView()

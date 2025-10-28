@@ -17,7 +17,7 @@ class TimerViewController: UIViewController {
         let textLabels = [timerMinutesOnesLabel, timerMinutesTensLabel, colonLabel, timerSecondsOnesLabel, timerSecondsTensLabel]
         
         for textLabel in textLabels {
-            textLabel?.font = UIFont(name: "digital-7", size: 150.0)
+            textLabel?.font = UIFont(name: "digital-7", size: 170.0)
             textLabel?.textColor = .systemRed
             textLabel?.transform = CGAffineTransformMakeRotation(3.14/2);
         }

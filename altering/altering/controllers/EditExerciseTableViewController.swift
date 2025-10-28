@@ -30,6 +30,7 @@ class EditExerciseTableViewController: UITableViewController {
     
     let dataLoader = DataLoader.shared
     private var hasAnimatedCells = false
+    private var initialDataLoadComplete = false
     
     // MARK: - Modern UI Constants
     private let cardCornerRadius: CGFloat = 16
@@ -163,14 +164,14 @@ class EditExerciseTableViewController: UITableViewController {
             tableView.backgroundColor = .systemGroupedBackground
         }
         
-        // Remove separators for card-style design
+        // No separators
         tableView.separatorStyle = .none
         
         // Better spacing
-        tableView.sectionHeaderTopPadding = 16
+        tableView.sectionHeaderTopPadding = 8
         
         // Use automatic dimensions for dynamic sizing
-        tableView.estimatedRowHeight = 70
+        tableView.estimatedRowHeight = 44
         tableView.rowHeight = UITableView.automaticDimension
         
         tableView.tableFooterView = nil
@@ -192,15 +193,26 @@ class EditExerciseTableViewController: UITableViewController {
                 switch result {
                 case .success(let fetchedWorkouts):
                     self.workouts = fetchedWorkouts
-                    self.tableView.reloadData()
+                    // Use non-animated reload on initial load to prevent visible reload
+                    if !self.initialDataLoadComplete {
+                        UIView.performWithoutAnimation {
+                            self.tableView.reloadData()
+                        }
+                        self.initialDataLoadComplete = true
+                        self.triggerAnimationIfReady()
+                    } else {
+                        self.tableView.reloadData()
+                    }
                 case .failure(let error):
                     print("Error fetching workouts: \(error)")
+                    self.initialDataLoadComplete = true
+                    self.triggerAnimationIfReady()
                 }
             }
             title = "Edit Exercise"
         } else {
             self.workouts = nil
-            self.tableView.reloadData()
+            self.initialDataLoadComplete = true
             title = "Create Exercise"
         }
         
@@ -211,34 +223,8 @@ class EditExerciseTableViewController: UITableViewController {
     // MARK: - Modern Cell Styling
     
     private func styleCardCell(_ cell: UITableViewCell) {
-        // Apply corner radius and background to content view
-        cell.contentView.layer.cornerRadius = cardCornerRadius
-        cell.contentView.layer.masksToBounds = true
-        
-        // Add subtle background for card effect
-        if #available(iOS 13.0, *) {
-            cell.contentView.backgroundColor = .secondarySystemGroupedBackground
-            cell.backgroundColor = .clear
-        } else {
-            cell.contentView.backgroundColor = .white
-            cell.backgroundColor = .clear
-        }
-        
-        // Remove default selection style for better card appearance
-        cell.selectionStyle = .none
-        
-        // Add shadow to the cell layer (not content view to avoid clipping)
-        cell.layer.shadowColor = UIColor.black.cgColor
-        cell.layer.shadowOffset = CGSize(width: 0, height: 2)
-        cell.layer.shadowRadius = cardShadowRadius
-        cell.layer.shadowOpacity = cardShadowOpacity
-        cell.layer.masksToBounds = false
-        
-        // Performance optimization for shadows
-        cell.layer.shadowPath = UIBezierPath(
-            roundedRect: cell.bounds.insetBy(dx: 16, dy: 4),
-            cornerRadius: cardCornerRadius
-        ).cgPath
+        // Minimal styling - no cards
+        cell.selectionStyle = .default
     }
     
     override func viewDidLoad() {
@@ -253,14 +239,19 @@ class EditExerciseTableViewController: UITableViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        // Animate cells on first appearance
-        if !hasAnimatedCells {
+        // Only animate after initial data load is complete
+        triggerAnimationIfReady()
+    }
+    
+    // MARK: - Animations
+    
+    private func triggerAnimationIfReady() {
+        // Only animate if we haven't animated yet AND initial data is loaded
+        if !hasAnimatedCells && initialDataLoadComplete {
             animateCellsEntrance()
             hasAnimatedCells = true
         }
     }
-    
-    // MARK: - Animations
     
     private func animateCellsEntrance() {
         let cells = tableView.visibleCells
@@ -396,9 +387,7 @@ extension EditExerciseTableViewController {
                 textFieldCell.textField.placeholder = "e.g. DB Bench Press"
                 textFieldCell.textField.text = exerciseName
                 textFieldCell.textField.delegate = self
-                textFieldCell.textField.font = UIFont.systemFont(ofSize: 17, weight: .medium)
-                textFieldCell.textField.backgroundColor = .tertiarySystemGroupedBackground
-                textFieldCell.textField.layer.cornerRadius = 12
+                textFieldCell.textField.font = UIFont.systemFont(ofSize: 20, weight: .medium)
             }
             return cell
             
@@ -420,10 +409,8 @@ extension EditExerciseTableViewController {
                 groupCell.button.setTitle(title, for: .focused)
                 
                 // Modern button styling
-                groupCell.button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .medium)
+                groupCell.button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .medium)
                 groupCell.button.setTitleColor(.systemPurple, for: .normal)
-                groupCell.button.backgroundColor = .tertiarySystemGroupedBackground
-                groupCell.button.layer.cornerRadius = 12
                 
                 groupCell.button.addTarget(self, action: #selector(groupButtonPressed), for: .touchUpInside)
             }
@@ -435,14 +422,14 @@ extension EditExerciseTableViewController {
             
             if let notesViewCell = cell as? WorkoutNotesTableViewCell, let workout = workouts?[indexPath.row] {
                 notesViewCell.dateLabel.text = standardDateTitle(workout.date, referenceDate: Date.now, reference: .ago)
-                notesViewCell.dateLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+                notesViewCell.dateLabel.font = UIFont.systemFont(ofSize: 17, weight: .medium)
                 notesViewCell.dateLabel.textColor = .secondaryLabel
                 
                 notesViewCell.notesTextView.text = workout.notes
                 notesViewCell.notesTextView.isEditable = false
                 notesViewCell.notesTextView.isScrollEnabled = false
                 notesViewCell.notesTextView.backgroundColor = .clear
-                notesViewCell.notesTextView.font = UIFont.systemFont(ofSize: 15)
+                notesViewCell.notesTextView.font = UIFont.systemFont(ofSize: 18)
             }
             return cell
             
@@ -472,32 +459,22 @@ extension EditExerciseTableViewController {
         guard let header = view as? UITableViewHeaderFooterView else { return }
         
         // Modern header styling
-        header.textLabel?.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        header.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
         header.textLabel?.textColor = .secondaryLabel
         header.textLabel?.text = header.textLabel?.text?.uppercased()
     }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        // Update shadow path when cell is about to be displayed (after layout)
-        DispatchQueue.main.async {
-            if cell.layer.shadowOpacity > 0 {
-                cell.layer.shadowPath = UIBezierPath(
-                    roundedRect: cell.bounds.insetBy(dx: 16, dy: 4),
-                    cornerRadius: self.cardCornerRadius
-                ).cgPath
-            }
-        }
+        // Shadow path is set once during cell styling, no need for async updates here
+        // Removing async updates prevents visual flickering during initial load
     }
     
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        // Add spacing between sections for card layout
-        return 8
+        // Minimal footer spacing
+        return 0
     }
     
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        // Return clear view for spacing
-        let footer = UIView()
-        footer.backgroundColor = .clear
-        return footer
+        return nil
     }
 }

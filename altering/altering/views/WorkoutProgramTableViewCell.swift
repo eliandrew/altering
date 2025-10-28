@@ -4,8 +4,8 @@ class WorkoutProgramTableViewCell: UITableViewCell {
     
     @IBOutlet weak var exerciseLabel: UILabel!
     @IBOutlet weak var progressBar: UIProgressView!
-    @IBOutlet weak var remainingWorkoutCountLabel: UILabel!
-    @IBOutlet weak var remainingSubtitleLabel: UILabel!
+    @IBOutlet weak var remainingWorkoutCountLabel: UILabel? // Hidden - no longer used
+    @IBOutlet weak var remainingSubtitleLabel: UILabel? // Hidden - no longer used
     @IBOutlet weak var dateImageView: UIImageView!
     @IBOutlet weak var dateLabel: UILabel!
     
@@ -17,6 +17,12 @@ class WorkoutProgramTableViewCell: UITableViewCell {
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
+        // Skip selection highlight for cells with tag=1
+        if self.tag == 1 {
+            // Don't call super or change anything - no visual feedback
+            return
+        }
+        
         super.setSelected(selected, animated: animated)
         
         // Modern selection style
@@ -32,6 +38,12 @@ class WorkoutProgramTableViewCell: UITableViewCell {
     }
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        // Skip highlight for cells with tag=1
+        if self.tag == 1 {
+            // Don't call super or change anything - no visual feedback
+            return
+        }
+        
         super.setHighlighted(highlighted, animated: animated)
         
         // Modern highlight style
@@ -51,6 +63,10 @@ class WorkoutProgramTableViewCell: UITableViewCell {
         // Set background
         backgroundColor = .clear
         contentView.backgroundColor = .clear
+        
+        // Hide the remaining labels - we don't use them anymore
+        remainingWorkoutCountLabel?.isHidden = true
+        remainingSubtitleLabel?.isHidden = true
     }
     
     // MARK: - Modern Styling
@@ -59,45 +75,16 @@ class WorkoutProgramTableViewCell: UITableViewCell {
         guard !hasAppliedModernStyling else { return }
         hasAppliedModernStyling = true
         
-        // Card-like appearance - apply to contentView for proper clipping
-        contentView.layer.cornerRadius = 12
-        contentView.layer.cornerCurve = .continuous
-        contentView.layer.masksToBounds = true
+        // Standard appearance - no cards
         contentView.backgroundColor = .systemBackground
-        
-        // Shadow on cell layer (not contentView to avoid clipping)
         backgroundColor = .clear
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOpacity = 0.08
-        layer.shadowOffset = CGSize(width: 0, height: 2)
-        layer.shadowRadius = 6
-        layer.masksToBounds = false
-        
-        // Create shadow path for better performance
-        DispatchQueue.main.async {
-            self.layer.shadowPath = UIBezierPath(
-                roundedRect: self.bounds.insetBy(dx: 4, dy: 2),
-                cornerRadius: 12
-            ).cgPath
-        }
-        
-        // Add padding by adjusting content insets
-        contentView.layoutMargins = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
         
         // Modern typography
-        exerciseLabel.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        exerciseLabel.font = UIFont.systemFont(ofSize: 21, weight: .semibold)
         exerciseLabel.textColor = .label
         exerciseLabel.adjustsFontForContentSizeCategory = true
         
-        remainingWorkoutCountLabel.font = UIFont.systemFont(ofSize: 15, weight: .medium)
-        remainingWorkoutCountLabel.textColor = .label
-        remainingWorkoutCountLabel.adjustsFontForContentSizeCategory = true
-        
-        remainingSubtitleLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        remainingSubtitleLabel.textColor = .secondaryLabel
-        remainingSubtitleLabel.adjustsFontForContentSizeCategory = true
-        
-        dateLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        dateLabel.font = UIFont.systemFont(ofSize: 16, weight: .regular)
         dateLabel.textColor = .secondaryLabel
         dateLabel.adjustsFontForContentSizeCategory = true
         
@@ -112,15 +99,11 @@ class WorkoutProgramTableViewCell: UITableViewCell {
         dateImageView.contentMode = .scaleAspectFit
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        // Add padding around cell
-        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 6, left: 16, bottom: 6, right: 16))
-    }
-    
     override func prepareForReuse() {
         super.prepareForReuse()
         hasAppliedModernStyling = false
+        
+        // Reset icon to nothing
+        dateImageView.image = nil
     }
 }

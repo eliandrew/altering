@@ -26,7 +26,7 @@ class WorkoutFooterView: UITableViewHeaderFooterView {
         contentView.backgroundColor = .clear
         
         // Modern typography
-        restDaysLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        restDaysLabel.font = UIFont.systemFont(ofSize: 19, weight: .medium)
         restDaysLabel.textColor = .secondaryLabel
         restDaysLabel.adjustsFontForContentSizeCategory = true
         

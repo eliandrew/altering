@@ -261,6 +261,17 @@ class WorkoutTableViewController: UITableViewController {
         // Apply modern styling to custom cells
         if let multiIconCell = cell as? MultiIconTableViewCell {
             multiIconCell.applyModernStyling()
+            
+            // Set background color after styling - gray for uncompleted program workouts
+            // tag=1 means it's an uncompleted program workout (set in data source)
+            if multiIconCell.tag == 1 {
+                multiIconCell.contentView.backgroundColor = .systemGray6
+                multiIconCell.contentView.layer.cornerRadius = 12
+                multiIconCell.contentView.layer.masksToBounds = true
+            } else {
+                // Reset corner radius for reused cells
+                multiIconCell.contentView.layer.cornerRadius = 0
+            }
         }
         
         return cell
@@ -318,7 +329,7 @@ class WorkoutTableViewController: UITableViewController {
         // Create the date label with modern styling
         let titleLabel = UILabel()
         titleLabel.text = self.workoutDataSource.titleForSection(section)
-        titleLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        titleLabel.font = UIFont.systemFont(ofSize: 21, weight: .bold)
         titleLabel.textColor = .label
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
@@ -424,7 +435,7 @@ class WorkoutTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         if let restDays = self.workoutDataSource.restDaysForSection(tableView, section: section) {
             let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: WORKOUT_FOOTER_VIEW_IDENTIFIER) as? WorkoutFooterView
-            footerView?.restDaysLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+            footerView?.restDaysLabel?.font = UIFont.systemFont(ofSize: 19, weight: .medium)
             
             if let restPeriod = self.restPeriodForSection(section) {
                 footerView?.restDaysLabel.text = "\(restPeriod.explanation ?? "") (\(restDays))"
@@ -593,7 +604,7 @@ class WorkoutTableViewController: UITableViewController {
         titleLabel.text = "No Workouts Yet"
         titleLabel.textColor = .label
         titleLabel.textAlignment = .center
-        titleLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        titleLabel.font = UIFont.systemFont(ofSize: 27, weight: .bold)
         containerView.addSubview(titleLabel)
 
         // Create the subtitle
@@ -603,7 +614,7 @@ class WorkoutTableViewController: UITableViewController {
         subtitleLabel.textColor = .secondaryLabel
         subtitleLabel.textAlignment = .center
         subtitleLabel.numberOfLines = 0
-        subtitleLabel.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        subtitleLabel.font = UIFont.systemFont(ofSize: 20, weight: .regular)
         containerView.addSubview(subtitleLabel)
 
         // Create action button

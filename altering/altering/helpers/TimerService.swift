@@ -78,7 +78,12 @@ class TimerService {
         startTimestamp = Date()
         backgroundTimestamp = nil
         
-        timer = Timer.scheduledTimer(timeInterval: 0.001, target: self, selector: #selector(timerDidFire), userInfo: nil, repeats: true)
+        // Create timer and add it to the run loop with .common mode
+        // This ensures the timer continues running during UI interactions (scrolling, tapping, etc.)
+        let newTimer = Timer(timeInterval: 0.001, target: self, selector: #selector(timerDidFire), userInfo: nil, repeats: true)
+        RunLoop.current.add(newTimer, forMode: .common)
+        timer = newTimer
+        
         isTimerRunning = true
         postStateChangeNotification()
     }

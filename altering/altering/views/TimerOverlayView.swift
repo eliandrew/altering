@@ -34,7 +34,7 @@ class TimerOverlayView: UIView {
     private let timeLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.monospacedDigitSystemFont(ofSize: 16, weight: .semibold)
+        label.font = UIFont.monospacedDigitSystemFont(ofSize: 19, weight: .semibold)
         label.textColor = .label
         label.text = "00:00"
         return label

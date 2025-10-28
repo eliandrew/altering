@@ -86,12 +86,12 @@ class ProgramProgressViewController: UIViewController {
         setupIconBackground()
         
         // Configure title label with dynamic type
-        progressTitleLabel.font = UIFont.systemFont(ofSize: 28, weight: .bold)
+        progressTitleLabel.font = UIFont.systemFont(ofSize: 31, weight: .bold)
         progressTitleLabel.adjustsFontForContentSizeCategory = true
         progressTitleLabel.textColor = .label
         
         // Configure subtitle label
-        progressSubtitleLabel.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        progressSubtitleLabel.font = UIFont.systemFont(ofSize: 20, weight: .regular)
         progressSubtitleLabel.adjustsFontForContentSizeCategory = true
         progressSubtitleLabel.textColor = .secondaryLabel
         progressSubtitleLabel.numberOfLines = 0

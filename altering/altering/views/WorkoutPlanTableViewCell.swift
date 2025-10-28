@@ -32,6 +32,12 @@ class WorkoutPlanTableViewCell: UITableViewCell {
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
+        // Skip selection highlight for cells with tag=1
+        if self.tag == 1 {
+            // Don't call super or change anything - no visual feedback
+            return
+        }
+        
         super.setSelected(selected, animated: animated)
         
         // Modern selection style
@@ -47,6 +53,12 @@ class WorkoutPlanTableViewCell: UITableViewCell {
     }
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        // Skip highlight for cells with tag=1
+        if self.tag == 1 {
+            // Don't call super or change anything - no visual feedback
+            return
+        }
+        
         super.setHighlighted(highlighted, animated: animated)
         
         // Modern highlight style
@@ -71,24 +83,15 @@ class WorkoutPlanTableViewCell: UITableViewCell {
         guard !hasAppliedModernStyling else { return }
         hasAppliedModernStyling = true
         
-        // Card-like appearance
+        // Standard appearance - no cards
         contentView.backgroundColor = .systemBackground
-        contentView.layer.cornerRadius = 12
-        contentView.layer.cornerCurve = .continuous
-        
-        // Subtle shadow
-        contentView.layer.shadowColor = UIColor.black.cgColor
-        contentView.layer.shadowOpacity = 0.08
-        contentView.layer.shadowOffset = CGSize(width: 0, height: 2)
-        contentView.layer.shadowRadius = 6
-        contentView.layer.masksToBounds = false
         
         // Modern typography
-        exerciseLabel.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+        exerciseLabel.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
         exerciseLabel.textColor = .label
         exerciseLabel.adjustsFontForContentSizeCategory = true
         
-        workoutCountLabel.font = UIFont.systemFont(ofSize: 15, weight: .medium)
+        workoutCountLabel.font = UIFont.systemFont(ofSize: 18, weight: .medium)
         workoutCountLabel.textColor = .secondaryLabel
         workoutCountLabel.adjustsFontForContentSizeCategory = true
         
@@ -119,13 +122,6 @@ class WorkoutPlanTableViewCell: UITableViewCell {
         context.fillEllipse(in: CGRect(origin: .zero, size: size))
         
         return UIGraphicsGetImageFromCurrentImageContext()
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        // Add padding around cell
-        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 6, left: 16, bottom: 6, right: 16))
     }
     
     override func prepareForReuse() {

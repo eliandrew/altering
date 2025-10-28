@@ -28,7 +28,7 @@ class ButtonHeaderView: UITableViewHeaderFooterView {
         hasAppliedModernStyling = true
         
         // Modern typography for title
-        title.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        title.font = UIFont.systemFont(ofSize: 23, weight: .bold)
         title.textColor = .label
         title.adjustsFontForContentSizeCategory = true
         

@@ -18,10 +18,19 @@ class ExerciseTableViewController: UITableViewController {
         performSegue(withIdentifier: EXERCISE_SEGUE_IDENTIFIER, sender: nil)
     }
     
+    @objc func openBackup() {
+        let backupVC = BackupViewController(style: .insetGrouped)
+        navigationController?.pushViewController(backupVC, animated: true)
+    }
+    
     // MARK: View Lifecycle
     
     func setupView() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addExercise))
+        
+        // Add backup button on the left
+        let backupButton = UIBarButtonItem(image: UIImage(systemName: "arrow.up.arrow.down.circle"), style: .plain, target: self, action: #selector(openBackup))
+        navigationItem.leftBarButtonItem = backupButton
         
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
@@ -135,7 +144,7 @@ class ExerciseTableViewController: UITableViewController {
         label.text = "Tap for your first Exercise!"
         label.textColor = .systemBlue
         label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+        label.font = UIFont.systemFont(ofSize: 23, weight: .semibold)
 
         // Add the image view and label to the background view
         backgroundView.addSubview(imageView)
