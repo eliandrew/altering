@@ -37,6 +37,18 @@ class WorkoutTableViewController: UITableViewController {
     private var justCompletedWorkout: Workout?
     private var justAddedWorkout: Workout?
     
+    // Store all fetched workouts before filtering
+    private var allFetchedWorkouts: [Workout] = []
+    
+    // Future workouts toggle
+    private var showFutureWorkouts: Bool = true {
+        didSet {
+            UserDefaults.standard.set(showFutureWorkouts, forKey: "showFutureWorkouts")
+            filterAndReloadWorkouts()
+            updateFilterButton()
+        }
+    }
+    
     // MARK: - Actions
     
     @objc func addWorkout() {
@@ -47,24 +59,44 @@ class WorkoutTableViewController: UITableViewController {
         performSegue(withIdentifier: WORKOUT_SEGUE_IDENTIFIER, sender: nil)
     }
     
-    @objc func exportWorkouts() {
+    @objc func toggleFutureWorkouts() {
         // Haptic feedback
         let impactFeedback = UIImpactFeedbackGenerator(style: .light)
         impactFeedback.impactOccurred()
         
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let fileName = "workouts_\(dateFormatter.string(from: Date.now)).csv"
-        let dataString = self.dataWriter.createWorkoutCSV(workouts: self.workoutDataSource.allWorkouts)
-        let fileURL = self.dataWriter.writeCSV(data: dataString, to: fileName, headers: ["Date", "Name", "Group", "Notes", "Program"])
+        showFutureWorkouts.toggle()
+    }
+    
+    @objc func scrollToToday() {
+        // Haptic feedback
+        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+        impactFeedback.impactOccurred()
         
-        if let file = fileURL {
-            let activityViewController = UIActivityViewController(activityItems: [file], applicationActivities: nil)
-            // For iPad
-            if let popoverController = activityViewController.popoverPresentationController {
-                popoverController.barButtonItem = navigationItem.leftBarButtonItem
+        // Find the section for today
+        for section in 0..<workoutDataSource.numberOfSections(tableView) {
+            if workoutDataSource.isSectionToday(section) {
+                tableView.scrollToRow(at: IndexPath(row: 0, section: section), at: .top, animated: true)
+                
+                // Add a subtle highlight animation to the section header
+                if let headerView = tableView.headerView(forSection: section) {
+                    let originalBackgroundColor = headerView.backgroundColor
+                    UIView.animate(withDuration: 0.3, animations: {
+                        headerView.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.1)
+                    }) { _ in
+                        UIView.animate(withDuration: 0.5, delay: 0.3, options: .curveEaseOut) {
+                            headerView.backgroundColor = originalBackgroundColor
+                        }
+                    }
+                }
+                return
             }
-            self.present(activityViewController, animated: true, completion: nil)
+        }
+        
+        // If today not found, show a brief message
+        let alert = UIAlertController(title: nil, message: "No workouts found for today", preferredStyle: .alert)
+        present(alert, animated: true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            alert.dismiss(animated: true)
         }
     }
     
@@ -130,6 +162,49 @@ class WorkoutTableViewController: UITableViewController {
         setupTableViewStyle()
         registerCells()
         loadData()
+        
+        // Load saved preference
+        showFutureWorkouts = UserDefaults.standard.object(forKey: "showFutureWorkouts") as? Bool ?? true
+    }
+    
+    private func filterAndReloadWorkouts() {
+        guard !allFetchedWorkouts.isEmpty else { return }
+        
+        let filteredWorkouts: [Workout]
+        if showFutureWorkouts {
+            filteredWorkouts = allFetchedWorkouts
+        } else {
+            // Filter out future workouts (workouts with dates after today)
+            let today = Calendar.current.startOfDay(for: Date())
+            filteredWorkouts = allFetchedWorkouts.filter { workout in
+                guard let workoutDate = workout.date else { return true }
+                let workoutDay = Calendar.current.startOfDay(for: workoutDate)
+                return workoutDay <= today
+            }
+        }
+        
+        workoutDataSource.setWorkouts(filteredWorkouts)
+        
+        // Animate the reload
+        UIView.transition(with: tableView,
+                        duration: 0.3,
+                        options: .transitionCrossDissolve,
+                        animations: {
+            self.tableView.reloadData()
+        })
+    }
+    
+    private func updateFilterButton() {
+        let futureIcon = showFutureWorkouts ? "eye.fill" : "eye.slash.fill"
+        let filterButton = UIBarButtonItem(
+            image: UIImage(systemName: futureIcon),
+            style: .plain,
+            target: self,
+            action: #selector(toggleFutureWorkouts)
+        )
+        filterButton.tintColor = showFutureWorkouts ? .systemBlue : .systemGray
+        
+        navigationItem.leftBarButtonItem = filterButton
     }
     
     private func setupNavigationBar() {
@@ -143,21 +218,40 @@ class WorkoutTableViewController: UITableViewController {
         addButton.tintColor = .systemBlue
         navigationItem.rightBarButtonItem = addButton
         
-        let exportButton = UIBarButtonItem(
-            image: UIImage(systemName: "square.and.arrow.up.circle.fill"),
+        // Create filter button
+        let futureIcon = showFutureWorkouts ? "eye.fill" : "eye.slash.fill"
+        let filterButton = UIBarButtonItem(
+            image: UIImage(systemName: futureIcon),
             style: .plain,
             target: self,
-            action: #selector(exportWorkouts)
+            action: #selector(toggleFutureWorkouts)
         )
-        exportButton.tintColor = .systemBlue
-        navigationItem.leftBarButtonItem = exportButton
+        filterButton.tintColor = showFutureWorkouts ? .systemBlue : .systemGray
         
-        // Set title
+        navigationItem.leftBarButtonItem = filterButton
+        
+        // Set title - we'll use the standard title for large title mode
         title = "Workouts"
+        
+        // Create a tappable title button for the regular (collapsed) navigation bar
+        let titleButton = UIButton(type: .system)
+        titleButton.setTitle("Workouts", for: .normal)
+        titleButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
+        titleButton.setTitleColor(.label, for: .normal)
+        titleButton.addTarget(self, action: #selector(titleTapped), for: .touchUpInside)
+        titleButton.sizeToFit()
+        navigationItem.titleView = titleButton
         
         // Enable large titles
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .automatic
+        
+        // Hide toolbar if it was previously shown
+        navigationController?.setToolbarHidden(true, animated: false)
+    }
+    
+    @objc private func titleTapped() {
+        scrollToToday()
     }
     
     private func setupTableViewStyle() {
@@ -188,7 +282,23 @@ class WorkoutTableViewController: UITableViewController {
         dataLoader.loadAllWorkouts { result in
             switch result {
             case .success(let fetchedWorkouts):
-                self.workoutDataSource.setWorkouts(fetchedWorkouts)
+                // Store all workouts in our property for filtering
+                self.allFetchedWorkouts = fetchedWorkouts
+                
+                // Apply filtering based on showFutureWorkouts setting
+                let filteredWorkouts: [Workout]
+                if self.showFutureWorkouts {
+                    filteredWorkouts = fetchedWorkouts
+                } else {
+                    let today = Calendar.current.startOfDay(for: Date())
+                    filteredWorkouts = fetchedWorkouts.filter { workout in
+                        guard let workoutDate = workout.date else { return true }
+                        let workoutDay = Calendar.current.startOfDay(for: workoutDate)
+                        return workoutDay <= today
+                    }
+                }
+                
+                self.workoutDataSource.setWorkouts(filteredWorkouts)
                 self.dataLoader.loadAllRestPeriods { result in
                     switch result {
                     case .success(let fetchedRestPeriods):
@@ -212,6 +322,7 @@ class WorkoutTableViewController: UITableViewController {
                 
             case .failure(let error):
                 print("Error fetching exercises: \(error)")
+                self.allFetchedWorkouts = []
                 self.workoutDataSource.setWorkouts([])
                 DispatchQueue.main.async {
                     self.updateBackgroundView()
@@ -233,6 +344,21 @@ class WorkoutTableViewController: UITableViewController {
         super.viewDidLoad()
         NotificationCenter.default.addObserver(self, selector: #selector(workoutUpdated), name: .workoutUpdate, object: nil)
         setupView()
+        
+        // Add tap gesture to table view header to scroll to today
+        // This works when the large title is visible
+        let headerTapGesture = UITapGestureRecognizer(target: self, action: #selector(titleTapped))
+        headerTapGesture.delegate = self
+        tableView.addGestureRecognizer(headerTapGesture)
+        
+        // Set up tab bar behavior
+        tabBarController?.delegate = self
+    }
+    
+    // Override scroll to top behavior to scroll to today instead
+    override func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
+        scrollToToday()
+        return false // Prevent default scroll to top
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -1272,5 +1398,29 @@ extension WorkoutTableViewController: UISearchResultsUpdating {
             self.workoutDataSource.setSearchText(nil)
         }
         self.tableView.reloadData()
+    }
+}
+
+extension WorkoutTableViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        // Only recognize taps in the navigation bar area (approximately top 100 points)
+        let location = touch.location(in: tableView)
+        return location.y < 100
+    }
+}
+
+extension WorkoutTableViewController: UITabBarControllerDelegate {
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        // If tapping on the already selected tab (this view controller)
+        if viewController == navigationController || viewController == self {
+            if tabBarController.selectedViewController == navigationController || tabBarController.selectedViewController == self {
+                scrollToToday()
+            }
+        }
+        return true
     }
 }
