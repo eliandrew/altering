@@ -34,6 +34,8 @@ class WorkoutTableViewController: UITableViewController {
     var restPeriods: [RestPeriod]?
     
     private var hasAnimatedCells = false
+    private var justCompletedWorkout: Workout?
+    private var justAddedWorkout: Workout?
     
     // MARK: - Actions
     
@@ -219,7 +221,10 @@ class WorkoutTableViewController: UITableViewController {
         }
         
         if let workout = updatedWorkout {
-            self.handleUpdatedWorkout(workout)
+            // Only show progress screen if there's an actual milestone
+            if shouldShowProgressScreen(for: workout) {
+                self.handleUpdatedWorkout(workout)
+            }
             updatedWorkout = nil
         }
     }
@@ -242,6 +247,18 @@ class WorkoutTableViewController: UITableViewController {
         if !hasAnimatedCells && workoutDataSource.allWorkouts.count > 0 {
             animateCellsEntrance()
             hasAnimatedCells = true
+        }
+        
+        // Play addition animation if a workout was just added
+        if let addedWorkout = justAddedWorkout {
+            animateWorkoutAddition(addedWorkout)
+            justAddedWorkout = nil
+        }
+        
+        // Play completion animation if a workout was just completed
+        if let completedWorkout = justCompletedWorkout {
+            animateWorkoutCompletion(completedWorkout)
+            justCompletedWorkout = nil
         }
     }
 
@@ -330,16 +347,48 @@ class WorkoutTableViewController: UITableViewController {
         let titleLabel = UILabel()
         titleLabel.text = self.workoutDataSource.titleForSection(section)
         titleLabel.font = UIFont.systemFont(ofSize: 21, weight: .bold)
-        titleLabel.textColor = .label
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        // Add today icon if this section is today
+        var todayIcon: UIImageView?
+        if self.workoutDataSource.isSectionToday(section) {
+            // Set text color to match icon for Today section
+            titleLabel.textColor = .systemBlue
+            
+            let iconView = UIImageView()
+            let config = UIImage.SymbolConfiguration(pointSize: 18, weight: .bold)
+            iconView.image = UIImage(systemName: "calendar.badge.clock", withConfiguration: config)
+            iconView.tintColor = .systemBlue
+            iconView.translatesAutoresizingMaskIntoConstraints = false
+            iconView.contentMode = .scaleAspectFit
+            headerView.addSubview(iconView)
+            todayIcon = iconView
+        } else {
+            titleLabel.textColor = .label
+        }
         
         // Add the label
         headerView.addSubview(titleLabel)
         
+        // Create add workout button for this section
+        let addButton = UIButton(type: .system)
+        let config = UIImage.SymbolConfiguration(pointSize: 16, weight: .semibold)
+        addButton.setImage(UIImage(systemName: "plus.circle.fill", withConfiguration: config), for: .normal)
+        addButton.tag = section
+        addButton.addTarget(self, action: #selector(addWorkoutForSection(_:)), for: .touchUpInside)
+        addButton.translatesAutoresizingMaskIntoConstraints = false
+        addButton.tintColor = .systemGreen
+        
+        // Add touch animations
+        addButton.addTarget(self, action: #selector(buttonTouchDown(_:)), for: .touchDown)
+        addButton.addTarget(self, action: #selector(buttonTouchUp(_:)), for: [.touchUpInside, .touchUpOutside, .touchCancel])
+        
+        headerView.addSubview(addButton)
+        
         // Check if there are any uncompleted workouts in this section
         let hasUncompletedWorkouts = self.workoutDataSource.workoutsForSection(section)?.contains { !$0.completed } ?? false
         
-        // Only create and add the button if there are uncompleted workouts
+        // Only create and add the move button if there are uncompleted workouts
         if hasUncompletedWorkouts {
             // Create modern button
             let moveButton = UIButton(type: .system)
@@ -357,27 +406,95 @@ class WorkoutTableViewController: UITableViewController {
             // Add the button
             headerView.addSubview(moveButton)
             
-            // Setup constraints with button
-            NSLayoutConstraint.activate([
-                titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
-                titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
-                
-                moveButton.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -45),
-                moveButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
-                moveButton.widthAnchor.constraint(equalToConstant: 28),
-                moveButton.heightAnchor.constraint(equalToConstant: 28),
-                moveButton.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor, constant: 8)
-            ])
+            // Setup constraints with both buttons
+            if let todayIcon = todayIcon {
+                NSLayoutConstraint.activate([
+                    titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
+                    titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+                    
+                    todayIcon.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 8),
+                    todayIcon.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+                    todayIcon.widthAnchor.constraint(equalToConstant: 20),
+                    todayIcon.heightAnchor.constraint(equalToConstant: 20),
+                    
+                    addButton.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -50),
+                    addButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+                    addButton.widthAnchor.constraint(equalToConstant: 24),
+                    addButton.heightAnchor.constraint(equalToConstant: 24),
+                    
+                    moveButton.trailingAnchor.constraint(equalTo: addButton.leadingAnchor, constant: -12),
+                    moveButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+                    moveButton.widthAnchor.constraint(equalToConstant: 28),
+                    moveButton.heightAnchor.constraint(equalToConstant: 28),
+                    moveButton.leadingAnchor.constraint(greaterThanOrEqualTo: todayIcon.trailingAnchor, constant: 8)
+                ])
+            } else {
+                NSLayoutConstraint.activate([
+                    titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
+                    titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+                    
+                    addButton.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -50),
+                    addButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+                    addButton.widthAnchor.constraint(equalToConstant: 24),
+                    addButton.heightAnchor.constraint(equalToConstant: 24),
+                    
+                    moveButton.trailingAnchor.constraint(equalTo: addButton.leadingAnchor, constant: -12),
+                    moveButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+                    moveButton.widthAnchor.constraint(equalToConstant: 28),
+                    moveButton.heightAnchor.constraint(equalToConstant: 28),
+                    moveButton.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor, constant: 8)
+                ])
+            }
         } else {
-            // Setup constraints without button
-            NSLayoutConstraint.activate([
-                titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
-                titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
-                titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: headerView.trailingAnchor, constant: -16)
-            ])
+            // Setup constraints with just add button
+            if let todayIcon = todayIcon {
+                NSLayoutConstraint.activate([
+                    titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
+                    titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+                    
+                    todayIcon.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 8),
+                    todayIcon.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+                    todayIcon.widthAnchor.constraint(equalToConstant: 20),
+                    todayIcon.heightAnchor.constraint(equalToConstant: 20),
+                    
+                    addButton.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -50),
+                    addButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+                    addButton.widthAnchor.constraint(equalToConstant: 24),
+                    addButton.heightAnchor.constraint(equalToConstant: 24),
+                    addButton.leadingAnchor.constraint(greaterThanOrEqualTo: todayIcon.trailingAnchor, constant: 8)
+                ])
+            } else {
+                NSLayoutConstraint.activate([
+                    titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
+                    titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+                    
+                    addButton.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -50),
+                    addButton.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+                    addButton.widthAnchor.constraint(equalToConstant: 24),
+                    addButton.heightAnchor.constraint(equalToConstant: 24),
+                    addButton.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor, constant: 8)
+                ])
+            }
         }
         
         return headerView
+    }
+    
+    @objc func addWorkoutForSection(_ sender: UIButton) {
+        // Haptic feedback
+        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+        impactFeedback.impactOccurred()
+        
+        let section = sender.tag
+        
+        // Get the date for this section
+        guard let workouts = self.workoutDataSource.workoutsForSection(section),
+              let sectionDate = workouts.first?.date else {
+            return
+        }
+        
+        // Trigger the segue with the date
+        performSegue(withIdentifier: WORKOUT_SEGUE_IDENTIFIER, sender: sectionDate)
     }
     
     @objc func moveWorkoutsOneDayLater(_ sender: UIButton) {
@@ -390,6 +507,9 @@ class WorkoutTableViewController: UITableViewController {
         guard let workouts = self.workoutDataSource.workoutsForSection(section) else {
             return
         }
+        
+        // Animate the section before moving
+        animateMoveWorkouts(section: section)
         
         // Move only workouts that have a program (workout plan) one day later
         for workout in workouts {
@@ -409,7 +529,13 @@ class WorkoutTableViewController: UITableViewController {
                     case .success(let fetchedWorkouts):
                         self.workoutDataSource.setWorkouts(fetchedWorkouts)
                         DispatchQueue.main.async {
-                            self.tableView.reloadData()
+                            // Animate the reload
+                            UIView.transition(with: self.tableView,
+                                            duration: 0.3,
+                                            options: .transitionCrossDissolve,
+                                            animations: {
+                                self.tableView.reloadData()
+                            })
                         }
                     case .failure(let error):
                         print("Error reloading workouts: \(error)")
@@ -541,6 +667,327 @@ class WorkoutTableViewController: UITableViewController {
                 cell.alpha = 1.0
                 cell.transform = .identity
             }
+        }
+    }
+    
+    private func animateWorkoutAddition(_ workout: Workout) {
+        // Light haptic feedback
+        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+        impactFeedback.impactOccurred()
+        
+        // Find the cell for this workout
+        guard let indexPath = findIndexPath(for: workout),
+              let cell = tableView.cellForRow(at: indexPath) else {
+            return
+        }
+        
+        // Scroll to the cell if needed
+        tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+        
+        // Wait a moment for scroll to complete
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.performAdditionAnimation(at: cell)
+        }
+    }
+    
+    private func animateWorkoutCompletion(_ workout: Workout) {
+        // Success haptic feedback
+        let notificationFeedback = UINotificationFeedbackGenerator()
+        notificationFeedback.notificationOccurred(.success)
+        
+        // Find the cell for this workout
+        guard let indexPath = findIndexPath(for: workout),
+              let cell = tableView.cellForRow(at: indexPath) else {
+            return
+        }
+        
+        // Scroll to the cell if needed
+        tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+        
+        // Wait a moment for scroll to complete
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.performCelebrationAnimation(at: cell)
+        }
+    }
+    
+    private func findIndexPath(for workout: Workout) -> IndexPath? {
+        for section in 0..<workoutDataSource.numberOfSections(tableView) {
+            if let workouts = workoutDataSource.workoutsForSection(section) {
+                if let row = workouts.firstIndex(where: { $0 == workout }) {
+                    let rowsInSection = workoutDataSource.numberOfRowsInSection(tableView, section: section)
+                    // Check if this row is actually displayed (not hidden by collapse)
+                    if row < rowsInSection {
+                        return IndexPath(row: row, section: section)
+                    }
+                }
+            }
+        }
+        return nil
+    }
+    
+    private func performAdditionAnimation(at cell: UITableViewCell) {
+        // Create overlay container
+        let overlayView = UIView(frame: tableView.bounds)
+        overlayView.backgroundColor = .clear
+        overlayView.isUserInteractionEnabled = false
+        tableView.addSubview(overlayView)
+        
+        // Get cell position in table view
+        let cellFrame = tableView.convert(cell.frame, to: tableView)
+        
+        // Create plus icon
+        let iconContainer = UIView()
+        iconContainer.frame = CGRect(x: cellFrame.midX - 35, y: cellFrame.midY - 35, width: 70, height: 70)
+        iconContainer.backgroundColor = UIColor.systemBlue
+        iconContainer.layer.cornerRadius = 35
+        iconContainer.alpha = 0
+        iconContainer.transform = CGAffineTransform(scaleX: 0.3, y: 0.3)
+        
+        let iconView = UIImageView()
+        iconView.frame = CGRect(x: 12, y: 12, width: 46, height: 46)
+        let config = UIImage.SymbolConfiguration(pointSize: 30, weight: .bold)
+        iconView.image = UIImage(systemName: "plus", withConfiguration: config)
+        iconView.tintColor = .white
+        iconView.contentMode = .scaleAspectFit
+        iconContainer.addSubview(iconView)
+        
+        overlayView.addSubview(iconContainer)
+        
+        // Create sparkle particles
+        let particleColors: [UIColor] = [.systemBlue, .systemCyan, .systemTeal, .systemIndigo]
+        let particleSymbols = ["star.fill", "sparkle", "plus.circle.fill"]
+        
+        var particleViews: [UIView] = []
+        for _ in 0..<12 {
+            let particle = UIImageView()
+            let symbolConfig = UIImage.SymbolConfiguration(pointSize: CGFloat.random(in: 14...20), weight: .bold)
+            particle.image = UIImage(systemName: particleSymbols.randomElement()!, withConfiguration: symbolConfig)
+            particle.tintColor = particleColors.randomElement()!
+            particle.frame = CGRect(x: cellFrame.midX - 8, y: cellFrame.midY - 8, width: 16, height: 16)
+            particle.alpha = 0
+            overlayView.addSubview(particle)
+            particleViews.append(particle)
+        }
+        
+        // Animate plus icon
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.55, initialSpringVelocity: 0.9, options: .curveEaseOut) {
+            iconContainer.alpha = 1.0
+            iconContainer.transform = CGAffineTransform(scaleX: 1.15, y: 1.15)
+        } completion: { _ in
+            UIView.animate(withDuration: 0.25) {
+                iconContainer.transform = .identity
+            }
+        }
+        
+        // Animate sparkle particles
+        for (index, particle) in particleViews.enumerated() {
+            let angle = (CGFloat(index) / CGFloat(particleViews.count)) * 2.0 * .pi
+            let distance = CGFloat.random(in: 70...120)
+            let tx = cos(angle) * distance
+            let ty = sin(angle) * distance
+            
+            UIView.animate(withDuration: 0.7, delay: 0.15, options: .curveEaseOut) {
+                particle.alpha = 1.0
+                particle.transform = CGAffineTransform(translationX: tx, y: ty).rotated(by: CGFloat.random(in: -1.5...1.5))
+            } completion: { _ in
+                UIView.animate(withDuration: 0.25) {
+                    particle.alpha = 0
+                    particle.transform = particle.transform.translatedBy(x: tx * 0.2, y: ty * 0.2)
+                }
+            }
+        }
+        
+        // Cell bounce animation with highlight
+        let originalBackground = cell.backgroundColor
+        UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut) {
+            cell.transform = CGAffineTransform(scaleX: 1.04, y: 1.04)
+            cell.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.1)
+        } completion: { _ in
+            UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.8, options: .curveEaseOut) {
+                cell.transform = .identity
+            }
+            UIView.animate(withDuration: 0.3, delay: 0.1, options: .curveEaseOut) {
+                cell.backgroundColor = originalBackground
+            }
+        }
+        
+        // Clean up after animation
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
+            UIView.animate(withDuration: 0.25, animations: {
+                iconContainer.alpha = 0
+                iconContainer.transform = CGAffineTransform(scaleX: 0.7, y: 0.7)
+            }) { _ in
+                overlayView.removeFromSuperview()
+            }
+        }
+    }
+    
+    private func performCelebrationAnimation(at cell: UITableViewCell) {
+        // Create overlay container
+        let overlayView = UIView(frame: tableView.bounds)
+        overlayView.backgroundColor = .clear
+        overlayView.isUserInteractionEnabled = false
+        tableView.addSubview(overlayView)
+        
+        // Get cell position in table view
+        let cellFrame = tableView.convert(cell.frame, to: tableView)
+        
+        // Create checkmark icon
+        let iconContainer = UIView()
+        iconContainer.frame = CGRect(x: cellFrame.midX - 40, y: cellFrame.midY - 40, width: 80, height: 80)
+        iconContainer.backgroundColor = UIColor.systemGreen
+        iconContainer.layer.cornerRadius = 40
+        iconContainer.alpha = 0
+        iconContainer.transform = CGAffineTransform(scaleX: 0.3, y: 0.3)
+        
+        let iconView = UIImageView()
+        iconView.frame = CGRect(x: 15, y: 15, width: 50, height: 50)
+        let config = UIImage.SymbolConfiguration(pointSize: 35, weight: .bold)
+        iconView.image = UIImage(systemName: "checkmark", withConfiguration: config)
+        iconView.tintColor = .white
+        iconView.contentMode = .scaleAspectFit
+        iconContainer.addSubview(iconView)
+        
+        overlayView.addSubview(iconContainer)
+        
+        // Create particles
+        let particleColors: [UIColor] = [.systemGreen, .systemBlue, .systemYellow, .systemOrange, .systemPink]
+        let particleSymbols = ["star.fill", "sparkle", "heart.fill", "flame.fill"]
+        
+        var particleViews: [UIView] = []
+        for i in 0..<15 {
+            let particle = UIImageView()
+            let symbolConfig = UIImage.SymbolConfiguration(pointSize: CGFloat.random(in: 12...24), weight: .bold)
+            particle.image = UIImage(systemName: particleSymbols.randomElement()!, withConfiguration: symbolConfig)
+            particle.tintColor = particleColors.randomElement()!
+            particle.frame = CGRect(x: cellFrame.midX - 10, y: cellFrame.midY - 10, width: 20, height: 20)
+            particle.alpha = 0
+            overlayView.addSubview(particle)
+            particleViews.append(particle)
+        }
+        
+        // Animate checkmark
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.8, options: .curveEaseOut) {
+            iconContainer.alpha = 1.0
+            iconContainer.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
+        } completion: { _ in
+            UIView.animate(withDuration: 0.2) {
+                iconContainer.transform = .identity
+            }
+        }
+        
+        // Animate particles
+        for (index, particle) in particleViews.enumerated() {
+            let angle = (CGFloat(index) / CGFloat(particleViews.count)) * 2.0 * .pi
+            let distance = CGFloat.random(in: 80...150)
+            let tx = cos(angle) * distance
+            let ty = sin(angle) * distance
+            
+            UIView.animate(withDuration: 0.8, delay: 0.1, options: .curveEaseOut) {
+                particle.alpha = 1.0
+                particle.transform = CGAffineTransform(translationX: tx, y: ty).rotated(by: CGFloat.random(in: -2...2))
+            } completion: { _ in
+                UIView.animate(withDuration: 0.3) {
+                    particle.alpha = 0
+                    particle.transform = particle.transform.translatedBy(x: tx * 0.3, y: ty * 0.3)
+                }
+            }
+        }
+        
+        // Cell pulse animation
+        UIView.animate(withDuration: 0.15, delay: 0, options: .curveEaseOut) {
+            cell.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
+        } completion: { _ in
+            UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.8, options: .curveEaseOut) {
+                cell.transform = .identity
+            }
+        }
+        
+        // Clean up after animation
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            UIView.animate(withDuration: 0.3, animations: {
+                iconContainer.alpha = 0
+                iconContainer.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
+            }) { _ in
+                overlayView.removeFromSuperview()
+            }
+        }
+    }
+    
+    private func animateMoveWorkouts(section: Int) {
+        // Create overlay container
+        let overlayView = UIView(frame: tableView.bounds)
+        overlayView.backgroundColor = .clear
+        overlayView.isUserInteractionEnabled = false
+        tableView.addSubview(overlayView)
+        
+        // Get all visible cells in this section
+        var cellsInSection: [UITableViewCell] = []
+        let rowCount = tableView.numberOfRows(inSection: section)
+        for row in 0..<rowCount {
+            let indexPath = IndexPath(row: row, section: section)
+            if let cell = tableView.cellForRow(at: indexPath) {
+                cellsInSection.append(cell)
+            }
+        }
+        
+        // Get section header position
+        if let headerView = tableView.headerView(forSection: section) {
+            let headerFrame = tableView.convert(headerView.frame, to: tableView)
+            
+            // Create forward arrow particles
+            let particleColors: [UIColor] = [.systemBlue, .systemCyan, .systemTeal]
+            let arrowSymbols = ["arrow.forward.fill", "arrow.right", "chevron.forward"]
+            
+            var particleViews: [UIView] = []
+            for i in 0..<8 {
+                let particle = UIImageView()
+                let symbolConfig = UIImage.SymbolConfiguration(pointSize: CGFloat.random(in: 16...24), weight: .bold)
+                particle.image = UIImage(systemName: arrowSymbols.randomElement()!, withConfiguration: symbolConfig)
+                particle.tintColor = particleColors.randomElement()!
+                particle.frame = CGRect(x: headerFrame.maxX - 50, y: headerFrame.midY - 10, width: 20, height: 20)
+                particle.alpha = 0
+                overlayView.addSubview(particle)
+                particleViews.append(particle)
+            }
+            
+            // Animate arrow particles moving right
+            for (index, particle) in particleViews.enumerated() {
+                let delay = Double(index) * 0.05
+                let distance = CGFloat.random(in: 100...200)
+                
+                UIView.animate(withDuration: 0.5, delay: delay, options: .curveEaseOut) {
+                    particle.alpha = 1.0
+                    particle.transform = CGAffineTransform(translationX: distance, y: CGFloat.random(in: -30...30))
+                } completion: { _ in
+                    UIView.animate(withDuration: 0.2) {
+                        particle.alpha = 0
+                    }
+                }
+            }
+        }
+        
+        // Animate cells sliding right
+        for (index, cell) in cellsInSection.enumerated() {
+            let originalCenter = cell.center
+            let originalBackground = cell.backgroundColor
+            
+            UIView.animate(withDuration: 0.3, delay: Double(index) * 0.05, options: .curveEaseOut) {
+                cell.transform = CGAffineTransform(translationX: 30, y: 0)
+                cell.alpha = 0.7
+                cell.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.05)
+            } completion: { _ in
+                UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut) {
+                    cell.transform = .identity
+                    cell.alpha = 1.0
+                    cell.backgroundColor = originalBackground
+                }
+            }
+        }
+        
+        // Clean up overlay
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            overlayView.removeFromSuperview()
         }
     }
     
@@ -702,6 +1149,9 @@ class WorkoutTableViewController: UITableViewController {
                 vc?.workout = workout
                 vc?.originalCompletion = workout.completed
                 vc?.originalWorkoutProgram = workout.program
+            } else if let date = sender as? Date {
+                // When sender is a Date, set it as the selected date for a new workout
+                vc?.selectedDate = date
             }
         } else if segue.identifier == PROGRESS_SEGUE_IDENTIFIER , let progressInfo = sender as? ProgressInfo {
             let vc = segue.destination as? ProgramProgressViewController
@@ -756,7 +1206,35 @@ extension WorkoutTableViewController {
     @objc func workoutUpdated(notification: Notification) {
         if let userInfo = notification.userInfo, let workout = userInfo["workout"] as? Workout {
             updatedWorkout = workout
+            
+            // Check if this is a new workout
+            if let isNewWorkout = userInfo["isNewWorkout"] as? Bool, isNewWorkout {
+                justAddedWorkout = workout
+            }
+            
+            // Check if workout just got completed
+            if let originalCompletion = userInfo["originalCompletion"] as? Bool,
+               !originalCompletion && workout.completed {
+                justCompletedWorkout = workout
+            }
         }
+    }
+    
+    func shouldShowProgressScreen(for workout: Workout) -> Bool {
+        // Check if there's a meaningful progress milestone to show
+        guard workout.program != nil,
+              let _ = workout.progress(),
+              let progressPointHit = workout.progressPointHit() else {
+            return false
+        }
+        
+        // Show progress screen for actual milestones or program completion
+        if let program = workout.program, let programCompleted = program.isComplete(), programCompleted {
+            return true
+        }
+        
+        // Show for specific milestone percentages (0%, 25%, 50%, 75%, 100%)
+        return progressPointHit != nil
     }
     
     func handleUpdatedWorkout(_ workout: Workout) {

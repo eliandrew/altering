@@ -78,6 +78,9 @@ class TimerService {
         startTimestamp = Date()
         backgroundTimestamp = nil
         
+        // Prevent screen from sleeping while timer is running
+        UIApplication.shared.isIdleTimerDisabled = true
+        
         // Create timer and add it to the run loop with .common mode
         // This ensures the timer continues running during UI interactions (scrolling, tapping, etc.)
         let newTimer = Timer(timeInterval: 0.001, target: self, selector: #selector(timerDidFire), userInfo: nil, repeats: true)
@@ -92,6 +95,9 @@ class TimerService {
         timer?.invalidate()
         timer = nil
         isTimerRunning = false
+        
+        // Allow screen to sleep again when timer stops
+        UIApplication.shared.isIdleTimerDisabled = false
         
         // Clear timestamps when stopped
         startTimestamp = nil

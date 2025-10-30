@@ -104,6 +104,7 @@ class ProgramProgressViewController: UIViewController {
         
         // Configure button with modern styling
         var buttonConfig = UIButton.Configuration.filled()
+        buttonConfig.title = "Dismiss"
         buttonConfig.cornerStyle = .large
         buttonConfig.baseBackgroundColor = .systemBlue
         buttonConfig.baseForegroundColor = .white

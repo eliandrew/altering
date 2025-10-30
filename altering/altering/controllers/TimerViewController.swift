@@ -47,8 +47,7 @@ class TimerViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // Prevent screen from dimming or sleeping
-        UIApplication.shared.isIdleTimerDisabled = true
+        // Sleep prevention now handled by TimerService when timer is running
         
         // Notify overlay manager that timer view is visible
         NotificationCenter.default.post(
@@ -60,8 +59,7 @@ class TimerViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        // Allow screen to sleep again when leaving this view
-        UIApplication.shared.isIdleTimerDisabled = false
+        // Sleep prevention now handled by TimerService when timer is running
         
         // Notify overlay manager that timer view is no longer visible
         NotificationCenter.default.post(

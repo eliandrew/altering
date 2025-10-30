@@ -110,23 +110,36 @@ class EditWorkoutTableViewController: UITableViewController {
                     
                     self.previousWorkouts = previousWorkouts
                     
-                    // Only reload sections if there's a meaningful change
-                    if previousCount != newCount || shouldUpdateNotes {
-                        var indexSet = IndexSet(integer: EditWorkoutTableViewSection.workouts.rawValue)
-                        if shouldUpdateNotes {
-                            self.currentNotes = previousWorkouts.first?.notes
-                            indexSet.insert(EditWorkoutTableViewSection.notes.rawValue)
-                        }
-                        // Use no animation on initial load to prevent visible reload
-                        let animation: UITableView.RowAnimation = self.isInitialDataLoad ? .none : .automatic
-                        self.tableView.reloadSections(indexSet, with: animation)
+                    // Update notes if needed on initial load
+                    if self.isInitialDataLoad && shouldUpdateNotes {
+                        self.currentNotes = previousWorkouts.first?.notes
                     }
                     
-                    // Mark initial data load as complete and trigger animations if needed
+                    // Mark initial data load as complete
                     if self.isInitialDataLoad {
                         self.isInitialDataLoad = false
                         self.initialDataLoadComplete = true
-                        self.triggerAnimationIfReady()
+                        // Reload the workouts section (and notes if needed) now that data is ready
+                        DispatchQueue.main.async {
+                            UIView.performWithoutAnimation {
+                                var sectionsToReload = IndexSet(integer: EditWorkoutTableViewSection.workouts.rawValue)
+                                if shouldUpdateNotes {
+                                    sectionsToReload.insert(EditWorkoutTableViewSection.notes.rawValue)
+                                }
+                                self.tableView.reloadSections(sectionsToReload, with: .none)
+                            }
+                            self.triggerAnimationIfReady()
+                        }
+                    } else {
+                        // Only reload sections if there's a meaningful change AND it's not the initial load
+                        if previousCount != newCount || shouldUpdateNotes {
+                            var indexSet = IndexSet(integer: EditWorkoutTableViewSection.workouts.rawValue)
+                            if shouldUpdateNotes {
+                                self.currentNotes = previousWorkouts.first?.notes
+                                indexSet.insert(EditWorkoutTableViewSection.notes.rawValue)
+                            }
+                            self.tableView.reloadSections(indexSet, with: .automatic)
+                        }
                     }
                     
                 case .failure(let error):
@@ -135,7 +148,13 @@ class EditWorkoutTableViewController: UITableViewController {
                     if self.isInitialDataLoad {
                         self.isInitialDataLoad = false
                         self.initialDataLoadComplete = true
-                        self.triggerAnimationIfReady()
+                        // Reload to show empty workouts section
+                        DispatchQueue.main.async {
+                            UIView.performWithoutAnimation {
+                                self.tableView.reloadSections(IndexSet(integer: EditWorkoutTableViewSection.workouts.rawValue), with: .none)
+                            }
+                            self.triggerAnimationIfReady()
+                        }
                     }
             }
         })
@@ -273,7 +292,7 @@ class EditWorkoutTableViewController: UITableViewController {
             workout.completed = self.workoutCompleted ?? true
             saveDataContext()
             if let newProgram = workout.program, originalWorkoutProgram != newProgram || originalCompletion != workoutCompleted, workout.completed {
-                NotificationCenter.default.post(name: .workoutUpdate, object: nil, userInfo: ["workout" : workout])
+                NotificationCenter.default.post(name: .workoutUpdate, object: nil, userInfo: ["workout" : workout, "originalCompletion": originalCompletion ?? false])
             }
         } else {
             guard let exercise = self.exercise else {
@@ -288,9 +307,8 @@ class EditWorkoutTableViewController: UITableViewController {
             newWorkout.completed = self.workoutCompleted ?? true
             print("NEW WORKOUT COMPLETED: \(newWorkout.completed)")
             saveDataContext()
-            if let _ = self.program {
-                NotificationCenter.default.post(name: .workoutUpdate, object: nil, userInfo: ["workout" : newWorkout])
-            }
+            // Post notification for all new workouts
+            NotificationCenter.default.post(name: .workoutUpdate, object: nil, userInfo: ["workout" : newWorkout, "isNewWorkout": true])
         }
        
     }
@@ -483,7 +501,8 @@ class EditWorkoutTableViewController: UITableViewController {
         case .completed:
             return 1
         case .workouts:
-            return self.previousWorkouts?.count ?? 0
+            // Don't show workouts section until initial data load is complete
+            return initialDataLoadComplete ? (self.previousWorkouts?.count ?? 0) : 0
         default:
             return 0
         }
